@@ -1,0 +1,8 @@
+_runtime/
+video_fingerprint_cache.json
+duplicate_report.csv
+duplicate_groups.txt
+deleted_files_log.csv
+install_log.txt
+*.part
+__pycache__/

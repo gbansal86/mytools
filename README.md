@@ -10,6 +10,12 @@ Windows/Python content-aware duplicate finder for PDF, EPUB, CHM, DJVU, MOBI/AZW
 
 See: [Book-Duplicate-Finder](./Book-Duplicate-Finder/)
 
+### Video Duplicate Finder
+
+Beginner-friendly Windows/Python tool for finding re-encoded or near-duplicate videos with different file sizes, resolutions, bitrates, codecs, containers, or small timing shifts. It uses perceptual frame hashing, creates CSV/text reports, and includes a local browser review grid that can move selected copies to the Windows Recycle Bin.
+
+See: [Video-Duplicate-Finder](./Video-Duplicate-Finder/)
+
 ### ZIP Bulk Extractor
 
 Beginner-friendly Windows batch utility for extracting every `.zip` in a folder. Includes a safe one-folder-per-ZIP mode, a direct same-folder mode, a simple menu, visual instructions, and no third-party dependencies.
