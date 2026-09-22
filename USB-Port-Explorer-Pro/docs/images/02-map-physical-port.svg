@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860">
+  <defs>
+    <style>
+      .title{font:700 34px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+      .sub{font:400 18px 'Segoe UI',Arial,sans-serif;fill:#475569}
+      .h{font:700 21px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+      .t{font:400 17px 'Segoe UI',Arial,sans-serif;fill:#334155}
+      .n{font:700 24px 'Segoe UI',Arial,sans-serif;fill:white;text-anchor:middle;dominant-baseline:middle}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="860" fill="#f8fafc"/>
+  <text x="54" y="58" class="title">How to map one physical USB socket</text>
+  <text x="54" y="92" class="sub">Use a known USB 3.x device and cable so the current link result is meaningful.</text>
+
+  <!-- Step cards -->
+  <g transform="translate(60,150)">
+    <rect width="245" height="520" rx="16" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+    <circle cx="44" cy="46" r="25" fill="#0f766e"/><text x="44" y="46" class="n">1</text>
+    <text x="84" y="54" class="h">Choose a socket</text>
+    <rect x="38" y="120" width="170" height="90" rx="12" fill="#e2e8f0"/>
+    <rect x="75" y="148" width="96" height="34" rx="5" fill="#2563eb"/>
+    <rect x="90" y="156" width="66" height="18" rx="3" fill="#0f172a"/>
+    <text x="28" y="250" class="t">Pick one visible USB port.</text>
+    <text x="28" y="282" class="t">Example:</text>
+    <text x="28" y="314" class="t">“Rear top blue USB-A”</text>
+    <text x="28" y="360" class="t">Do not assume rear = fast.</text>
+    <text x="28" y="392" class="t">Front and rear ports can</text>
+    <text x="28" y="424" class="t">both support USB 3.x.</text>
+  </g>
+
+  <line x1="315" y1="410" x2="355" y2="410" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g transform="translate(370,150)">
+    <rect width="245" height="520" rx="16" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+    <circle cx="44" cy="46" r="25" fill="#2563eb"/><text x="44" y="46" class="n">2</text>
+    <text x="84" y="54" class="h">Connect a test device</text>
+    <rect x="48" y="125" width="150" height="72" rx="14" fill="#334155"/>
+    <rect x="90" y="197" width="68" height="34" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="28" y="270" class="t">Use a known USB 3.x device</text>
+    <text x="28" y="302" class="t">and a known-good cable.</text>
+    <text x="28" y="348" class="t">A USB 2-only cable can make</text>
+    <text x="28" y="380" class="t">a fast port look slow.</text>
+  </g>
+
+  <line x1="625" y1="410" x2="665" y2="410" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g transform="translate(680,150)">
+    <rect width="245" height="520" rx="16" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+    <circle cx="44" cy="46" r="25" fill="#7c3aed"/><text x="44" y="46" class="n">3</text>
+    <text x="84" y="54" class="h">Refresh + select</text>
+    <rect x="38" y="125" width="165" height="44" rx="8" fill="#e0f2fe" stroke="#0284c7"/>
+    <text x="53" y="153" class="t">Refresh devices</text>
+    <rect x="38" y="196" width="165" height="92" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="50" y="225" class="t">USB port 3</text>
+    <text x="50" y="255" class="t">WD My Passport</text>
+    <text x="28" y="332" class="t">Select the new/changed node.</text>
+    <text x="28" y="364" class="t">Read port number, location</text>
+    <text x="28" y="396" class="t">path, protocol, and link speed.</text>
+  </g>
+
+  <line x1="935" y1="410" x2="975" y2="410" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g transform="translate(990,150)">
+    <rect width="350" height="520" rx="16" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+    <circle cx="44" cy="46" r="25" fill="#b45309"/><text x="44" y="46" class="n">4</text>
+    <text x="84" y="54" class="h">Save the physical label</text>
+    <rect x="38" y="126" width="270" height="42" rx="7" fill="white" stroke="#94a3b8"/>
+    <text x="50" y="153" class="t">Rear motherboard - top blue</text>
+    <rect x="38" y="184" width="120" height="38" rx="7" fill="#fef3c7" stroke="#d97706"/>
+    <text x="61" y="209" class="t">Save label</text>
+    <text x="30" y="270" class="t">Now the same connection path</text>
+    <text x="30" y="302" class="t">has a human name you recognize.</text>
+    <text x="30" y="354" class="t">Repeat this process for every</text>
+    <text x="30" y="386" class="t">USB socket you want to map.</text>
+    <text x="30" y="446" class="h">Best result:</text>
+    <text x="30" y="482" class="t">Physical label + Windows path</text>
+    <text x="30" y="512" class="t">+ logical protocol + current link</text>
+  </g>
+
+  <rect x="60" y="716" width="1280" height="96" rx="14" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="86" y="751" class="h">Tip</text>
+  <text x="142" y="751" class="t">Blue/teal plastic and an SS logo are helpful physical clues, but they are not proof.</text>
+  <text x="86" y="784" class="t">The strongest evidence is the app’s Windows path + logical-port information + current negotiated link using a known-capable device/cable.</text>
+</svg>
