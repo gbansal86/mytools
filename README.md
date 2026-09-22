@@ -25,6 +25,7 @@ MyTools is built around five principles:
 | [Video Duplicate Finder](./Video-Duplicate-Finder/) | Detects re-encoded or near-duplicate videos using perceptual sampling and provides a browser review workflow. | Python, FFmpeg, Windows |
 | [Windows PC Performance Recovery](./Windows-PC-Performance-Recovery/) | Collects diagnostics, analyzes performance/hardware-health signals, supports dry-run repairs, and compares before/after results. | PowerShell, BAT, Windows |
 | [USB Port Explorer Pro](./USB-Port-Explorer-Pro/) | Explains USB topology, devices, drivers, ports, protocol clues, and practical speed/port guidance. | PowerShell, Windows |
+| [Course Library Manager](./Course-Library-Manager/) | Cleans course-folder names and builds an offline HTML course library/player with Cards/Table views, subtitles, progress/resume, resources, and optional FFmpeg thumbnails. | PowerShell, HTML/JavaScript, FFmpeg, Windows |
 | [Telegram Local Downloader](./Telegram-Local-Downloader-Windows/) | Downloads media the signed-in Telegram account can already access and creates organized local reports/archives. | Python, Telegram API, Windows |
 | [Nuditag NSFW Video Scanner](./Nuditag-NSFW-Video-Scanner/) | Wraps Nuditag for configurable local video scanning with resumable reports and a dry-run-first organizer. | Python, Nuditag, Windows |
 | [Nested Archive Extractor](./Nested-Archive-Extractor/) | Recursively extracts archives inside archives, including extensionless inner archives and Zstandard wrappers. | PowerShell, Windows |
