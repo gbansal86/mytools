@@ -1557,4 +1557,217 @@ function Build-CourseLibraryData {
                 $thumbPath = Join-Path $CatalogDir.FullName ("assets\thumbs\" + $courseId + "\" + $vid + ".jpg")
                 $ok = New-VideoThumbnail -VideoPath $video.FullName -OutputPath $thumbPath -FfmpegPath $ffmpeg -DurationSeconds $duration -SeekPercent ([int]$Script:Settings.ThumbnailSeekPercent)
                 if ($ok) {
-                    $relThumb = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullNa
+                    $relThumb = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullName -TargetPath $thumbPath
+                    $thumbWeb = Get-WebPath $relThumb
+                }
+            }
+
+            $section = Get-SectionName -File $video -CourseDir $course
+            $display = Get-CleanDisplayName $video.Name
+            $videoItems.Add([pscustomobject][ordered]@{
+                id          = Get-StableId $video.FullName
+                order       = $vIndex
+                title       = $display
+                section     = $section
+                path        = $videoWeb
+                original    = $video.Name
+                duration    = $duration
+                durationText= Format-Duration $duration
+                subtitle    = $subtitleWeb
+                thumbnail   = $thumbWeb
+                extension   = $video.Extension.TrimStart('.').ToUpperInvariant()
+            })
+        }
+
+        # If the course has no explicit root-level cover image, use the first
+        # generated video thumbnail as a visual course cover. This is safer
+        # than selecting an arbitrary lesson screenshot/resource image.
+        if (-not $coverWeb -and $videoItems.Count -gt 0) {
+            $firstThumb = $videoItems | Where-Object { $_.thumbnail } | Select-Object -First 1
+            if ($firstThumb) {
+                $coverWeb = $firstThumb.thumbnail
+            }
+        }
+
+        # Resource files: don't list subtitle files or video files here.
+        foreach ($file in $allFiles) {
+            $ext = $file.Extension.ToLowerInvariant()
+            if ($videoExt -contains $ext) { continue }
+            if ($subtitleExt -contains $ext) { continue }
+
+            $kind = "Other"
+            $include = $false
+
+            if ($pdfExt -contains $ext) {
+                $kind = "PDF"
+                $include = [bool]$Script:Settings.IncludePDFs
+            }
+            elseif ($imageExt -contains $ext) {
+                $kind = "Image"
+                $include = [bool]$Script:Settings.IncludeImages
+            }
+            else {
+                $kind = "Other"
+                $include = [bool]$Script:Settings.IncludeOtherResources
+            }
+
+            if (-not $include) { continue }
+
+            # Course cover can also remain available as a resource; no harm.
+            $relFile = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullName -TargetPath $file.FullName
+            $resources += [pscustomobject][ordered]@{
+                id       = Get-StableId $file.FullName
+                title    = Get-CleanDisplayName $file.Name
+                section  = Get-SectionName -File $file -CourseDir $course
+                path     = Get-WebPath $relFile
+                kind     = $kind
+                extension= $file.Extension.TrimStart('.').ToUpperInvariant()
+            }
+        }
+
+        $videoArray = $videoItems.ToArray()
+        $resourceArray = [array]$resources
+        $sections = @($videoArray | ForEach-Object { $_.section } | Select-Object -Unique)
+        $folderRel = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullName -TargetPath $course.FullName
+        $folderWeb = Get-WebPath ($folderRel.TrimEnd('\') + "\")
+
+        $courseTotalDuration = $null
+        $courseTotalDurationText = ""
+        if ($knownDurationCount -gt 0) {
+            $courseTotalDuration = [Math]::Round([double]$totalDuration, 2)
+            $courseTotalDurationText = Format-Duration -Seconds $courseTotalDuration
+        }
+
+        $courseObject = [pscustomobject][ordered]@{
+            id                = [string]$courseId
+            name              = [string](Get-CleanParentName $course.Name)
+            originalName      = [string]$course.Name
+            folder            = [string]$folderWeb
+            cover             = $coverWeb
+            videoCount        = [int]$videoArray.Count
+            resourceCount     = [int]$resourceArray.Count
+            sectionCount      = [int]@($sections).Count
+            totalDuration     = $courseTotalDuration
+            totalDurationText = [string]$courseTotalDurationText
+            videos            = $videoArray
+            resources         = $resourceArray
+        }
+
+        $library.Add($courseObject)
+    }
+
+    return $library.ToArray()
+}
+
+function Get-HtmlTemplate {
+    param([string]$LibraryJson)
+
+    $theme = [string]$Script:Settings.Theme
+    $defaultView = ([string]$Script:Settings.DefaultView).ToLowerInvariant()
+    $defaultSpeed = ([double]$Script:Settings.DefaultPlaybackSpeed).ToString("0.##",[Globalization.CultureInfo]::InvariantCulture)
+
+    $html = @'
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Course Library</title>
+<style>
+:root{
+  --bg:#0b1220;--panel:#111827;--panel2:#172033;--text:#eef2ff;--muted:#9ca3af;
+  --line:#293349;--accent:#67e8f9;--accent2:#8b5cf6;--good:#34d399;--warn:#fbbf24;
+  --shadow:0 14px 38px rgba(0,0,0,.28);--radius:18px;
+}
+body.light{
+  --bg:#f3f6fb;--panel:#ffffff;--panel2:#f8fafc;--text:#111827;--muted:#667085;
+  --line:#dbe3ef;--accent:#0676d8;--accent2:#7c3aed;--good:#059669;--warn:#d97706;
+  --shadow:0 14px 34px rgba(17,24,39,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 "Segoe UI",Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1500px;margin:auto;padding:15px 22px;display:flex;gap:14px;align-items:center}
+.brand{font-weight:800;font-size:20px;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.search{flex:1;position:relative}
+.search input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px 11px 38px;color:var(--text);outline:none}
+.search:before{content:"⌕";position:absolute;left:13px;top:7px;font-size:22px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 12px;border-radius:10px}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--accent2),#2563eb);border:0;color:white;font-weight:700}
+.btn.good{background:var(--good);border:0;color:#06281e;font-weight:800}
+.container{max-width:1500px;margin:auto;padding:24px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 22px}
+.chip{background:var(--panel);border:1px solid var(--line);padding:8px 11px;border-radius:999px;color:var(--muted)}
+.chip b{color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.course-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:.18s}
+.course-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 70%,var(--line))}
+.course-cover{height:172px;background:linear-gradient(135deg,#1e3a8a,#5b21b6);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.course-cover img{width:100%;height:100%;object-fit:cover}
+.cover-fallback{font-size:46px;font-weight:900;opacity:.85}
+.card-body{padding:16px}
+.card-title{font-weight:800;font-size:17px;min-height:48px}
+.meta{color:var(--muted);margin-top:7px}
+.progress{height:7px;background:var(--panel2);border-radius:999px;overflow:hidden;margin:13px 0}
+.progress>i{height:100%;display:block;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0}
+.card-actions{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.linkbtn{text-decoration:none}
+.hidden{display:none!important}
+.course-head{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:28px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow);margin-bottom:22px}
+.course-head-cover{min-height:220px;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#1e3a8a,#5b21b6);display:flex;align-items:center;justify-content:center}
+.course-head-cover img{width:100%;height:100%;object-fit:cover}
+.course-title{font-size:29px;font-weight:900;margin:0 0 8px}
+.big-meta{color:var(--muted);font-size:15px}
+.head-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tab{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted)}
+.tab.active{color:var(--text);border-color:var(--accent)}
+.section{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin:12px 0;overflow:hidden}
+.section-header{padding:13px 15px;font-weight:800;display:flex;justify-content:space-between;cursor:pointer;background:var(--panel2)}
+.section-content{padding:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.video-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel2)}
+.video-thumb{height:140px;background:#050913;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.video-thumb img{width:100%;height:100%;object-fit:cover}
+.video-thumb .play{position:absolute;width:50px;height:50px;border-radius:50%;border:0;background:rgba(0,0,0,.68);color:white;font-size:21px}
+.video-thumb .dur{position:absolute;right:8px;bottom:7px;background:rgba(0,0,0,.72);color:white;padding:3px 6px;border-radius:5px;font-size:12px}
+.video-info{padding:11px}
+.video-title{font-weight:700;min-height:42px}
+.video-sub{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:8px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;background:var(--panel)}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{position:sticky;top:68px;background:var(--panel2);z-index:4;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+tr:hover td{background:color-mix(in srgb,var(--panel2) 72%,transparent)}
+.small{font-size:12px;color:var(--muted)}
+.player-shell{position:sticky;top:76px;z-index:10;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;margin:0 0 20px;box-shadow:var(--shadow)}
+.video-wrap{background:#000;border-radius:13px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center}
+video{width:100%;height:100%;background:#000}
+.player-title{font-size:18px;font-weight:800;margin:10px 0 7px}
+.player-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.player-controls select{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:8px;border-radius:9px}
+.player-progress{color:var(--muted);margin-left:auto}
+.resource-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.resource{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;text-decoration:none;display:flex;gap:10px;align-items:center}
+.resource:hover{border-color:var(--accent)}
+.badge{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-size:11px;color:var(--muted)}
+.empty{text-align:center;padding:52px 10px;color:var(--muted)}
+.footer{padding:35px 0;color:var(--muted);text-align:center}
+@media(max-width:760px){
+ .topbar-inner{flex-wrap:wrap}.brand{width:100%}.course-head{grid-template-columns:1fr}.course-head-cover{min-height:180px}
+ .container{padding:15px}.player-shell{top:115px}.course-title{font-size:23px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span>▶</span> My Course Library</div>
+    <div class="search"><input id="searchBox" placeholder="Search courses, sections, lessons or resources..."></di
