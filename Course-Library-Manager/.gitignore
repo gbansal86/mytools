@@ -1,0 +1,22 @@
+# Local settings/state
+CourseLibraryManager.settings.json
+
+# Generated local catalog
+_CourseLibrary/
+
+# Optional downloaded runtime tools
+tools/
+
+# Generated rename reports / undo files
+_FOLDER_RENAME_PREVIEW_*.csv
+_FOLDER_RENAME_APPLIED_*.csv
+_FOLDER_RENAME_UNDO_*.json
+
+# Temporary/partial downloads
+*.part
+*.tmp
+
+# OS/editor noise
+Thumbs.db
+.DS_Store
+.vscode/
