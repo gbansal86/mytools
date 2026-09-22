@@ -2343,4 +2343,280 @@ function Show-CatalogSettingsDialog {
         $cb.Size = New-Object System.Drawing.Size(480,26)
         $cb.Checked = [bool]$Script:Settings[$c[1]]
         $f.Controls.Add($cb)
-        $checkControls[$c[1]] = 
+        $checkControls[$c[1]] = $cb
+        $y += 32
+    }
+
+    Add-Label "Thumbnail seek position (%)" $y | Out-Null
+    $seek = New-Object System.Windows.Forms.NumericUpDown
+    $seek.Minimum = 1
+    $seek.Maximum = 90
+    $seek.Value = [decimal]([int]$Script:Settings.ThumbnailSeekPercent)
+    $seek.Location = New-Object System.Drawing.Point(270,$y)
+    $seek.Size = New-Object System.Drawing.Size(100,25)
+    $f.Controls.Add($seek)
+    $y += 40
+
+    Add-Label "Default playback speed" $y | Out-Null
+    $speed = New-Object System.Windows.Forms.ComboBox
+    $speed.DropDownStyle = "DropDownList"
+    [void]$speed.Items.AddRange(@("0.5","0.75","1","1.25","1.5","1.75","2","2.5","3"))
+    $speed.SelectedItem = ([double]$Script:Settings.DefaultPlaybackSpeed).ToString("0.##",[Globalization.CultureInfo]::InvariantCulture)
+    if ($speed.SelectedIndex -lt 0) { $speed.SelectedItem = "1" }
+    $speed.Location = New-Object System.Drawing.Point(270,$y)
+    $speed.Size = New-Object System.Drawing.Size(100,25)
+    $f.Controls.Add($speed)
+    $y += 50
+
+    $note = New-Object System.Windows.Forms.Label
+    $note.Text = "Tip: thumbnails/durations are richer when ffmpeg + ffprobe are on PATH. The catalog still works without them."
+    $note.Location = New-Object System.Drawing.Point(20,$y)
+    $note.Size = New-Object System.Drawing.Size(480,45)
+    $note.ForeColor = [System.Drawing.Color]::DimGray
+    $f.Controls.Add($note)
+    $y += 55
+
+    $save = New-Object System.Windows.Forms.Button
+    $save.Text = "Save"
+    $save.Location = New-Object System.Drawing.Point(304,$y)
+    $save.Size = New-Object System.Drawing.Size(95,32)
+    $save.Add_Click({
+        $Script:Settings.Theme = [string]$theme.SelectedItem
+        $Script:Settings.DefaultView = [string]$view.SelectedItem
+        foreach ($k in $checkControls.Keys) {
+            $Script:Settings[$k] = [bool]$checkControls[$k].Checked
+        }
+        $Script:Settings.ThumbnailSeekPercent = [int]$seek.Value
+        $Script:Settings.DefaultPlaybackSpeed = [double]::Parse([string]$speed.SelectedItem,[Globalization.CultureInfo]::InvariantCulture)
+        Save-Settings
+        Write-UiLog "Catalog settings saved." "OK"
+        $f.DialogResult = [System.Windows.Forms.DialogResult]::OK
+        $f.Close()
+    })
+    $f.Controls.Add($save)
+
+    $cancel = New-Object System.Windows.Forms.Button
+    $cancel.Text = "Cancel"
+    $cancel.Location = New-Object System.Drawing.Point(405,$y)
+    $cancel.Size = New-Object System.Drawing.Size(95,32)
+    $cancel.Add_Click({ $f.Close() })
+    $f.Controls.Add($cancel)
+
+    $f.ShowDialog($Script:MainForm) | Out-Null
+}
+
+# ----------------------------- GUI -----------------------------
+
+function New-SectionLabel {
+    param([string]$Text,[int]$X,[int]$Y,[int]$W=260)
+    $l = New-Object System.Windows.Forms.Label
+    $l.Text = $Text
+    $l.Location = New-Object System.Drawing.Point($X,$Y)
+    $l.Size = New-Object System.Drawing.Size($W,28)
+    $l.Font = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Bold)
+    return $l
+}
+
+function New-AppButton {
+    param([string]$Text,[int]$X,[int]$Y,[int]$W=190,[int]$H=38)
+    $b = New-Object System.Windows.Forms.Button
+    $b.Text = $Text
+    $b.Location = New-Object System.Drawing.Point($X,$Y)
+    $b.Size = New-Object System.Drawing.Size($W,$H)
+    $b.FlatStyle = [System.Windows.Forms.FlatStyle]::System
+    return $b
+}
+
+function Start-Gui {
+    Load-Settings
+
+    [System.Windows.Forms.Application]::EnableVisualStyles()
+
+    $form = New-Object System.Windows.Forms.Form
+    $form.Text = "$($Script:AppName) v$($Script:AppVersion)"
+    $form.Size = New-Object System.Drawing.Size(1040,760)
+    $form.MinimumSize = New-Object System.Drawing.Size(980,700)
+    $form.StartPosition = "CenterScreen"
+    $form.Font = New-Object System.Drawing.Font("Segoe UI",9)
+    $Script:MainForm = $form
+
+    $title = New-Object System.Windows.Forms.Label
+    $title.Text = "Course Library Manager"
+    $title.Location = New-Object System.Drawing.Point(20,16)
+    $title.Size = New-Object System.Drawing.Size(600,38)
+    $title.Font = New-Object System.Drawing.Font("Segoe UI",20,[System.Drawing.FontStyle]::Bold)
+    $form.Controls.Add($title)
+
+    $subtitle = New-Object System.Windows.Forms.Label
+    $subtitle.Text = "Safe folder cleanup + local HTML course player/library"
+    $subtitle.Location = New-Object System.Drawing.Point(23,55)
+    $subtitle.Size = New-Object System.Drawing.Size(600,24)
+    $subtitle.ForeColor = [System.Drawing.Color]::DimGray
+    $form.Controls.Add($subtitle)
+
+    $rootLabel = New-Object System.Windows.Forms.Label
+    $rootLabel.Text = "Course root folder"
+    $rootLabel.Location = New-Object System.Drawing.Point(22,92)
+    $rootLabel.Size = New-Object System.Drawing.Size(170,23)
+    $form.Controls.Add($rootLabel)
+
+    $rootBox = New-Object System.Windows.Forms.TextBox
+    $rootBox.Location = New-Object System.Drawing.Point(22,116)
+    $rootBox.Size = New-Object System.Drawing.Size(840,28)
+    $rootBox.Anchor = "Top,Left,Right"
+    $rootBox.Text = [string]$Script:Settings.RootPath
+    $Script:RootTextBox = $rootBox
+    $form.Controls.Add($rootBox)
+
+    $browse = New-AppButton "Browse..." 875 113 120 31
+    $browse.Anchor = "Top,Right"
+    $browse.Add_Click({
+        $dlg = New-Object System.Windows.Forms.FolderBrowserDialog
+        $dlg.Description = "Select the folder containing your course folders"
+        $dlg.ShowNewFolderButton = $false
+        if (Test-Path -LiteralPath $rootBox.Text) { $dlg.SelectedPath = $rootBox.Text }
+        if ($dlg.ShowDialog($form) -eq [System.Windows.Forms.DialogResult]::OK) {
+            $rootBox.Text = $dlg.SelectedPath
+            $Script:Settings.RootPath = $dlg.SelectedPath
+            Save-Settings
+        }
+    })
+    $form.Controls.Add($browse)
+
+    # Rename group
+    $renameGroup = New-Object System.Windows.Forms.GroupBox
+    $renameGroup.Text = "1. Folder Cleanup"
+    $renameGroup.Location = New-Object System.Drawing.Point(20,165)
+    $renameGroup.Size = New-Object System.Drawing.Size(475,190)
+    $form.Controls.Add($renameGroup)
+
+    $renameHint = New-Object System.Windows.Forms.Label
+    $renameHint.Text = "Preview first. This feature renames folders only; course files are never renamed."
+    $renameHint.Location = New-Object System.Drawing.Point(16,27)
+    $renameHint.Size = New-Object System.Drawing.Size(440,36)
+    $renameHint.ForeColor = [System.Drawing.Color]::DimGray
+    $renameGroup.Controls.Add($renameHint)
+
+    $preview = New-AppButton "Preview Folder Renames" 16 72 210 38
+    $preview.Add_Click({ Invoke-RenamePreview })
+    $renameGroup.Controls.Add($preview)
+
+    $apply = New-AppButton "Apply Folder Renames" 238 72 210 38
+    $apply.Add_Click({ Invoke-RenameApply })
+    $renameGroup.Controls.Add($apply)
+
+    $undo = New-AppButton "Undo Latest Rename" 16 120 210 38
+    $undo.Add_Click({ Invoke-RenameUndo })
+    $renameGroup.Controls.Add($undo)
+
+    $phrases = New-AppButton "Cleanup Phrases..." 238 120 210 38
+    $phrases.Add_Click({ Show-CleanupPhrasesDialog })
+    $renameGroup.Controls.Add($phrases)
+
+    # Catalog group
+    $catalogGroup = New-Object System.Windows.Forms.GroupBox
+    $catalogGroup.Text = "2. Local HTML Course Library"
+    $catalogGroup.Location = New-Object System.Drawing.Point(515,165)
+    $catalogGroup.Size = New-Object System.Drawing.Size(480,190)
+    $catalogGroup.Anchor = "Top,Right"
+    $form.Controls.Add($catalogGroup)
+
+    $catalogHint = New-Object System.Windows.Forms.Label
+    $catalogHint.Text = "Build a local library with course covers, card/table views, video player, seek/speed, subtitles, resources and resume progress."
+    $catalogHint.Location = New-Object System.Drawing.Point(16,27)
+    $catalogHint.Size = New-Object System.Drawing.Size(445,48)
+    $catalogHint.ForeColor = [System.Drawing.Color]::DimGray
+    $catalogGroup.Controls.Add($catalogHint)
+
+    $generate = New-AppButton "Create / Refresh HTML Catalog" 16 82 260 38
+    $generate.Add_Click({ Invoke-GenerateCatalog })
+    $Script:GenerateButton = $generate
+    $catalogGroup.Controls.Add($generate)
+
+    $open = New-AppButton "Open Catalog" 288 82 165 38
+    $open.Add_Click({ Invoke-OpenCatalog })
+    $Script:OpenButton = $open
+    $catalogGroup.Controls.Add($open)
+
+    $settings = New-AppButton "Catalog Settings..." 16 130 140 38
+    $settings.Add_Click({ Show-CatalogSettingsDialog })
+    $catalogGroup.Controls.Add($settings)
+
+    $components = New-AppButton "Install / Check Components" 164 130 178 38
+    $components.Add_Click({ Invoke-CheckInstallComponents })
+    $catalogGroup.Controls.Add($components)
+
+    $openFolder = New-AppButton "Open Folder" 350 130 103 38
+    $openFolder.Add_Click({
+        try {
+            $root = Get-SelectedRoot
+            $p = Join-Path $root.FullName ([string]$Script:Settings.CatalogFolderName)
+            if (-not (Test-Path -LiteralPath $p)) { New-Item -ItemType Directory -Path $p -Force | Out-Null }
+            Start-Process explorer.exe $p
+        } catch { Show-Warning $_.Exception.Message }
+    })
+    $catalogGroup.Controls.Add($openFolder)
+
+    # Log
+    $logLabel = New-SectionLabel "Activity" 20 375 200
+    $form.Controls.Add($logLabel)
+
+    $log = New-Object System.Windows.Forms.RichTextBox
+    $log.Location = New-Object System.Drawing.Point(20,408)
+    $log.Size = New-Object System.Drawing.Size(975,235)
+    $log.Anchor = "Top,Bottom,Left,Right"
+    $log.ReadOnly = $true
+    $log.BackColor = [System.Drawing.Color]::White
+    $log.Font = New-Object System.Drawing.Font("Consolas",9)
+    $Script:LogBox = $log
+    $form.Controls.Add($log)
+
+    $progress = New-Object System.Windows.Forms.ProgressBar
+    $progress.Location = New-Object System.Drawing.Point(20,658)
+    $progress.Size = New-Object System.Drawing.Size(780,18)
+    $progress.Anchor = "Bottom,Left,Right"
+    $Script:ProgressBar = $progress
+    $form.Controls.Add($progress)
+
+    $status = New-Object System.Windows.Forms.Label
+    $status.Text = "Ready"
+    $status.Location = New-Object System.Drawing.Point(20,682)
+    $status.Size = New-Object System.Drawing.Size(780,25)
+    $status.Anchor = "Bottom,Left,Right"
+    $Script:StatusLabel = $status
+    $form.Controls.Add($status)
+
+    $exit = New-AppButton "Exit" 875 666 120 38
+    $exit.Anchor = "Bottom,Right"
+    $exit.Add_Click({ $form.Close() })
+    $form.Controls.Add($exit)
+
+    $form.Add_Shown({
+        Write-UiLog "$($Script:AppName) v$($Script:AppVersion) ready." "OK"
+        Write-UiLog "Root: $($rootBox.Text)"
+        Write-UiLog "Use Preview before applying folder renames."
+        Write-UiLog "All component/download progress is shown inside this GUI; no console window is required."
+        Write-UiLog "v1.5 passed extended pre-build checks for lists, JSON, HTML template and Windows PowerShell 5.1 compatibility."
+        Set-UiStatus "Ready" 0
+
+        try {
+            if (Test-Path -LiteralPath $rootBox.Text) {
+                $index = Join-Path $rootBox.Text (([string]$Script:Settings.CatalogFolderName) + "\index.html")
+                $open.Enabled = Test-Path -LiteralPath $index
+            }
+        } catch {}
+    })
+
+    [void]$form.ShowDialog()
+}
+
+try {
+    Start-Gui
+} catch {
+    [System.Windows.Forms.MessageBox]::Show(
+        $_.Exception.ToString(),
+        "$($Script:AppName) - Fatal Error",
+        [System.Windows.Forms.MessageBoxButtons]::OK,
+        [System.Windows.Forms.MessageBoxIcon]::Error
+    ) | Out-Null
+}
