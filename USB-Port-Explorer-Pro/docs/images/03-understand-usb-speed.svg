@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <style>
+      .title{font:700 34px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+      .sub{font:400 18px 'Segoe UI',Arial,sans-serif;fill:#475569}
+      .h{font:700 22px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+      .t{font:400 17px 'Segoe UI',Arial,sans-serif;fill:#334155}
+      .mono{font:600 18px Consolas,monospace;fill:#0f172a}
+    </style>
+  </defs>
+  <rect width="1400" height="900" fill="#f8fafc"/>
+  <text x="54" y="58" class="title">USB speed and physical clues — plain-English guide</text>
+  <text x="54" y="92" class="sub">The app separates current link speed, logical-port capability, and the visible socket’s maximum capability.</text>
+
+  <rect x="58" y="138" width="405" height="430" rx="16" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="84" y="180" class="h">Current attached-device link</text>
+  <text x="84" y="222" class="mono">High-Speed</text>
+  <text x="84" y="252" class="t">USB 2.0-class signaling, up to</text>
+  <text x="84" y="278" class="t">480 Mb/s nominal signaling.</text>
+  <text x="84" y="326" class="mono">SuperSpeed</text>
+  <text x="84" y="356" class="t">USB 3.x 5 Gb/s-class signaling.</text>
+  <text x="84" y="404" class="mono">SuperSpeedPlus or higher</text>
+  <text x="84" y="434" class="t">Higher USB 3.x signaling class.</text>
+  <text x="84" y="460" class="t">Exact 10 vs 20 Gb/s may not be</text>
+  <text x="84" y="486" class="t">distinguishable on every machine.</text>
+  <text x="84" y="530" class="t">This is NOT a disk benchmark.</text>
+
+  <rect x="495" y="138" width="405" height="430" rx="16" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="521" y="180" class="h">Logical-port capability</text>
+  <text x="521" y="224" class="t">Windows may report that the hub</text>
+  <text x="521" y="252" class="t">port can expose USB 1.x, USB 2.0,</text>
+  <text x="521" y="280" class="t">or USB 3.x / SuperSpeed protocols.</text>
+  <text x="521" y="332" class="t">Important:</text>
+  <text x="521" y="364" class="t">One physical USB-A socket can have</text>
+  <text x="521" y="392" class="t">separate USB 2 (HSxx) and USB 3</text>
+  <text x="521" y="420" class="t">(SSxx) logical companion paths.</text>
+  <text x="521" y="474" class="t">So seeing HS03 does not prove that</text>
+  <text x="521" y="502" class="t">the visible socket is USB 2-only.</text>
+
+  <rect x="932" y="138" width="410" height="430" rx="16" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="958" y="180" class="h">Visible physical socket</text>
+  <text x="958" y="224" class="t">This is the port you can touch on</text>
+  <text x="958" y="252" class="t">the front/back/side of the PC.</text>
+  <text x="958" y="304" class="t">Its full maximum capability may not</text>
+  <text x="958" y="332" class="t">be exposed by normal Windows PnP.</text>
+  <text x="958" y="384" class="t">Best confirmation:</text>
+  <text x="958" y="416" class="t">map the exact socket and test with a</text>
+  <text x="958" y="444" class="t">known-capable device + cable.</text>
+  <text x="958" y="500" class="t">Do not infer max speed from “Port 3”.</text>
+  <text x="958" y="528" class="t">That is only a hub port number.</text>
+
+  <text x="58" y="628" class="h">Physical clues — useful, but never treat them as proof by themselves</text>
+
+  <rect x="58" y="662" width="300" height="170" rx="14" fill="#eff6ff" stroke="#93c5fd"/>
+  <rect x="104" y="708" width="120" height="42" rx="6" fill="#2563eb"/>
+  <rect x="124" y="718" width="80" height="22" rx="3" fill="#111827"/>
+  <text x="84" y="790" class="h">Blue / teal USB-A</text>
+  <text x="84" y="818" class="t">Common on USB 3.x, not guaranteed.</text>
+
+  <rect x="382" y="662" width="300" height="170" rx="14" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text x="414" y="732" class="mono">SS ⚡</text>
+  <text x="408" y="790" class="h">SS / SuperSpeed mark</text>
+  <text x="408" y="818" class="t">Strong clue when present.</text>
+
+  <rect x="706" y="662" width="300" height="170" rx="14" fill="#ecfeff" stroke="#67e8f9"/>
+  <rect x="790" y="712" width="135" height="34" rx="17" fill="none" stroke="#0f172a" stroke-width="5"/>
+  <text x="732" y="790" class="h">USB-C shape</text>
+  <text x="732" y="818" class="t">Connector shape ≠ speed.</text>
+
+  <rect x="1030" y="662" width="312" height="170" rx="14" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="1058" y="716" class="h">Front vs rear</text>
+  <text x="1058" y="752" class="t">Either location can be fast.</text>
+  <text x="1058" y="784" class="t">Map the exact socket instead</text>
+  <text x="1058" y="812" class="t">of assuming by position.</text>
+</svg>
