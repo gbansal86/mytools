@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800">
+
+<style>
+  .bg{fill:#f7f9fc}.panel{fill:#fff;stroke:#d8e0ec;stroke-width:2}
+  .top{fill:#17213a}.title{font:700 38px Arial,sans-serif;fill:#fff}
+  .sub{font:20px Arial,sans-serif;fill:#dbe5ff}
+  .h{font:700 24px Arial,sans-serif;fill:#14213d}.t{font:18px Arial,sans-serif;fill:#334155}
+  .small{font:16px Arial,sans-serif;fill:#475569}.mono{font:18px Consolas,monospace;fill:#e2e8f0}
+  .num{fill:#2563eb}.numt{font:700 24px Arial,sans-serif;fill:#fff;text-anchor:middle}
+  .hi{fill:#fff4bf;stroke:#f2b705;stroke-width:3}.ok{fill:#eaf8ef;stroke:#22a35a;stroke-width:2}
+  .warn{fill:#fff5e8;stroke:#f59e0b;stroke-width:2}.code{fill:#111827;stroke:#334155;stroke-width:2}
+  .blue{fill:#2563eb}.green{fill:#159447}.red{fill:#dc3545}.muted{fill:#64748b}
+  .arrow{stroke:#f2b705;stroke-width:7;fill:none;marker-end:url(#arrow)}
+</style>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f2b705"/></marker></defs>
+<rect class="bg" width="1400" height="800"/><rect class="top" width="1400" height="120"/>
+<text class="title" x="42" y="55">Step 4 — Test everything after LDPlayer reboots</text>
+<text class="sub" x="42" y="91">Use this checklist to determine whether the repair solved the Firebase #303 problem.</text>
+<rect class="panel" x="40" y="155" width="850" height="575" rx="18"/>
+<circle class="num" cx="100" cy="230" r="31"/><text class="numt" x="100" y="239">1</text>
+<text class="h" x="155" y="224">Wait 1–2 minutes</text>
+<text class="t" x="155" y="257">Let Android finish booting and reconnecting.</text>
+<circle class="num" cx="100" cy="345" r="31"/><text class="numt" x="100" y="354">2</text>
+<text class="h" x="155" y="339">Open Chrome and test a website</text>
+<text class="t" x="155" y="372">This confirms general emulator Internet access.</text>
+<circle class="num" cx="100" cy="460" r="31"/><text class="numt" x="100" y="469">3</text>
+<text class="h" x="155" y="454">Open Google Play Store</text>
+<text class="t" x="155" y="487">Sign in again if Google asks you to.</text>
+<circle class="num" cx="100" cy="575" r="31"/><text class="numt" x="100" y="584">4</text>
+<text class="h" x="155" y="569">Open the affected app</text>
+<text class="t" x="155" y="602">Check whether “App configuration failed #303” is gone.</text>
+<rect class="ok" x="155" y="645" width="680" height="54" rx="10"/>
+<text x="180" y="679" style="font:700 20px Arial;fill:#137a42">Goal: Chrome + Play Store work and the app opens without #303.</text>
+<rect class="warn" x="930" y="180" width="420" height="350" rx="14"/>
+<text class="h" x="960" y="222">If the error still appears</text>
+<text class="t" x="960" y="265">If Chrome and Play Store work but only</text>
+<text class="t" x="960" y="295">one app fails, try:</text>
+<text class="h" x="985" y="350">A. Fresh LDPlayer instance</text>
+<text class="small" x="985" y="383">Install only the affected app and retest.</text>
+<text class="h" x="985" y="438">B. Clear that app only</text>
+<text class="small" x="985" y="471">Use its Android package name in the tool.</text>
+<rect class="panel" x="930" y="560" width="420" height="170" rx="14"/>
+<text class="h" x="960" y="603">Still failing in a fresh instance?</text>
+<text class="small" x="960" y="638">The remaining cause may be app-side:</text>
+<text class="small" x="960" y="670">Firebase configuration, server outage,</text>
+<text class="small" x="960" y="700">credentials, or emulator restrictions.</text>
+</svg>
