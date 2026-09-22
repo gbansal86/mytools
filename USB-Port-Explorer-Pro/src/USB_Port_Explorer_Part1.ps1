@@ -185,7 +185,7 @@ function Get-LaymanPortText {
 
     $plainType = switch ($Record.Kind) {
         'Host controller' { 'USB host controller — the chipset/driver that manages a group of USB ports.' }
-        'Root hub' { 'USB root hub — Windows\' logical hub directly attached to the host controller.' }
+        'Root hub' { 'USB root hub — Windows'' logical hub directly attached to the host controller.' }
         'USB hub' { 'USB hub — one upstream USB connection split into multiple downstream ports.' }
         'Hub logical port' { 'Logical USB hub port — this is a Windows/USB topology port, not necessarily a unique visible socket.' }
         'Storage interface' { 'USB storage interface — a disk/SSD/flash-drive function exposed through USB.' }
