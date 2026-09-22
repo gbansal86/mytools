@@ -1,0 +1,14 @@
+# Created automatically at runtime
+__pycache__/
+*.pyc
+deps/
+tools/
+downloads/
+cache/
+results/
+
+# Local editor/OS noise
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

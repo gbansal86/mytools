@@ -4,6 +4,12 @@ Small utilities and helper tools.
 
 ## Available tools
 
+### Book Duplicate Finder
+
+Windows/Python content-aware duplicate finder for PDF, EPUB, CHM, DJVU, MOBI/AZW, DOCX, text, and comic-book archives. It can detect exact duplicates and near-duplicates even when filenames, sizes, formats, compression, or page counts differ. It creates HTML/CSV review reports and never deletes source books automatically.
+
+See: [Book-Duplicate-Finder](./Book-Duplicate-Finder/)
+
 ### ZIP Bulk Extractor
 
 Beginner-friendly Windows batch utility for extracting every `.zip` in a folder. Includes a safe one-folder-per-ZIP mode, a direct same-folder mode, a simple menu, visual instructions, and no third-party dependencies.

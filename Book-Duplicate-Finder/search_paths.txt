@@ -1,0 +1,7 @@
+# Put ONE folder per line.
+# Subfolders are scanned automatically.
+# Remove the # from your real path or add a new line.
+# Examples:
+# D:\Books
+# E:\Ebooks
+# F:\PDF Collection
