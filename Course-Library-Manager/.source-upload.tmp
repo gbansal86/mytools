@@ -1243,4 +1243,318 @@ function Get-VideoDurationSeconds {
             }
         }
     } catch {}
-    return $n
+    return $null
+}
+
+function Format-Duration {
+    param($Seconds)
+
+    if ($null -eq $Seconds) { return "" }
+    try { $s = [int][Math]::Round([double]$Seconds) } catch { return "" }
+
+    $ts = [TimeSpan]::FromSeconds($s)
+    if ($ts.TotalHours -ge 1) {
+        return "{0}:{1:00}:{2:00}" -f [int]$ts.TotalHours,$ts.Minutes,$ts.Seconds
+    }
+    return "{0}:{1:00}" -f $ts.Minutes,$ts.Seconds
+}
+
+function Get-CourseCoverFile {
+    param([System.IO.DirectoryInfo]$CourseDir)
+
+    $images = @(Get-ChildItem -LiteralPath $CourseDir.FullName -File -Force -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension.ToLowerInvariant() -in @(".jpg",".jpeg",".png",".webp",".gif",".bmp") })
+
+    if (@($images).Count -eq 0) { return $null }
+
+    $priorityPatterns = @(
+        "^(cover|course[\s_-]*cover)(\b|[\s_.-])",
+        "^(course|poster|thumbnail|thumb)(\b|[\s_.-])",
+        "(?i)cover",
+        "(?i)poster",
+        "(?i)thumbnail"
+    )
+
+    foreach ($pattern in $priorityPatterns) {
+        $match = $images | Where-Object { $_.BaseName -match $pattern } | Select-Object -First 1
+        if ($match) { return $match }
+    }
+
+    # Only root-level images are considered; this avoids lesson screenshots becoming the cover.
+    return ($images | Sort-Object Length -Descending | Select-Object -First 1)
+}
+
+function Find-MatchingSubtitle {
+    param(
+        [System.IO.FileInfo]$Video,
+        [hashtable]$SubtitleLookup
+    )
+
+    $base = [System.IO.Path]::GetFileNameWithoutExtension($Video.Name)
+    $parentKey = $Video.Directory.FullName.ToLowerInvariant()
+    $keys = @(
+        ($parentKey + "|" + ($base + "_en").ToLowerInvariant()),
+        ($parentKey + "|" + $base.ToLowerInvariant())
+    )
+
+    foreach ($k in $keys) {
+        if ($SubtitleLookup.ContainsKey($k)) {
+            return $SubtitleLookup[$k]
+        }
+    }
+    return $null
+}
+
+function New-VideoThumbnail {
+    param(
+        [string]$VideoPath,
+        [string]$OutputPath,
+        [string]$FfmpegPath,
+        $DurationSeconds,
+        [int]$SeekPercent
+    )
+
+    if (-not $FfmpegPath) { return $false }
+    if (Test-Path -LiteralPath $OutputPath) { return $true }
+
+    $parent = Split-Path -Parent $OutputPath
+    if (-not (Test-Path -LiteralPath $parent)) {
+        New-Item -ItemType Directory -Path $parent -Force | Out-Null
+    }
+
+    $seek = 5.0
+    if ($DurationSeconds -and [double]$DurationSeconds -gt 1) {
+        $seek = [Math]::Max(1.0, [Math]::Min(([double]$DurationSeconds - 0.5), ([double]$DurationSeconds * $SeekPercent / 100.0)))
+    }
+
+    $seekText = $seek.ToString("0.###", [Globalization.CultureInfo]::InvariantCulture)
+
+    try {
+        $args = @(
+            "-hide_banner","-loglevel","error",
+            "-ss",$seekText,
+            "-i",$VideoPath,
+            "-frames:v","1",
+            "-vf","scale=480:-2",
+            "-q:v","4",
+            "-y",
+            $OutputPath
+        )
+        & $FfmpegPath @args 2>$null | Out-Null
+        return (($LASTEXITCODE -eq 0) -and (Test-Path -LiteralPath $OutputPath))
+    } catch {
+        return $false
+    }
+}
+
+function ConvertTo-JsonForHtml {
+    param($Object)
+
+    # -InputObject preserves an actual array (including an empty or one-item
+    # array) instead of relying on pipeline enumeration semantics.
+    $json = ConvertTo-Json -InputObject $Object -Depth 12 -Compress
+    if ([string]::IsNullOrWhiteSpace([string]$json)) {
+        $json = "[]"
+    }
+
+    # Avoid accidentally terminating the HTML script element. Match any case.
+    $json = [regex]::Replace([string]$json, "(?i)</script", "<\/script")
+    return [string]$json
+}
+
+function Get-SectionName {
+    param(
+        [System.IO.FileInfo]$File,
+        [System.IO.DirectoryInfo]$CourseDir
+    )
+
+    $relDir = Get-RelativePathCompat -BaseDirectory $CourseDir.FullName -TargetPath $File.Directory.FullName
+    if ($relDir -eq "." -or [string]::IsNullOrWhiteSpace($relDir)) {
+        return "Course Root"
+    }
+
+    $first = ($relDir -split "\\")[0]
+    return Get-CleanSubfolderName $first
+}
+
+
+function Test-CatalogCompatibility {
+    try {
+        # Explicit constructor + ToArray() avoids the PowerShell binder bug
+        # triggered by: New-Object List[object] followed by @($list).
+        $testList = [System.Collections.Generic.List[object]]::new()
+        $testList.Add([pscustomobject]@{
+            id = "test"
+            title = "Compatibility Test"
+        })
+        $testArray = $testList.ToArray()
+
+        if ($testArray.Count -ne 1) {
+            throw "Generic list conversion self-test returned the wrong item count."
+        }
+
+        $testDuration = Format-Duration -Seconds 65
+        if ([string]::IsNullOrWhiteSpace([string]$testDuration)) {
+            throw "Duration-format self-test failed."
+        }
+
+        $testObject = [pscustomobject][ordered]@{
+            id = "test-course"
+            videoCount = [int]$testArray.Count
+            totalDuration = [double]65
+            totalDurationText = [string]$testDuration
+            videos = $testArray
+            resources = [array]@()
+        }
+
+        $testJson = ConvertTo-Json -InputObject $testObject -Depth 6 -Compress
+        if ([string]::IsNullOrWhiteSpace([string]$testJson)) {
+            throw "JSON serialization self-test failed."
+        }
+
+        # Test the exact array -> JSON -> HTML path used by the real catalog.
+        $testLibrary = [array]@($testObject)
+        $testLibraryJson = ConvertTo-JsonForHtml -Object $testLibrary
+        if ([string]::IsNullOrWhiteSpace($testLibraryJson) -or $testLibraryJson -eq "null") {
+            throw "Library JSON self-test failed."
+        }
+
+        $testHtml = Get-HtmlTemplate -LibraryJson $testLibraryJson
+        if ([string]::IsNullOrWhiteSpace([string]$testHtml)) {
+            throw "HTML-template self-test returned no content."
+        }
+        if ($testHtml.Contains("__LIBRARY_JSON__")) {
+            throw "HTML-template placeholder replacement self-test failed."
+        }
+        if (-not $testHtml.Contains("Compatibility Test")) {
+            throw "Generated HTML did not contain the test library data."
+        }
+
+        # Exercise ETA formatting on old Windows PowerShell/.NET Framework.
+        $testEta = Format-Eta -Seconds 65
+        if ([string]::IsNullOrWhiteSpace([string]$testEta)) {
+            throw "ETA formatting self-test failed."
+        }
+
+        Write-UiLog "Catalog compatibility self-test passed (lists, JSON, HTML template, ETA)." "OK"
+        return $true
+    }
+    catch {
+        Write-UiLog ("Catalog compatibility self-test FAILED: " + $_.Exception.Message) "ERROR"
+        return $false
+    }
+}
+
+function Build-CourseLibraryData {
+    param(
+        [System.IO.DirectoryInfo]$Root,
+        [System.IO.DirectoryInfo]$CatalogDir
+    )
+
+    $videoExt = @(".mp4",".webm",".m4v",".mov",".mkv",".avi",".ogv",".ogg")
+    $imageExt = @(".jpg",".jpeg",".png",".webp",".gif",".bmp")
+    $pdfExt = @(".pdf")
+    $subtitleExt = @(".srt",".vtt")
+    $skipNames = @(
+        $Script:Settings.CatalogFolderName,
+        ".git",
+        "__pycache__"
+    )
+
+    $ffprobe = if ([bool]$Script:Settings.GenerateDurations) { Get-ExternalTool "ffprobe" } else { $null }
+    $ffmpeg  = if ([bool]$Script:Settings.GenerateVideoThumbnails) { Get-ExternalTool "ffmpeg" } else { $null }
+
+    if ([bool]$Script:Settings.GenerateDurations -and -not $ffprobe) {
+        Write-UiLog "ffprobe not found. Video duration values will be omitted." "WARN"
+    }
+    if ([bool]$Script:Settings.GenerateVideoThumbnails -and -not $ffmpeg) {
+        Write-UiLog "ffmpeg not found. Video cards will use the course cover/placeholder instead." "WARN"
+    }
+
+    $courses = @(Get-ChildItem -LiteralPath $Root.FullName -Directory -Force |
+        Where-Object { $skipNames -notcontains $_.Name } |
+        Sort-Object Name)
+
+    $library = [System.Collections.Generic.List[object]]::new()
+    $courseIndex = 0
+    $totalCourses = [Math]::Max(1,@($courses).Count)
+
+    foreach ($course in $courses) {
+        $courseIndex++
+        Set-UiStatus ("Cataloging course {0}/{1}: {2}" -f $courseIndex,@($courses).Count,$course.Name) ([int](70*$courseIndex/$totalCourses))
+        Write-UiLog "Scanning course: $($course.Name)"
+
+        $allFiles = @(Get-ChildItem -LiteralPath $course.FullName -File -Recurse -Force -ErrorAction SilentlyContinue)
+        $videos = @($allFiles | Where-Object { $videoExt -contains $_.Extension.ToLowerInvariant() } | Sort-Object FullName)
+        $subtitles = @($allFiles | Where-Object { $subtitleExt -contains $_.Extension.ToLowerInvariant() })
+        $resources = @()
+
+        # Subtitle lookup by parent + basename.
+        $subtitleLookup = @{}
+        foreach ($s in $subtitles) {
+            $key = $s.Directory.FullName.ToLowerInvariant() + "|" + $s.BaseName.ToLowerInvariant()
+            if (-not $subtitleLookup.ContainsKey($key)) {
+                $subtitleLookup[$key] = $s
+            }
+        }
+
+        $coverFile = Get-CourseCoverFile -CourseDir $course
+        $coverWeb = $null
+        if ($coverFile) {
+            $rel = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullName -TargetPath $coverFile.FullName
+            $coverWeb = Get-WebPath $rel
+        }
+
+        $courseId = Get-StableId $course.FullName
+        $videoItems = [System.Collections.Generic.List[object]]::new()
+        $totalDuration = 0.0
+        $knownDurationCount = 0
+        $vIndex = 0
+
+        foreach ($video in $videos) {
+            $vIndex++
+            $duration = $null
+            if ($ffprobe) {
+                $duration = Get-VideoDurationSeconds -VideoPath $video.FullName -FfprobePath $ffprobe
+                if ($duration) {
+                    $totalDuration += [double]$duration
+                    $knownDurationCount++
+                }
+            }
+
+            $relVideo = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullName -TargetPath $video.FullName
+            $videoWeb = Get-WebPath $relVideo
+
+            $subtitleWeb = $null
+            if ([bool]$Script:Settings.IncludeSubtitles) {
+                $sub = Find-MatchingSubtitle -Video $video -SubtitleLookup $subtitleLookup
+                if ($sub) {
+                    if ($sub.Extension.ToLowerInvariant() -eq ".vtt") {
+                        $relSub = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullName -TargetPath $sub.FullName
+                        $subtitleWeb = Get-WebPath $relSub
+                    } else {
+                        $sid = Get-StableId $sub.FullName
+                        $vttPath = Join-Path $CatalogDir.FullName ("assets\vtt\" + $courseId + "\" + $sid + ".vtt")
+                        if (-not (Test-Path -LiteralPath $vttPath) -or
+                            ((Get-Item -LiteralPath $vttPath).LastWriteTimeUtc -lt $sub.LastWriteTimeUtc)) {
+                            try {
+                                Convert-SrtToVtt -SrtPath $sub.FullName -VttPath $vttPath
+                            } catch {
+                                Write-UiLog "Subtitle conversion failed: $($sub.FullName)" "WARN"
+                            }
+                        }
+                        if (Test-Path -LiteralPath $vttPath) {
+                            $relVtt = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullName -TargetPath $vttPath
+                            $subtitleWeb = Get-WebPath $relVtt
+                        }
+                    }
+                }
+            }
+
+            $thumbWeb = $null
+            if ($ffmpeg -and [bool]$Script:Settings.GenerateVideoThumbnails) {
+                $vid = Get-StableId $video.FullName
+                $thumbPath = Join-Path $CatalogDir.FullName ("assets\thumbs\" + $courseId + "\" + $vid + ".jpg")
+                $ok = New-VideoThumbnail -VideoPath $video.FullName -OutputPath $thumbPath -FfmpegPath $ffmpeg -DurationSeconds $duration -SeekPercent ([int]$Script:Settings.ThumbnailSeekPercent)
+                if ($ok) {
+                    $relThumb = Get-RelativePathCompat -BaseDirectory $CatalogDir.FullNa
