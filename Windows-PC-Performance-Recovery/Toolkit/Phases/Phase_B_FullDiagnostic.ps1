@@ -555,3 +555,8 @@ Write-Log 'Diagnostic collection complete.'
 Write-Host ''
 Write-Host '============================================================' -ForegroundColor Green
 Write-Host 'DIAGNOSTIC COMPLETE' -ForegroundColor Green
+
+Write-Host "Result folder: $script:Out" -ForegroundColor Cyan
+Write-Host 'Next: run Phase C analysis to generate the evidence-based repair plan.' -ForegroundColor Yellow
+Write-Host '============================================================' -ForegroundColor Green
+exit 0
