@@ -1,0 +1,265 @@
+﻿#requires -Version 5.1
+<#
+Course Library Manager
+PowerShell WinForms GUI for:
+  - previewing / applying / undoing safe course-folder cleanup
+  - creating a local HTML course library
+  - card/table views
+  - local video playback, seek controls, playback speed, subtitles
+  - course covers, PDFs/images/resources, search and progress/resume
+
+No internet connection is required.
+Files are never renamed by the folder-cleanup feature. Only folders are renamed.
+The HTML generator does not modify your course files.
+
+Tested target: Windows PowerShell 5.1+ on Windows 10/11.
+#>
+
+[CmdletBinding()]
+param(
+    [switch]$NoConsole
+)
+
+Set-StrictMode -Version 2
+$ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
+
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+# When launched through the supplied BAT/VBS launcher, hide the PowerShell
+# console host so the WinForms GUI is the only visible application window.
+if ($NoConsole) {
+    try {
+        Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+public static class CLMConsoleWindow {
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr GetConsoleWindow();
+
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+}
+"@ -ErrorAction SilentlyContinue
+
+        $consoleHandle = [CLMConsoleWindow]::GetConsoleWindow()
+        if ($consoleHandle -ne [IntPtr]::Zero) {
+            [void][CLMConsoleWindow]::ShowWindow($consoleHandle, 0)
+        }
+    } catch {
+        # Non-fatal. The GUI can still run if console hiding is unavailable.
+    }
+}
+
+
+# ----------------------------- APP CONSTANTS -----------------------------
+
+$Script:AppName = "Course Library Manager"
+$Script:AppVersion = "1.5.0"
+$Script:ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$Script:SettingsPath = Join-Path $Script:ScriptDir "CourseLibraryManager.settings.json"
+$Script:DefaultRoot = Join-Path ([Environment]::GetFolderPath("MyVideos")) "Courses"
+$Script:CatalogFolderName = "_CourseLibrary"
+$Script:UndoPrefix = "_FOLDER_RENAME_UNDO_"
+$Script:PreviewPrefix = "_FOLDER_RENAME_PREVIEW_"
+$Script:ApplyPrefix = "_FOLDER_RENAME_APPLIED_"
+
+$Script:BrandMap = @{
+    "ai"          = "AI"
+    "api"         = "API"
+    "chatgpt"     = "ChatGPT"
+    "openai"      = "OpenAI"
+    "youtube"     = "YouTube"
+    "seo"         = "SEO"
+    "fiverr"      = "Fiverr"
+    "pytorch"     = "PyTorch"
+    "deepseek"    = "DeepSeek"
+    "gemini"      = "Gemini"
+    "canva"       = "Canva"
+    "bing"        = "Bing"
+    "google"      = "Google"
+    "linkedin"    = "LinkedIn"
+    "facebook"    = "Facebook"
+    "instagram"   = "Instagram"
+    "tiktok"      = "TikTok"
+    "reddit"      = "Reddit"
+    "quora"       = "Quora"
+    "udemy"       = "Udemy"
+    "n8n"         = "n8n"
+    "llama"       = "Llama"
+    "sora"        = "Sora"
+    "gpt"         = "GPT"
+    "pr"          = "PR"
+    "mlops"       = "MLOps"
+    "adwords"     = "AdWords"
+    "gohighlevel" = "GoHighLevel"
+    "al-suffa"    = "Al-Suffa"
+}
+
+$Script:SmallWords = @(
+    "a","an","and","as","at","by","for","from",
+    "in","into","of","on","or","the","to","with"
+)
+
+$Script:ParentOverrides = @{
+    "chatgptfacebookads" = "ChatGPT Facebook Ads"
+    "youtubemaster"      = "YouTube Master"
+    "seo_chatgpt"        = "SEO ChatGPT"
+}
+
+$Script:DefaultSettings = [ordered]@{
+    RootPath                 = $Script:DefaultRoot
+    RemovePhrases            = @()
+    Theme                    = "Dark"
+    DefaultView              = "Cards"
+    GenerateVideoThumbnails  = $true
+    GenerateDurations        = $true
+    IncludeSubtitles         = $true
+    IncludePDFs              = $true
+    IncludeImages            = $true
+    IncludeOtherResources    = $true
+    ThumbnailSeekPercent     = 20
+    DefaultPlaybackSpeed     = 1.0
+    CatalogFolderName        = $Script:CatalogFolderName
+}
+
+$Script:Settings = $null
+$Script:MainForm = $null
+$Script:RootTextBox = $null
+$Script:LogBox = $null
+$Script:StatusLabel = $null
+$Script:ProgressBar = $null
+$Script:GenerateButton = $null
+$Script:OpenButton = $null
+
+# ----------------------------- BASIC HELPERS -----------------------------
+
+function Get-Timestamp {
+    return (Get-Date -Format "yyyyMMdd_HHmmss")
+}
+
+function Write-UiLog {
+    param(
+        [Parameter(Mandatory=$true)][string]$Message,
+        [ValidateSet("INFO","OK","WARN","ERROR")][string]$Level = "INFO"
+    )
+
+    $line = "{0} [{1}] {2}" -f (Get-Date -Format "HH:mm:ss"), $Level, $Message
+
+    if ($Script:LogBox -and -not $Script:LogBox.IsDisposed) {
+        $Script:LogBox.AppendText($line + [Environment]::NewLine)
+        $Script:LogBox.SelectionStart = $Script:LogBox.TextLength
+        $Script:LogBox.ScrollToCaret()
+        [System.Windows.Forms.Application]::DoEvents()
+    } else {
+        Write-Host $line
+    }
+}
+
+function Set-UiStatus {
+    param(
+        [string]$Text,
+        [int]$Percent = -1
+    )
+
+    if ($Script:StatusLabel -and -not $Script:StatusLabel.IsDisposed) {
+        $Script:StatusLabel.Text = $Text
+    }
+    if ($Script:ProgressBar -and -not $Script:ProgressBar.IsDisposed) {
+        if ($Percent -ge 0) {
+            $p = [Math]::Max(0, [Math]::Min(100, $Percent))
+            $Script:ProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Continuous
+            $Script:ProgressBar.Value = $p
+        }
+    }
+    [System.Windows.Forms.Application]::DoEvents()
+}
+
+function Show-Info {
+    param([string]$Message, [string]$Title = $Script:AppName)
+    [System.Windows.Forms.MessageBox]::Show(
+        $Script:MainForm,
+        $Message,
+        $Title,
+        [System.Windows.Forms.MessageBoxButtons]::OK,
+        [System.Windows.Forms.MessageBoxIcon]::Information
+    ) | Out-Null
+}
+
+function Show-Warning {
+    param([string]$Message, [string]$Title = $Script:AppName)
+    [System.Windows.Forms.MessageBox]::Show(
+        $Script:MainForm,
+        $Message,
+        $Title,
+        [System.Windows.Forms.MessageBoxButtons]::OK,
+        [System.Windows.Forms.MessageBoxIcon]::Warning
+    ) | Out-Null
+}
+
+function Confirm-Action {
+    param([string]$Message, [string]$Title = $Script:AppName)
+    $result = [System.Windows.Forms.MessageBox]::Show(
+        $Script:MainForm,
+        $Message,
+        $Title,
+        [System.Windows.Forms.MessageBoxButtons]::YesNo,
+        [System.Windows.Forms.MessageBoxIcon]::Question
+    )
+    return ($result -eq [System.Windows.Forms.DialogResult]::Yes)
+}
+
+function Load-Settings {
+    $settings = [ordered]@{}
+    foreach ($k in $Script:DefaultSettings.Keys) {
+        $settings[$k] = $Script:DefaultSettings[$k]
+    }
+
+    if (Test-Path -LiteralPath $Script:SettingsPath) {
+        try {
+            $loaded = Get-Content -LiteralPath $Script:SettingsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+            foreach ($p in $loaded.PSObject.Properties) {
+                $settings[$p.Name] = $p.Value
+            }
+        } catch {
+            Write-Host "Could not read settings file; defaults will be used. $($_.Exception.Message)"
+        }
+    }
+
+    # Ensure phrase list is always an array.
+    $settings["RemovePhrases"] = @($settings["RemovePhrases"])
+    $Script:Settings = $settings
+}
+
+function Save-Settings {
+    if (-not $Script:Settings) { return }
+    $Script:Settings | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $Script:SettingsPath -Encoding UTF8
+}
+
+function Get-SelectedRoot {
+    $raw = ""
+    if ($Script:RootTextBox) {
+        $raw = $Script:RootTextBox.Text.Trim().Trim('"')
+    } else {
+        $raw = [string]$Script:Settings.RootPath
+    }
+
+    if ([string]::IsNullOrWhiteSpace($raw)) {
+        throw "Please select a course root folder."
+    }
+
+    $root = [System.IO.DirectoryInfo]::new($raw)
+    if (-not $root.Exists) {
+        throw "Folder does not exist: $raw"
+    }
+
+    $Script:Settings.RootPath = $root.FullName
+    Save-Settings
+    return $root
+}
+
+function Normalize-Spaces {
+    param([string]$Text)
+    if ($null -eq $Text) { return "" }
+    $s = $Text -replac
