@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620">
+  <rect width="1400" height="620" fill="#f8fafc"/>
+  <text x="60" y="70" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#172033">LDPlayer Firebase #303 repair — simple workflow</text>
+  <text x="60" y="110" font-family="Segoe UI,Arial" font-size="21" fill="#475569">Follow the boxes from left to right.</text>
+
+  <g font-family="Segoe UI,Arial">
+    <rect x="60" y="190" width="235" height="150" rx="18" fill="white" stroke="#94a3b8" stroke-width="3"/>
+    <text x="88" y="232" font-size="22" font-weight="700" fill="#172033">1. LDPlayer setting</text>
+    <text x="88" y="272" font-size="19" fill="#475569">Enable ADB</text>
+    <text x="88" y="302" font-size="19" fill="#475569">local connection</text>
+
+    <rect x="360" y="190" width="235" height="150" rx="18" fill="white" stroke="#94a3b8" stroke-width="3"/>
+    <text x="388" y="232" font-size="22" font-weight="700" fill="#172033">2. Verify ADB</text>
+    <text x="388" y="272" font-size="19" fill="#475569">adb devices</text>
+    <text x="388" y="302" font-size="19" fill="#475569">must show “device”</text>
+
+    <rect x="660" y="190" width="235" height="150" rx="18" fill="white" stroke="#94a3b8" stroke-width="3"/>
+    <text x="688" y="232" font-size="22" font-weight="700" fill="#172033">3. Run repair</text>
+    <text x="688" y="272" font-size="19" fill="#475569">Double-click CMD</text>
+    <text x="688" y="302" font-size="19" fill="#475569">and approve UAC</text>
+
+    <rect x="960" y="190" width="235" height="150" rx="18" fill="white" stroke="#94a3b8" stroke-width="3"/>
+    <text x="988" y="232" font-size="22" font-weight="700" fill="#172033">4. Reboot/test</text>
+    <text x="988" y="272" font-size="19" fill="#475569">Chrome → Play Store</text>
+    <text x="988" y="302" font-size="19" fill="#475569">→ affected app</text>
+
+    <path d="M300 265 L350 265" stroke="#2563eb" stroke-width="5"/><polygon points="350,265 330,253 330,277" fill="#2563eb"/>
+    <path d="M600 265 L650 265" stroke="#2563eb" stroke-width="5"/><polygon points="650,265 630,253 630,277" fill="#2563eb"/>
+    <path d="M900 265 L950 265" stroke="#2563eb" stroke-width="5"/><polygon points="950,265 930,253 930,277" fill="#2563eb"/>
+  </g>
+
+  <rect x="60" y="420" width="1135" height="115" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="3"/>
+  <text x="88" y="462" font-family="Segoe UI,Arial" font-size="22" font-weight="700" fill="#9a3412">If Chrome works but one app still shows #303</text>
+  <text x="88" y="500" font-family="Segoe UI,Arial" font-size="20" fill="#475569">The remaining cause may be app/Firebase-server-side, or the app may intentionally reject emulator environments.</text>
+</svg>
