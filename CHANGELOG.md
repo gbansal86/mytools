@@ -14,5 +14,7 @@ This file records repository-level changes. Individual tools may also maintain t
 - Added CODEOWNERS.
 - Added repository-wide GitHub Actions validation for Python syntax, PowerShell syntax, required community files, and per-tool README/license presence.
 - Added root ignore rules for common secrets, runtime state, caches, and generated local artifacts.
+- Added explicit maintainer and governance documentation.
+- Added weekly Dependabot checks for the two Python dependency manifests and GitHub Actions.
 
 Future entries should describe real changes when they happen; do not backfill artificial history.

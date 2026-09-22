@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/Book-Duplicate-Finder"
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+
+  - package-ecosystem: pip
+    directory: "/Telegram-Local-Downloader-Windows"
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies

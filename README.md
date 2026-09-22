@@ -66,7 +66,11 @@ Issues, documentation improvements, bug fixes, portability improvements, tests, 
 
 Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting a pull request. For support questions, see [SUPPORT.md](./SUPPORT.md). Security-sensitive reports should follow [SECURITY.md](./SECURITY.md).
 
-## Maintenance and releases
+## Governance, maintainers, and releases
+
+MyTools currently uses a maintainer-led governance model. The current maintainer and responsibilities are documented in [MAINTAINERS.md](./MAINTAINERS.md), and decision-making rules are documented in [GOVERNANCE.md](./GOVERNANCE.md).
+
+### Maintenance and releases
 
 The repository uses a shared maintenance model while allowing each tool to evolve independently.
 
