@@ -1,0 +1,8 @@
+# VIDEO DUPLICATE FINDER - SEARCH PATHS
+# One folder per line. Subfolders are included automatically.
+# Lines starting with # are ignored.
+#
+# Examples:
+D:\Videos
+E:\Downloaded Videos
+# F:\Archive

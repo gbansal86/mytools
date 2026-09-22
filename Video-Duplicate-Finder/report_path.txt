@@ -1,0 +1,5 @@
+# Normally leave this file unchanged.
+# The review app will use duplicate_groups.txt from this folder.
+#
+# If the report is elsewhere, put its full path on a non-comment line, e.g.:
+# D:\Video Duplicate Finder\duplicate_groups.txt

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340">
+<rect width="1200" height="340" fill="#0d1117"/>
+<style>.t{font:700 22px Segoe UI,Arial;fill:#e6edf3}.s{font:15px Segoe UI,Arial;fill:#b1bac4}.b{fill:#161b22;stroke:#58a6ff;stroke-width:2;rx:14}.a{fill:#58a6ff}</style>
+<text x="50" y="42" class="t">Video Duplicate Finder — from folders to safe review</text>
+<g transform="translate(40,90)"><rect class="b" width="190" height="120"/><text x="95" y="42" text-anchor="middle" class="t">1. Paths</text><text x="95" y="72" text-anchor="middle" class="s">video_paths.txt</text><text x="95" y="94" text-anchor="middle" class="s">+ all subfolders</text></g>
+<g transform="translate(280,90)"><rect class="b" width="190" height="120"/><text x="95" y="42" text-anchor="middle" class="t">2. Fingerprint</text><text x="95" y="72" text-anchor="middle" class="s">FFprobe + 11 frames</text><text x="95" y="94" text-anchor="middle" class="s">perceptual dHash</text></g>
+<g transform="translate(520,90)"><rect class="b" width="190" height="120"/><text x="95" y="42" text-anchor="middle" class="t">3. Compare</text><text x="95" y="72" text-anchor="middle" class="s">duration + visual</text><text x="95" y="94" text-anchor="middle" class="s">nearby timestamps</text></g>
+<g transform="translate(760,90)"><rect class="b" width="190" height="120"/><text x="95" y="42" text-anchor="middle" class="t">4. Reports</text><text x="95" y="72" text-anchor="middle" class="s">CSV + groups.txt</text><text x="95" y="94" text-anchor="middle" class="s">no deletion yet</text></g>
+<g transform="translate(1000,90)"><rect class="b" width="160" height="120"/><text x="80" y="42" text-anchor="middle" class="t">5. Review</text><text x="80" y="72" text-anchor="middle" class="s">browser grid</text><text x="80" y="94" text-anchor="middle" class="s">Recycle Bin</text></g>
+<path d="M235 150h38M475 150h38M715 150h38M955 150h38" stroke="#58a6ff" stroke-width="5"/><path class="a" d="M273 150l-13-8v16zM513 150l-13-8v16zM753 150l-13-8v16zM993 150l-13-8v16z"/>
+<text x="40" y="285" class="s">Designed for re-encoded copies: different size, resolution, bitrate, codec, container, or a small intro/outro shift.</text>
+</svg>
