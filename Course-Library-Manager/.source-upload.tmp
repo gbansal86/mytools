@@ -262,4 +262,352 @@ function Get-SelectedRoot {
 function Normalize-Spaces {
     param([string]$Text)
     if ($null -eq $Text) { return "" }
-    $s = $Text -replac
+    $s = $Text -replace "\s+", " "
+    $s = $s -replace "\s+([\)\]\}])", '$1'
+    $s = $s -replace "([\(\[\{])\s+", '$1'
+    return $s.Trim()
+}
+
+function Convert-ToSafeWindowsName {
+    param([string]$Name)
+
+    $invalidChars = [System.IO.Path]::GetInvalidFileNameChars()
+    $chars = $Name.ToCharArray()
+    for ($i = 0; $i -lt $chars.Length; $i++) {
+        if ($invalidChars -contains $chars[$i]) {
+            $chars[$i] = [char]' '
+        }
+    }
+    $s = -join $chars
+    $s = Normalize-Spaces $s
+    $s = $s.TrimEnd('.', ' ')
+
+    if ([string]::IsNullOrWhiteSpace($s)) {
+        $s = "_Unnamed Folder"
+    }
+
+    $reserved = @("CON","PRN","AUX","NUL","COM1","COM2","COM3","COM4","COM5","COM6","COM7","COM8","COM9",
+                  "LPT1","LPT2","LPT3","LPT4","LPT5","LPT6","LPT7","LPT8","LPT9")
+    if ($reserved -contains $s.ToUpperInvariant()) {
+        $s = "_" + $s
+    }
+
+    if ($s.Length -gt 240) {
+        $s = $s.Substring(0,240).TrimEnd('.', ' ')
+    }
+    return $s
+}
+
+# ----------------------------- FOLDER CLEANUP -----------------------------
+
+function Remove-KnownJunk {
+    param([string]$Name)
+
+    $s = $Name.Normalize([Text.NormalizationForm]::FormKC)
+
+    # Remove common promotional wrappers before stripping their channel name.
+    # This catches common promotional wrappers such as "Join SomeChannel For More!".
+    $s = [regex]::Replace($s, "(?i)\bJoin\s+[A-Za-z0-9_@\- ]{2,40}\s+For\s+(?:More|Free\s+Courses)\b!?", " ")
+    $s = [regex]::Replace($s, "(?i)\bFREE\s+Paid\s+Courses\b", " ")
+
+    $phrases = @($Script:Settings.RemovePhrases) |
+        Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
+        Sort-Object { ([string]$_).Length } -Descending
+
+    foreach ($phraseObj in $phrases) {
+        $phrase = [string]$phraseObj
+        $escaped = [regex]::Escape($phrase.Trim())
+
+        # Explicit source/channel/site phrase plus decorative separators.
+        $pattern = "(?i)(?:\s*[-–—|_:]+\s*)*[_\[\]\(\)\{\}\-–— ]*$escaped[_\[\]\(\)\{\}\-–— ]*(?:\s*[-–—|_:]+\s*)*"
+        $s = [regex]::Replace($s, $pattern, " ")
+    }
+
+    # Telegram URLs and @handles are unambiguous source/channel markers.
+    $s = [regex]::Replace($s, "(?i)(?:https?://)?t\.me/[A-Za-z0-9_+\-]+", " ")
+    $s = [regex]::Replace($s, "(?i)(?:telegram\s*[:\-]\s*)?@[A-Za-z0-9_]{4,}", " ")
+
+    $s = [regex]::Replace($s, "\[\s*\]", " ")
+    $s = [regex]::Replace($s, "\(\s*\)", " ")
+
+    return Normalize-Spaces $s
+}
+
+function Convert-ToSmartTitle {
+    param([string]$Text)
+
+    $parts = [regex]::Split($Text, "(\s+-\s+)")
+    $out = [System.Collections.Generic.List[string]]::new()
+
+    foreach ($part in $parts) {
+        if ($part -match "^\s+-\s+$") {
+            $out.Add(" - ")
+            continue
+        }
+
+        $words = $part -split "\s+"
+        $newWords = [System.Collections.Generic.List[string]]::new()
+
+        for ($i=0; $i -lt @($words).Count; $i++) {
+            $word = $words[$i]
+            if ([string]::IsNullOrWhiteSpace($word)) { continue }
+
+            $m = [regex]::Match($word, "^([^A-Za-z0-9]*)(.*?)([^A-Za-z0-9]*)$")
+            if (-not $m.Success) {
+                $newWords.Add($word)
+                continue
+            }
+
+            $prefix = $m.Groups[1].Value
+            $core   = $m.Groups[2].Value
+            $suffix = $m.Groups[3].Value
+
+            if ([string]::IsNullOrEmpty($core)) {
+                $newWords.Add($word)
+                continue
+            }
+
+            $low = $core.ToLowerInvariant()
+            $formatted = $core
+
+            if ($Script:BrandMap.ContainsKey($low)) {
+                $formatted = $Script:BrandMap[$low]
+            }
+            elseif (($Script:SmallWords -contains $low) -and ($i -ne 0)) {
+                $formatted = $low
+            }
+            elseif ($core -match "^\d+(?:\.\d+)*$") {
+                $formatted = $core
+            }
+            elseif (($core -cmatch "^[A-Z0-9]+$") -and $core.Length -le 6) {
+                $formatted = $core
+            }
+            elseif ($core.Contains("-")) {
+                $subParts = $core -split "-"
+                $rebuilt = foreach ($sp in $subParts) {
+                    $spl = $sp.ToLowerInvariant()
+                    if ($Script:BrandMap.ContainsKey($spl)) {
+                        $Script:BrandMap[$spl]
+                    } elseif ([string]::IsNullOrEmpty($sp)) {
+                        ""
+                    } else {
+                        $sp.Substring(0,1).ToUpperInvariant() + $sp.Substring(1).ToLowerInvariant()
+                    }
+                }
+                $formatted = ($rebuilt -join "-")
+            }
+            else {
+                if ($core.Length -eq 1) {
+                    $formatted = $core.ToUpperInvariant()
+                } else {
+                    $formatted = $core.Substring(0,1).ToUpperInvariant() + $core.Substring(1).ToLowerInvariant()
+                }
+            }
+
+            $newWords.Add($prefix + $formatted + $suffix)
+        }
+
+        $out.Add(($newWords -join " "))
+    }
+
+    return ($out -join "")
+}
+
+function Get-CleanParentName {
+    param([string]$Name)
+
+    $original = $Name
+    $s = Remove-KnownJunk $Name
+    $s = $s.Replace("_", " ")
+    $s = [regex]::Replace($s, "\s+[–—]\s+", " - ")
+
+    # Treat multiple unspaced hyphens as a slug.
+    if (@($s.ToCharArray() | Where-Object { $_ -eq '-' }).Count -ge 2 -and $s -notmatch "\s-\s") {
+        $s = $s.Replace("-", " ")
+    }
+
+    $s = Normalize-Spaces $s
+    $s = $s.Trim(' ','.','-','_','–','—')
+    $s = [regex]::Replace($s, "(?i)\bchat\s+gpt\b", "ChatGPT")
+
+    $key = $original.ToLowerInvariant()
+    if ($Script:ParentOverrides.ContainsKey($key)) {
+        return $Script:ParentOverrides[$key]
+    }
+
+    return Convert-ToSmartTitle $s
+}
+
+function Get-CleanSubfolderName {
+    param([string]$Name)
+
+    $s = Remove-KnownJunk $Name
+    $s = [regex]::Replace($s, "_+", " ")
+    $s = [regex]::Replace($s, "\s*[-–—|:]+\s*$", "")
+    $s = [regex]::Replace($s, "^\s*[-–—|:]+\s*", "")
+    $s = Normalize-Spaces $s
+    return $s.Trim(' ','.','-','_','–','—')
+}
+
+function Get-CleanDisplayName {
+    param([string]$Name)
+
+    # For catalog labels only. Underlying file name is untouched.
+    $ext = [System.IO.Path]::GetExtension($Name)
+    $base = if ($ext) { [System.IO.Path]::GetFileNameWithoutExtension($Name) } else { $Name }
+    $base = Remove-KnownJunk $base
+
+    # Remove repeated extension text caused by names like "file.mp4 - SourceTag_.mp4"
+    $base = [regex]::Replace($base, "(?i)\.(mp4|mkv|webm|mov|m4v|avi|pdf|jpg|jpeg|png|webp)\s*$", "")
+    $base = [regex]::Replace($base, "_en$", "")
+    $base = $base -replace "_+", " "
+    $base = Normalize-Spaces $base
+    return $base.Trim(' ','.','-','_','–','—')
+}
+
+function Get-RelativeDepth {
+    param([System.IO.DirectoryInfo]$Dir, [System.IO.DirectoryInfo]$Root)
+
+    $relative = $Dir.FullName.Substring($Root.FullName.TrimEnd('\').Length).TrimStart('\')
+    if ([string]::IsNullOrWhiteSpace($relative)) { return 0 }
+    return @($relative -split "\\").Count
+}
+
+function Get-RenamePlan {
+    param([System.IO.DirectoryInfo]$Root)
+
+    Write-UiLog "Scanning folders under $($Root.FullName)..."
+
+    $catalogPath = Join-Path $Root.FullName ([string]$Script:Settings.CatalogFolderName)
+    $dirs = Get-ChildItem -LiteralPath $Root.FullName -Directory -Recurse -Force |
+        Where-Object { -not $_.FullName.StartsWith($catalogPath, [System.StringComparison]::OrdinalIgnoreCase) }
+
+    $rows = [System.Collections.Generic.List[object]]::new()
+
+    foreach ($dir in $dirs) {
+        $depth = Get-RelativeDepth -Dir $dir -Root $Root
+        if ($depth -lt 1) { continue }
+
+        $newName = if ($depth -eq 1) {
+            Get-CleanParentName $dir.Name
+        } else {
+            Get-CleanSubfolderName $dir.Name
+        }
+
+        $newName = Convert-ToSafeWindowsName $newName
+        $dest = Join-Path $dir.Parent.FullName $newName
+
+        $status = if ($dir.Name -ceq $newName) { "UNCHANGED" } else { "RENAME" }
+
+        $rows.Add([pscustomobject]@{
+            Depth       = $depth
+            Source      = $dir.FullName
+            Destination = $dest
+            OldName     = $dir.Name
+            NewName     = $newName
+            Status      = $status
+            Reason      = ""
+        })
+    }
+
+    # Collision analysis by intended sibling/name.
+    $renameRows = @($rows | Where-Object { $_.Status -eq "RENAME" })
+    $groups = $renameRows | Group-Object {
+        $parent = Split-Path -Parent $_.Destination
+        $leaf = Split-Path -Leaf $_.Destination
+        ($parent.ToLowerInvariant() + "|" + $leaf.ToLowerInvariant())
+    }
+
+    foreach ($g in $groups) {
+        if ($g.Count -gt 1) {
+            foreach ($r in $g.Group) {
+                $r.Status = "SKIP_COLLISION"
+                $r.Reason = "More than one sibling would get the same cleaned name."
+            }
+        }
+    }
+
+    foreach ($r in $rows) {
+        if ($r.Status -ne "RENAME") { continue }
+
+        if ((Test-Path -LiteralPath $r.Destination) -and
+            ($r.Source.ToLowerInvariant() -ne $r.Destination.ToLowerInvariant())) {
+            $r.Status = "SKIP_EXISTS"
+            $r.Reason = "Destination already exists."
+        }
+    }
+
+    return @($rows | Sort-Object Depth, Source -Descending)
+}
+
+function Export-RenameReport {
+    param(
+        [array]$Plan,
+        [System.IO.DirectoryInfo]$Root,
+        [string]$Prefix
+    )
+
+    $path = Join-Path $Root.FullName ("{0}{1}.csv" -f $Prefix, (Get-Timestamp))
+    $Plan |
+        Select-Object Status,Depth,OldName,NewName,Source,Destination,Reason |
+        Export-Csv -LiteralPath $path -NoTypeInformation -Encoding UTF8
+    return $path
+}
+
+function Invoke-RenamePreview {
+    try {
+        $root = Get-SelectedRoot
+        Set-UiStatus "Scanning folders..." 5
+        $plan = Get-RenamePlan $root
+        $report = Export-RenameReport -Plan $plan -Root $root -Prefix $Script:PreviewPrefix
+
+        $renames = @($plan | Where-Object {$_.Status -eq "RENAME"})
+        $blocked = @($plan | Where-Object {$_.Status -like "SKIP_*"})
+
+        Write-UiLog "Preview complete: $(@($plan).Count) folders inspected." "OK"
+        Write-UiLog "Proposed renames: $(@($renames).Count); blocked/collisions: $(@($blocked).Count)." "INFO"
+        Write-UiLog "Preview CSV: $report" "INFO"
+
+        $sample = $renames | Sort-Object Depth, Source | Select-Object -First 15
+        foreach ($r in $sample) {
+            Write-UiLog "$($r.OldName)  ->  $($r.NewName)"
+        }
+
+        Set-UiStatus "Preview complete" 100
+        Show-Info ("Preview complete.`r`n`r`nProposed renames: {0}`r`nBlocked/collisions: {1}`r`n`r`nReport:`r`n{2}`r`n`r`nNothing was changed." -f @($renames).Count,@($blocked).Count,$report)
+    } catch {
+        Write-UiLog $_.Exception.Message "ERROR"
+        Set-UiStatus "Preview failed" 0
+        Show-Warning $_.Exception.Message
+    }
+}
+
+function Rename-DirectoryCaseSafe {
+    param([string]$Source, [string]$Destination)
+
+    $srcInfo = [System.IO.DirectoryInfo]::new($Source)
+    $destInfo = [System.IO.DirectoryInfo]::new($Destination)
+
+    if (($Source.ToLowerInvariant() -eq $Destination.ToLowerInvariant()) -and ($Source -cne $Destination)) {
+        $temp = Join-Path $srcInfo.Parent.FullName (".__rename_tmp__" + (Get-Timestamp) + "_" + [guid]::NewGuid().ToString("N").Substring(0,8))
+        Rename-Item -LiteralPath $Source -NewName (Split-Path -Leaf $temp)
+        Rename-Item -LiteralPath $temp -NewName $destInfo.Name
+    } else {
+        Rename-Item -LiteralPath $Source -NewName $destInfo.Name
+    }
+}
+
+function Invoke-RenameApply {
+    try {
+        $root = Get-SelectedRoot
+        Set-UiStatus "Preparing rename plan..." 5
+        $plan = Get-RenamePlan $root
+        $toRename = @($plan | Where-Object {$_.Status -eq "RENAME"})
+
+        if (@($toRename).Count -eq 0) {
+            Show-Info "Nothing needs to be renamed."
+            Set-UiStatus "Nothing to rename" 100
+            return
+        }
+
+        $blocked = @($plan | Where-Object {$_.Status -like "SKIP_*"
