@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#f5f7fb"/>
+  <rect x="30" y="25" width="1140" height="650" rx="24" fill="white" stroke="#c7cfdb" stroke-width="2"/>
+  <text x="70" y="85" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#172033">Step 3 — Run the repair tool</text>
+  <text x="70" y="125" font-family="Segoe UI,Arial" font-size="22" fill="#475569">Use the one-click launcher from this folder.</text>
+
+  <rect x="75" y="180" width="470" height="105" rx="14" fill="#eef2ff" stroke="#6366f1" stroke-width="3"/>
+  <text x="105" y="225" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="#3730a3">Run_LDPlayer_Firebase_303_Repair.cmd</text>
+  <text x="105" y="258" font-family="Segoe UI,Arial" font-size="19" fill="#475569">Double-click this file</text>
+
+  <path d="M570 233 L690 233" stroke="#e11d48" stroke-width="6"/>
+  <polygon points="690,233 668,220 668,246" fill="#e11d48"/>
+
+  <rect x="720" y="170" width="390" height="135" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="3"/>
+  <text x="750" y="215" font-family="Segoe UI,Arial" font-size="23" font-weight="700" fill="#9a3412">Windows UAC appears</text>
+  <text x="750" y="252" font-family="Segoe UI,Arial" font-size="20" fill="#475569">Click Yes to allow the repair.</text>
+
+  <g font-family="Segoe UI,Arial">
+    <circle cx="115" cy="390" r="28" fill="#2563eb"/><text x="106" y="399" font-size="22" font-weight="700" fill="white">1</text>
+    <text x="165" y="398" font-size="22" fill="#172033">Let the script find LDPlayer and verify ADB.</text>
+    <circle cx="115" cy="465" r="28" fill="#2563eb"/><text x="106" y="474" font-size="22" font-weight="700" fill="white">2</text>
+    <text x="165" y="473" font-size="22" fill="#172033">Allow Google service cleanup if you want the full repair.</text>
+    <circle cx="115" cy="540" r="28" fill="#2563eb"/><text x="106" y="549" font-size="22" font-weight="700" fill="white">3</text>
+    <text x="165" y="548" font-size="22" fill="#172033">Wait for LDPlayer to reboot, then test Chrome and the app.</text>
+  </g>
+
+  <rect x="75" y="600" width="1035" height="45" rx="10" fill="#ecfdf5"/>
+  <text x="95" y="629" font-family="Segoe UI,Arial" font-size="19" fill="#166534">Tip: Keep the generated LDPlayer_Repair_YYYYMMDD_HHMMSS.log if troubleshooting is still needed.</text>
+</svg>
