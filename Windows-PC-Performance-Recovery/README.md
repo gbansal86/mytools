@@ -54,6 +54,16 @@ The toolkit can collect and correlate information about:
 
 ![Menu guide](docs/images/02-menu-guide.svg)
 
+## Visual step-by-step guide
+
+For a beginner-friendly walkthrough with **10 numbered annotated images**, see:
+
+**[VISUAL_GUIDE.md — Step-by-step illustrated instructions](VISUAL_GUIDE.md)**
+
+The guide covers download/extract, UAC, self-test, full diagnostics, report review, dry run, repair, post-repair comparison, hardware history, and exporting results.
+
+![Step-by-step example](docs/images/step-03-self-test.svg)
+
 ## Recommended sequence
 
 ![Workflow](docs/images/03-workflow.svg)
@@ -127,13 +137,13 @@ This repository publishes the **v2.0 fixed-launcher package**. The launcher/elev
 
 ## Documentation
 
-- [QUICK_START.md](QUICK_START.md) — beginner step-by-step
+- [QUICK_START.md](QUICK_START.md) — beginner step-by-step with images
+- [VISUAL_GUIDE.md](VISUAL_GUIDE.md) — 10 annotated numbered usage images
 - [HOW_IT_WORKS.md](HOW_IT_WORKS.md) — what every phase does
 - [SOURCE_MAP.md](SOURCE_MAP.md) — what each script/file is for
 - [SAFETY.md](SAFETY.md) — what the toolkit will and will not change
 - [TROUBLESHOOTING.md](TROUBLESHOOTING.md) — UAC, PowerShell, blank window, permissions and common failures
 - [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) — what is partial/not implemented yet
-- [Windows_Performance_Hardware_Full_Lifecycle_Master_Prompt_v2_0.md](Windows_Performance_Hardware_Full_Lifecycle_Master_Prompt_v2_0.md) — the full design/master prompt
 
 ## Privacy
 

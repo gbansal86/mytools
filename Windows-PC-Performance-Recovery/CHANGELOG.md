@@ -9,3 +9,10 @@
 - Added ready-to-run ZIP under `download/`.
 - Preserved the corrected launcher that waits for UAC/elevated execution, reports failures, logs startup, validates required files and parses all PowerShell scripts.
 - Core diagnostic/repair phase scripts remain the v2.0 fixed package logic; documentation explicitly identifies areas that are collected but not deeply analyzed/automated.
+
+## Visual guide update — 2026-09-22
+
+- Added 10 annotated numbered usage images.
+- Added `VISUAL_GUIDE.md` with one image per major beginner step.
+- Embedded the matching image directly into every relevant section of `QUICK_START.md`.
+- Added arrows, highlighted controls/files, menu numbers, safety callouts, and privacy reminders.
