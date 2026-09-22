@@ -6,5 +6,5 @@ python-docx>=1.1
 striprtf>=0.0.28
 Pillow>=10.0
 ImageHash>=4.3
-rapidfuzz>=3.9
+rapidfuzz>=3.14.6
 mobi>=0.3
