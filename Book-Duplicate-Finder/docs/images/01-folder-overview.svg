@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#f6f8fa"/>
+<rect x="50" y="40" width="1300" height="740" rx="18" fill="white" stroke="#d0d7de" stroke-width="2"/>
+<text x="90" y="95" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#24292f">Book Duplicate Finder — Folder Overview</text>
+<text x="90" y="132" font-family="Segoe UI,Arial" font-size="20" fill="#57606a">Start here after downloading or cloning the repository.</text>
+
+<rect x="90" y="170" width="760" height="500" rx="12" fill="#fbfcfd" stroke="#d8dee4"/>
+<text x="120" y="210" font-family="Consolas,monospace" font-size="24" font-weight="700" fill="#24292f">Book-Duplicate-Finder\</text>
+<text x="140" y="258" font-family="Consolas,monospace" font-size="22" fill="#24292f">📄 RUN.bat</text>
+<text x="140" y="302" font-family="Consolas,monospace" font-size="22" fill="#24292f">📄 search_paths.txt</text>
+<text x="140" y="346" font-family="Consolas,monospace" font-size="22" fill="#24292f">📄 exclude_paths.txt</text>
+<text x="140" y="390" font-family="Consolas,monospace" font-size="22" fill="#24292f">📄 settings.ini</text>
+<text x="140" y="434" font-family="Consolas,monospace" font-size="22" fill="#24292f">🐍 bootstrap.py</text>
+<text x="140" y="478" font-family="Consolas,monospace" font-size="22" fill="#24292f">🐍 book_duplicate_finder.py</text>
+<text x="140" y="522" font-family="Consolas,monospace" font-size="22" fill="#8c959f">📁 deps\        created automatically</text>
+<text x="140" y="566" font-family="Consolas,monospace" font-size="22" fill="#8c959f">📁 tools\       created automatically</text>
+<text x="140" y="610" font-family="Consolas,monospace" font-size="22" fill="#8c959f">📁 cache\       created automatically</text>
+<text x="140" y="654" font-family="Consolas,monospace" font-size="22" fill="#8c959f">📁 results\     created automatically</text>
+
+<circle cx="900" cy="250" r="26" fill="#0969da"/><text x="892" y="259" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">1</text>
+<text x="945" y="245" font-family="Segoe UI,Arial" font-size="22" font-weight="700" fill="#24292f">Edit search_paths.txt</text>
+<text x="945" y="278" font-family="Segoe UI,Arial" font-size="18" fill="#57606a">Tell the tool which folders contain your books.</text>
+<line x1="875" y1="252" x2="560" y2="302" stroke="#0969da" stroke-width="4"/>
+
+<circle cx="900" cy="375" r="26" fill="#1a7f37"/><text x="892" y="384" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">2</text>
+<text x="945" y="370" font-family="Segoe UI,Arial" font-size="22" font-weight="700" fill="#24292f">Optional: edit exclude_paths.txt</text>
+<text x="945" y="403" font-family="Segoe UI,Arial" font-size="18" fill="#57606a">Skip folders you do not want scanned.</text>
+<line x1="875" y1="375" x2="560" y2="346" stroke="#1a7f37" stroke-width="4"/>
+
+<circle cx="900" cy="500" r="26" fill="#8250df"/><text x="892" y="509" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">3</text>
+<text x="945" y="495" font-family="Segoe UI,Arial" font-size="22" font-weight="700" fill="#24292f">Double-click RUN.bat</text>
+<text x="945" y="528" font-family="Segoe UI,Arial" font-size="18" fill="#57606a">It installs local prerequisites and starts the scan.</text>
+<line x1="875" y1="500" x2="530" y2="258" stroke="#8250df" stroke-width="4"/>
+
+<circle cx="900" cy="625" r="26" fill="#bf8700"/><text x="892" y="634" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">4</text>
+<text x="945" y="620" font-family="Segoe UI,Arial" font-size="22" font-weight="700" fill="#24292f">Open results\</text>
+<text x="945" y="653" font-family="Segoe UI,Arial" font-size="18" fill="#57606a">Review the generated HTML report before deleting anything.</text>
+<line x1="875" y1="625" x2="600" y2="654" stroke="#bf8700" stroke-width="4"/>
+
+<text x="90" y="735" font-family="Segoe UI,Arial" font-size="18" fill="#57606a">Illustration: exact Windows icons/layout can vary. The file names and workflow are the important parts.</text>
+</svg>

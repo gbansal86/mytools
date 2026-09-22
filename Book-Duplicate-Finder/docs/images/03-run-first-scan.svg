@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#f6f8fa"/>
+<rect x="50" y="40" width="1300" height="740" rx="18" fill="white" stroke="#d0d7de" stroke-width="2"/>
+<text x="90" y="95" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#24292f">Step 2 — Double-click RUN.bat</text>
+<text x="90" y="132" font-family="Segoe UI,Arial" font-size="20" fill="#57606a">The first run prepares local dependencies, then starts scanning.</text>
+
+<rect x="90" y="175" width="850" height="470" rx="8" fill="#111827" stroke="#57606a"/>
+<text x="120" y="220" font-family="Consolas,monospace" font-size="21" fill="#d1d5db">BOOK DUPLICATE FINDER</text>
+<text x="120" y="270" font-family="Consolas,monospace" font-size="20" fill="#93c5fd">STEP 1/4 - LOCAL PYTHON DEPENDENCIES</text>
+<text x="145" y="305" font-family="Consolas,monospace" font-size="18" fill="#d1fae5">Python packages ready in .\deps</text>
+<text x="120" y="355" font-family="Consolas,monospace" font-size="20" fill="#93c5fd">STEP 2/4 - LOCAL 7-ZIP SUPPORT</text>
+<text x="145" y="390" font-family="Consolas,monospace" font-size="18" fill="#d1fae5">7-Zip command-line tools ready in .\tools</text>
+<text x="120" y="440" font-family="Consolas,monospace" font-size="20" fill="#93c5fd">STEP 3/4 - LOCAL DJVU SUPPORT</text>
+<text x="145" y="475" font-family="Consolas,monospace" font-size="18" fill="#d1fae5">DjVuLibre tools ready in .\tools</text>
+<text x="120" y="525" font-family="Consolas,monospace" font-size="20" fill="#93c5fd">STEP 4/4 - SCAN</text>
+<text x="145" y="560" font-family="Consolas,monospace" font-size="18" fill="#fde68a">Scanning documents and building fingerprints...</text>
+<text x="145" y="600" font-family="Consolas,monospace" font-size="18" fill="#d1d5db">Results will be written to .\results</text>
+
+<circle cx="1030" cy="260" r="27" fill="#0969da"/><text x="1022" y="269" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">1</text>
+<text x="1075" y="254" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">First run may download tools</text>
+<text x="1075" y="286" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Internet is needed initially.</text>
+
+<circle cx="1030" cy="390" r="27" fill="#1a7f37"/><text x="1022" y="399" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">2</text>
+<text x="1075" y="384" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">Everything stays local</text>
+<text x="1075" y="416" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">deps\ and tools\ are inside this folder.</text>
+
+<circle cx="1030" cy="520" r="27" fill="#8250df"/><text x="1022" y="529" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">3</text>
+<text x="1075" y="514" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">Leave the window open</text>
+<text x="1075" y="546" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Large collections can take time.</text>
+
+<rect x="90" y="675" width="1180" height="65" rx="10" fill="#ddf4ff" stroke="#54aeff"/>
+<text x="120" y="716" font-family="Segoe UI,Arial" font-size="19" fill="#0550ae">If DJVU setup fails, other formats can still be scanned; see TROUBLESHOOTING.md.</text>
+</svg>

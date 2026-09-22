@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860">
+<rect width="1400" height="860" fill="#f6f8fa"/>
+<rect x="50" y="40" width="1300" height="780" rx="18" fill="white" stroke="#d0d7de" stroke-width="2"/>
+<text x="90" y="95" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#24292f">Step 3 — Review the HTML Report</text>
+<text x="90" y="132" font-family="Segoe UI,Arial" font-size="20" fill="#57606a">Use the evidence to decide what to keep. The tool itself does not delete files.</text>
+
+<rect x="90" y="175" width="900" height="540" rx="10" fill="#ffffff" stroke="#8c959f"/>
+<rect x="90" y="175" width="900" height="48" rx="10" fill="#eef1f4"/>
+<text x="120" y="206" font-family="Segoe UI,Arial" font-size="19" fill="#24292f">duplicate_report_20260922_143000.html</text>
+<text x="120" y="265" font-family="Segoe UI,Arial" font-size="27" font-weight="700" fill="#24292f">Duplicate Group 001</text>
+
+<rect x="120" y="300" width="170" height="42" rx="20" fill="#dafbe1"/><text x="165" y="328" font-family="Segoe UI,Arial" font-size="19" font-weight="700" fill="#1a7f37">HIGH</text>
+<text x="320" y="328" font-family="Segoe UI,Arial" font-size="20" fill="#24292f">Similarity 98.6% · Containment 99.2%</text>
+
+<text x="120" y="385" font-family="Segoe UI,Arial" font-size="19" font-weight="700" fill="#24292f">File A</text>
+<text x="120" y="420" font-family="Consolas,monospace" font-size="18" fill="#24292f">D:\Books\Herbal Medicine.pdf</text>
+<text x="120" y="452" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">PDF · 438 pages · 82.4 MB · 126,820 words</text>
+
+<text x="120" y="510" font-family="Segoe UI,Arial" font-size="19" font-weight="700" fill="#24292f">File B</text>
+<text x="120" y="545" font-family="Consolas,monospace" font-size="18" fill="#24292f">E:\Ebooks\Herbal Medicine.djvu</text>
+<text x="120" y="577" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">DJVU · 442 pages · 31.8 MB · 127,940 words</text>
+
+<rect x="120" y="615" width="820" height="65" rx="8" fill="#fff8c5" stroke="#d4a72c"/>
+<text x="145" y="643" font-family="Segoe UI,Arial" font-size="18" font-weight="700" fill="#6e4c00">Possible difference:</text>
+<text x="145" y="669" font-family="Segoe UI,Arial" font-size="17" fill="#6e4c00">File B appears to contain ~4 additional pages. Review before removing either copy.</text>
+
+<circle cx="1070" cy="300" r="27" fill="#0969da"/><text x="1062" y="309" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">1</text>
+<text x="1115" y="294" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">Check the class</text>
+<text x="1115" y="326" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">EXACT, HIGH, PROBABLE, REVIEW</text>
+<line x1="1042" y1="300" x2="280" y2="322" stroke="#0969da" stroke-width="4"/>
+
+<circle cx="1070" cy="445" r="27" fill="#1a7f37"/><text x="1062" y="454" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">2</text>
+<text x="1115" y="439" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">Compare paths & sizes</text>
+<text x="1115" y="471" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Know exactly which copies are involved.</text>
+
+<circle cx="1070" cy="590" r="27" fill="#8250df"/><text x="1062" y="599" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">3</text>
+<text x="1115" y="584" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">Look for extra content</text>
+<text x="1115" y="616" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Page/word differences matter.</text>
+
+<rect x="90" y="745" width="1180" height="55" rx="10" fill="#ffebe9" stroke="#ff8182"/>
+<text x="120" y="780" font-family="Segoe UI,Arial" font-size="19" fill="#cf222e">Do not delete a file solely because it appears in a group. Different editions can share most of their text.</text>
+</svg>

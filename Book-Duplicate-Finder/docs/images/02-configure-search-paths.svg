@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#f6f8fa"/>
+<rect x="50" y="40" width="1300" height="740" rx="18" fill="white" stroke="#d0d7de" stroke-width="2"/>
+<text x="90" y="95" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#24292f">Step 1 — Tell the Tool Where to Search</text>
+<text x="90" y="132" font-family="Segoe UI,Arial" font-size="20" fill="#57606a">Open search_paths.txt in Notepad and enter one folder per line.</text>
+
+<rect x="90" y="175" width="860" height="455" rx="10" fill="#ffffff" stroke="#8c959f" stroke-width="2"/>
+<rect x="90" y="175" width="860" height="45" rx="10" fill="#eef1f4"/>
+<text x="120" y="205" font-family="Segoe UI,Arial" font-size="20" fill="#24292f">search_paths.txt — Notepad</text>
+<text x="125" y="275" font-family="Consolas,monospace" font-size="24" fill="#57606a"># One folder per line</text>
+<text x="125" y="330" font-family="Consolas,monospace" font-size="26" fill="#24292f">D:\Books</text>
+<text x="125" y="380" font-family="Consolas,monospace" font-size="26" fill="#24292f">E:\Ebooks</text>
+<text x="125" y="430" font-family="Consolas,monospace" font-size="26" fill="#24292f">F:\PDF Collection</text>
+<text x="125" y="500" font-family="Consolas,monospace" font-size="22" fill="#57606a"># Lines starting with # are comments</text>
+<text x="125" y="545" font-family="Consolas,monospace" font-size="22" fill="#57606a"># Blank lines are ignored</text>
+
+<circle cx="1040" cy="275" r="26" fill="#0969da"/><text x="1032" y="284" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">1</text>
+<text x="1082" y="270" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">Use full folder paths</text>
+<text x="1082" y="301" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Drive letters are fine.</text>
+<line x1="1013" y1="278" x2="500" y2="330" stroke="#0969da" stroke-width="4"/>
+
+<circle cx="1040" cy="405" r="26" fill="#1a7f37"/><text x="1032" y="414" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">2</text>
+<text x="1082" y="400" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">One folder per line</text>
+<text x="1082" y="431" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Add as many drives/folders as needed.</text>
+<line x1="1013" y1="405" x2="510" y2="430" stroke="#1a7f37" stroke-width="4"/>
+
+<circle cx="1040" cy="535" r="26" fill="#8250df"/><text x="1032" y="544" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="white">3</text>
+<text x="1082" y="530" font-family="Segoe UI,Arial" font-size="21" font-weight="700" fill="#24292f">Save the file</text>
+<text x="1082" y="561" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Normal Ctrl+S is enough.</text>
+
+<rect x="90" y="660" width="1180" height="70" rx="10" fill="#fff8c5" stroke="#d4a72c"/>
+<text x="120" y="703" font-family="Segoe UI,Arial" font-size="20" fill="#6e4c00">Tip: use exclude_paths.txt the same way for folders you want the scanner to ignore.</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720">
+<rect width="1400" height="720" fill="#f6f8fa"/>
+<rect x="50" y="40" width="1300" height="640" rx="18" fill="white" stroke="#d0d7de" stroke-width="2"/>
+<text x="90" y="95" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#24292f">Complete Workflow — From Folder to Duplicate Report</text>
+<text x="90" y="132" font-family="Segoe UI,Arial" font-size="20" fill="#57606a">Five simple actions. Source books are read, not modified.</text>
+
+<g font-family="Segoe UI,Arial">
+<rect x="90" y="220" width="210" height="180" rx="16" fill="#ddf4ff" stroke="#54aeff" stroke-width="2"/>
+<circle cx="135" cy="260" r="24" fill="#0969da"/><text x="128" y="269" font-size="22" font-weight="700" fill="white">1</text>
+<text x="120" y="315" font-size="21" font-weight="700" fill="#24292f">Add folders</text>
+<text x="120" y="350" font-size="17" fill="#57606a">Edit</text><text x="120" y="377" font-size="17" font-family="Consolas,monospace" fill="#24292f">search_paths.txt</text>
+
+<text x="320" y="315" font-size="46" fill="#8c959f">→</text>
+
+<rect x="365" y="220" width="210" height="180" rx="16" fill="#dafbe1" stroke="#4ac26b" stroke-width="2"/>
+<circle cx="410" cy="260" r="24" fill="#1a7f37"/><text x="403" y="269" font-size="22" font-weight="700" fill="white">2</text>
+<text x="395" y="315" font-size="21" font-weight="700" fill="#24292f">Run launcher</text>
+<text x="395" y="350" font-size="17" fill="#57606a">Double-click</text><text x="395" y="377" font-size="17" font-family="Consolas,monospace" fill="#24292f">RUN.bat</text>
+
+<text x="595" y="315" font-size="46" fill="#8c959f">→</text>
+
+<rect x="640" y="220" width="210" height="180" rx="16" fill="#fbefff" stroke="#a475f9" stroke-width="2"/>
+<circle cx="685" cy="260" r="24" fill="#8250df"/><text x="678" y="269" font-size="22" font-weight="700" fill="white">3</text>
+<text x="670" y="315" font-size="21" font-weight="700" fill="#24292f">Fingerprint</text>
+<text x="670" y="350" font-size="17" fill="#57606a">Extract text/pages</text>
+<text x="670" y="377" font-size="17" fill="#57606a">and compare content</text>
+
+<text x="870" y="315" font-size="46" fill="#8c959f">→</text>
+
+<rect x="915" y="220" width="210" height="180" rx="16" fill="#fff8c5" stroke="#d4a72c" stroke-width="2"/>
+<circle cx="960" cy="260" r="24" fill="#bf8700"/><text x="953" y="269" font-size="22" font-weight="700" fill="white">4</text>
+<text x="945" y="315" font-size="21" font-weight="700" fill="#24292f">Create report</text>
+<text x="945" y="350" font-size="17" fill="#57606a">HTML + CSV files</text>
+<text x="945" y="377" font-size="17" font-family="Consolas,monospace" fill="#24292f">results\</text>
+
+<text x="1145" y="315" font-size="46" fill="#8c959f">→</text>
+
+<rect x="1190" y="220" width="130" height="180" rx="16" fill="#ffebe9" stroke="#ff8182" stroke-width="2"/>
+<circle cx="1235" cy="260" r="24" fill="#cf222e"/><text x="1228" y="269" font-size="22" font-weight="700" fill="white">5</text>
+<text x="1210" y="315" font-size="20" font-weight="700" fill="#24292f">Review</text>
+<text x="1210" y="350" font-size="16" fill="#57606a">You decide</text>
+<text x="1210" y="375" font-size="16" fill="#57606a">what to keep</text>
+</g>
+
+<rect x="130" y="475" width="1140" height="105" rx="12" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="165" y="515" font-family="Segoe UI,Arial" font-size="20" font-weight="700" fill="#24292f">Safety model</text>
+<text x="165" y="550" font-family="Segoe UI,Arial" font-size="18" fill="#57606a">Books → read only    |    Cache/report → written inside the tool folder    |    Automatic delete/move → never</text>
+
+<text x="90" y="635" font-family="Segoe UI,Arial" font-size="17" fill="#57606a">Use this overview when explaining the tool to someone who has never used Python or duplicate-finding software.</text>
+</svg>
