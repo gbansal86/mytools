@@ -1,0 +1,5 @@
+# Optional: ONE folder per line to exclude.
+# Any file inside these folders is skipped.
+# Examples:
+# D:\Books\Already Checked
+# D:\Books\Temporary

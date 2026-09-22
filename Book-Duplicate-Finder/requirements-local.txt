@@ -1,0 +1,10 @@
+PyMuPDF>=1.24
+ebooklib>=0.18
+beautifulsoup4>=4.12
+lxml>=5.0
+python-docx>=1.1
+striprtf>=0.0.28
+Pillow>=10.0
+ImageHash>=4.3
+rapidfuzz>=3.9
+mobi>=0.3
