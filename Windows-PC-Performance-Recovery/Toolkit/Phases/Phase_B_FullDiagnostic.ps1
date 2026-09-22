@@ -290,3 +290,137 @@ Save-Csv 'ScheduledTasks\Scheduled_Tasks.csv' {
         [pscustomobject]@{
             TaskPath=$t.TaskPath;TaskName=$t.TaskName;State=$t.State;Author=$t.Author;
             LastRunTime=if($info){$info.LastRunTime}else{$null};NextRunTime=if($info){$info.NextRunTime}else{$null};
+            LastTaskResult=if($info){$info.LastTaskResult}else{$null};Actions=(($t.Actions | ForEach-Object { "$($_.Execute) $($_.Arguments)" }) -join ' | ')
+        }
+    }
+    $out
+}
+Save-Csv 'Applications\Installed_Applications.csv' {
+    $keys = @(
+      'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*',
+      'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
+      'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*'
+    )
+    foreach ($k in $keys) {
+        Get-ItemProperty $k -ErrorAction SilentlyContinue | Where-Object DisplayName |
+          Select-Object DisplayName,DisplayVersion,Publisher,InstallDate,InstallLocation,UninstallString
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Devices / drivers
+# ---------------------------------------------------------------------------
+Save-Csv 'Devices\PnP_Devices.csv' {
+    if (Get-Command Get-PnpDevice -ErrorAction SilentlyContinue) {
+        Get-PnpDevice | Select-Object Status,Class,FriendlyName,InstanceId,Problem
+    } else {
+        Get-CimInstance Win32_PnPEntity | Select-Object Status,PNPClass,Name,PNPDeviceID,ConfigManagerErrorCode
+    }
+}
+Save-Csv 'Devices\Problem_Devices.csv' {
+    Get-CimInstance Win32_PnPEntity | Where-Object { $_.ConfigManagerErrorCode -ne 0 } |
+        Select-Object Name,PNPClass,PNPDeviceID,Status,ConfigManagerErrorCode
+}
+Save-Csv 'Drivers\Signed_Drivers.csv' {
+    Get-CimInstance Win32_PnPSignedDriver | Select-Object DeviceName,DeviceClass,DriverProviderName,DriverVersion,DriverDate,IsSigned,InfName,DeviceID
+}
+
+# ---------------------------------------------------------------------------
+# Windows health / update / pending reboot
+# ---------------------------------------------------------------------------
+Save-Text 'WindowsHealth\DISM_CheckHealth.txt' { DISM.exe /Online /Cleanup-Image /CheckHealth }
+Save-Text 'WindowsHealth\SFC_VerifyOnly.txt' { sfc.exe /verifyonly }
+Save-Text 'WindowsHealth\Pending_Reboot.txt' {
+    $checks = [ordered]@{}
+    $checks['CBS_RebootPending'] = Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending'
+    $checks['WU_RebootRequired'] = Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired'
+    $checks['PendingFileRenameOperations'] = [bool](Get-RegValueSafe 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' 'PendingFileRenameOperations')
+    $checks.GetEnumerator() | Format-Table -AutoSize
+}
+Save-Text 'WindowsHealth\Windows_Update_Service.txt' {
+    Get-Service wuauserv,bits,cryptsvc -ErrorAction SilentlyContinue | Format-Table Name,Status,StartType -AutoSize
+}
+
+# ---------------------------------------------------------------------------
+# Security
+# ---------------------------------------------------------------------------
+Save-Text 'Security\Defender_Status.txt' {
+    if (Get-Command Get-MpComputerStatus -ErrorAction SilentlyContinue) { Get-MpComputerStatus | Format-List }
+    else { 'Get-MpComputerStatus not available.' }
+}
+Save-Csv 'Security\Registered_Antivirus.csv' {
+    Get-CimInstance -Namespace root\SecurityCenter2 -ClassName AntivirusProduct -ErrorAction Stop |
+        Select-Object displayName,pathToSignedProductExe,pathToSignedReportingExe,productState
+}
+
+# ---------------------------------------------------------------------------
+# Network
+# ---------------------------------------------------------------------------
+Save-Csv 'Network\Network_Adapters.csv' {
+    Get-CimInstance Win32_NetworkAdapter | Where-Object PhysicalAdapter |
+      Select-Object Name,NetConnectionID,NetEnabled,Speed,MACAddress,Manufacturer,PNPDeviceID
+}
+Save-Csv 'Network\Network_Adapter_Config.csv' {
+    Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object IPEnabled |
+      Select-Object Description,DHCPEnabled,IPAddress,IPSubnet,DefaultIPGateway,DNSServerSearchOrder,MACAddress
+}
+Save-Text 'Network\IPConfig_All.txt' { ipconfig /all }
+Save-Text 'Network\TCP_Global.txt' { netsh int tcp show global }
+Save-Text 'Network\WinHTTP_Proxy.txt' { netsh winhttp show proxy }
+Save-Text 'Network\Route_Print.txt' { route print }
+
+# ---------------------------------------------------------------------------
+# Power / battery / virtualization / browser summaries
+# ---------------------------------------------------------------------------
+Save-Text 'PowerThermal\Active_Power_Plan.txt' { powercfg /getactivescheme; powercfg /q }
+$batHtml = Join-Path $script:Out 'PowerThermal\battery-report.html'
+try {
+    powercfg /batteryreport /output "$batHtml" | Out-Null
+    if (Test-Path $batHtml) { Write-Log 'Wrote PowerThermal\battery-report.html' }
+} catch { Write-Log "Battery report unavailable: $($_.Exception.Message)" 'WARN' }
+
+Save-Csv 'Applications\Browser_Process_Summary.csv' {
+    $browserNames = 'chrome','msedge','firefox','brave','opera','vivaldi'
+    $rows = foreach ($n in $browserNames) {
+        $p = Get-Process -Name $n -ErrorAction SilentlyContinue
+        if ($p) {
+            [pscustomobject]@{Browser=$n;ProcessCount=$p.Count;WorkingSetMB=[math]::Round((($p|Measure-Object WorkingSet64 -Sum).Sum)/1MB,2);CPUSeconds=[math]::Round((($p|Measure-Object CPU -Sum).Sum),2)}
+        }
+    }
+    $rows
+}
+Save-Text 'Applications\Virtualization_Features.txt' {
+    "HypervisorPresent: $((Get-CimInstance Win32_ComputerSystem).HypervisorPresent)"
+    foreach ($f in 'Microsoft-Windows-Subsystem-Linux','VirtualMachinePlatform','Microsoft-Hyper-V-All','Containers-DisposableClientVM') {
+        try { Get-WindowsOptionalFeature -Online -FeatureName $f -ErrorAction Stop | Select-Object FeatureName,State | Format-Table -AutoSize } catch { "$f : NOT AVAILABLE" }
+    }
+    "Relevant running processes:"
+    Get-Process -ErrorAction SilentlyContinue | Where-Object Name -Match 'wsl|vmmem|docker|vmware|virtualbox|vbox|qemu|sqlservr|mysqld|postgres' |
+      Select-Object Name,Id,@{n='WorkingSetMB';e={[math]::Round($_.WorkingSet64/1MB,2)}},CPU | Format-Table -AutoSize
+}
+
+# ---------------------------------------------------------------------------
+# Event logs and reliability
+# ---------------------------------------------------------------------------
+$since7 = (Get-Date).AddDays(-7)
+$since1 = (Get-Date).AddDays(-1)
+
+Save-Csv 'EventLogs\System_Warnings_Errors_7d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='System';StartTime=$since7;Level=1,2,3} -ErrorAction Stop |
+      Select-Object -First 5000 TimeCreated,Id,LevelDisplayName,ProviderName,MachineName,Message
+}
+Save-Csv 'EventLogs\Application_Warnings_Errors_7d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='Application';StartTime=$since7;Level=1,2,3} -ErrorAction Stop |
+      Select-Object -First 5000 TimeCreated,Id,LevelDisplayName,ProviderName,MachineName,Message
+}
+Save-Csv 'EventLogs\WHEA_7d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='System';ProviderName='Microsoft-Windows-WHEA-Logger';StartTime=$since7} -ErrorAction Stop |
+      Select-Object TimeCreated,Id,LevelDisplayName,ProviderName,Message
+}
+Save-Csv 'EventLogs\Storage_Related_7d.csv' {
+    $providers = 'disk|ntfs|storport|storahci|stornvme|iastor|volmgr|volsnap'
+    Get-WinEvent -FilterHashtable @{LogName='System';StartTime=$since7;Level=1,2,3} -ErrorAction Stop |
+      Where-Object { $_.ProviderName -match $providers } |
+      Select-Object TimeCreated,Id,LevelDisplayName,ProviderName,Message
+}
+Save-Csv 'EventLogs\Kernel_Power_7d.csv' {
