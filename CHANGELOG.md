@@ -17,4 +17,10 @@ This file records repository-level changes. Individual tools may also maintain t
 - Added explicit maintainer and governance documentation.
 - Added weekly Dependabot checks for the two Python dependency manifests and GitHub Actions.
 
+### Course Library Manager
+
+- Added Course Library Manager v1.5.0 with preview-first folder cleanup and an offline HTML course library/player.
+- Added annotated visual guides, a five-step quick start, an application infographic, architecture/troubleshooting/testing documentation, checksums, security guidance, third-party notices, and a per-tool MIT license.
+- Documented optional locally installed FFmpeg/ffprobe support, subtitle conversion, browser progress/resume state, privacy behavior, and generated-output boundaries.
+
 Future entries should describe real changes when they happen; do not backfill artificial history.
