@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="840" viewBox="0 0 1400 840">
+  <defs>
+    <style>
+      .title{font:700 34px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+      .sub{font:400 18px 'Segoe UI',Arial,sans-serif;fill:#475569}
+      .ui{font:600 18px 'Segoe UI',Arial,sans-serif;fill:#111827}
+      .small{font:400 16px 'Segoe UI',Arial,sans-serif;fill:#334155}
+      .num{font:700 22px 'Segoe UI',Arial,sans-serif;fill:white;text-anchor:middle;dominant-baseline:middle}
+      .call{font:600 18px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+    </style>
+  </defs>
+  <rect width="1400" height="840" fill="#f8fafc"/>
+  <text x="54" y="58" class="title">USB Port Explorer Pro — annotated screen guide</text>
+  <text x="54" y="92" class="sub">Read the left tree first, then use the Easy Summary to understand what the selected port/device means.</text>
+
+  <!-- App window -->
+  <rect x="52" y="128" width="1296" height="610" rx="14" fill="white" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="52" y="128" width="1296" height="52" rx="14" fill="#e2e8f0"/>
+  <text x="78" y="161" class="ui">USB Port Explorer Pro</text>
+
+  <!-- toolbar -->
+  <rect x="76" y="197" width="138" height="42" rx="7" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="91" y="224" class="small">Refresh devices</text>
+  <rect x="228" y="197" width="110" height="42" rx="7" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="247" y="224" class="small">Export CSV</text>
+  <text x="370" y="224" class="small">Search:</text>
+  <rect x="445" y="197" width="250" height="42" rx="7" fill="white" stroke="#94a3b8"/>
+  <rect x="708" y="197" width="72" height="42" rx="7" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="726" y="224" class="small">Find</text>
+
+  <!-- left tree -->
+  <rect x="76" y="260" width="430" height="422" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="96" y="292" class="ui">USB topology tree</text>
+  <text x="104" y="328" class="small">▾ xHCI USB Host Controller</text>
+  <text x="128" y="362" class="small">▾ USB Root Hub (USB 3.x)</text>
+  <text x="156" y="396" class="small">▾ USB port 3 — Connected</text>
+  <rect x="148" y="410" width="324" height="38" rx="6" fill="#dbeafe"/>
+  <text x="166" y="436" class="small">WD My Passport USB Device</text>
+  <text x="156" y="478" class="small">USB port 4 — Empty</text>
+  <text x="128" y="516" class="small">USB Composite Device</text>
+  <text x="156" y="550" class="small">USB Input Device</text>
+
+  <!-- right tabs/details -->
+  <rect x="526" y="260" width="798" height="422" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="544" y="278" width="150" height="38" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="560" y="303" class="small">Easy summary</text>
+  <rect x="704" y="278" width="170" height="38" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="720" y="303" class="small">Technical details</text>
+  <text x="550" y="352" class="ui">Selected: WD My Passport</text>
+  <text x="550" y="388" class="small">Logical-port capability: USB 3.x / SuperSpeed supported</text>
+  <text x="550" y="420" class="small">Current link: SuperSpeed (5 Gb/s class)</text>
+  <text x="550" y="452" class="small">Physical label: Rear motherboard — top blue</text>
+  <text x="550" y="500" class="ui">What that means</text>
+  <text x="550" y="534" class="small">The current device + cable + socket path is using USB 3.x.</text>
+  <text x="550" y="566" class="small">This is a signaling-rate clue, not a disk benchmark.</text>
+
+  <!-- label bar -->
+  <rect x="526" y="696" width="798" height="74" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="548" y="721" class="small">Physical port label</text>
+  <rect x="548" y="735" width="390" height="30" rx="5" fill="white" stroke="#94a3b8"/>
+  <text x="558" y="756" class="small">Rear motherboard - top blue</text>
+  <rect x="952" y="735" width="112" height="30" rx="5" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="973" y="756" class="small">Save label</text>
+
+  <!-- numbered callouts -->
+  <circle cx="112" cy="218" r="22" fill="#0f766e"/><text x="112" y="218" class="num">1</text>
+  <line x1="112" y1="240" x2="122" y2="258" stroke="#0f766e" stroke-width="3"/>
+  <text x="80" y="805" class="call">1. Click Refresh after plugging/unplugging a device.</text>
+
+  <circle cx="490" cy="422" r="22" fill="#2563eb"/><text x="490" y="422" class="num">2</text>
+  <line x1="512" y1="422" x2="540" y2="422" stroke="#2563eb" stroke-width="3"/>
+  <text x="510" y="805" class="call">2. Select the device or logical port in the tree.</text>
+
+  <circle cx="1305" cy="360" r="22" fill="#7c3aed"/><text x="1305" y="360" class="num">3</text>
+  <line x1="1283" y1="360" x2="1248" y2="360" stroke="#7c3aed" stroke-width="3"/>
+  <text x="920" y="805" class="call">3. Read Easy Summary before raw technical fields.</text>
+</svg>
