@@ -7,4 +7,4 @@ striprtf>=0.0.28
 Pillow>=10.0
 ImageHash>=4.3
 rapidfuzz>=3.9
-mobi>=0.3
+mobi>=0.4.1
