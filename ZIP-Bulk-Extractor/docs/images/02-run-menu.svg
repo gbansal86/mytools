@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#f6f8fa"/>
+  <rect x="60" y="45" width="1080" height="585" rx="24" fill="white" stroke="#d0d7de" stroke-width="3"/>
+  <text x="100" y="110" font-family="Segoe UI,Arial" font-size="38" font-weight="700" fill="#1f2328">Step 2 — Double-click RUN_ME.bat</text>
+  <text x="100" y="155" font-family="Segoe UI,Arial" font-size="24" fill="#57606a">Choose the extraction layout you want.</text>
+  <rect x="115" y="205" width="970" height="335" rx="12" fill="#0d1117"/>
+  <text x="160" y="260" font-family="Consolas,monospace" font-size="25" fill="#f0f6fc">ZIP BULK EXTRACTOR</text>
+  <text x="160" y="320" font-family="Consolas,monospace" font-size="23" fill="#7ee787">[1] Extract each ZIP into its OWN folder (recommended)</text>
+  <text x="160" y="375" font-family="Consolas,monospace" font-size="23" fill="#ffa657">[2] Extract every ZIP directly into THIS folder</text>
+  <text x="160" y="430" font-family="Consolas,monospace" font-size="23" fill="#c9d1d9">[3] Exit</text>
+  <text x="160" y="495" font-family="Consolas,monospace" font-size="23" fill="#58a6ff">Choose 1, 2, or 3: _</text>
+  <circle cx="1060" cy="585" r="28" fill="#1f883d"/>
+  <text x="1050" y="596" font-family="Segoe UI,Arial" font-size="30" font-weight="700" fill="white">2</text>
+</svg>

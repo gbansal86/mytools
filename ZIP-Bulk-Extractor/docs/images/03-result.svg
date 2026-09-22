@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#f6f8fa"/>
+  <rect x="60" y="45" width="1080" height="585" rx="24" fill="white" stroke="#d0d7de" stroke-width="3"/>
+  <text x="100" y="110" font-family="Segoe UI,Arial" font-size="38" font-weight="700" fill="#1f2328">Step 3 — Review the extracted files</text>
+  <text x="100" y="155" font-family="Segoe UI,Arial" font-size="24" fill="#57606a">Recommended mode keeps every archive's files separated.</text>
+  <rect x="100" y="205" width="1000" height="335" rx="16" fill="#f6f8fa" stroke="#afb8c1" stroke-width="2"/>
+  <text x="145" y="260" font-family="Consolas,monospace" font-size="27" fill="#24292f">D:\Downloads\Courses\</text>
+  <text x="185" y="320" font-family="Consolas,monospace" font-size="25" fill="#8250df">🗜 Course-A.zip</text>
+  <text x="185" y="370" font-family="Consolas,monospace" font-size="25" fill="#1f883d">📁 Course-A\   ← extracted files</text>
+  <text x="185" y="430" font-family="Consolas,monospace" font-size="25" fill="#8250df">🗜 Course-B.zip</text>
+  <text x="185" y="480" font-family="Consolas,monospace" font-size="25" fill="#1f883d">📁 Course-B\   ← extracted files</text>
+  <text x="145" y="525" font-family="Segoe UI,Arial" font-size="21" fill="#57606a">The original ZIP files remain untouched.</text>
+  <circle cx="1060" cy="585" r="28" fill="#1f883d"/>
+  <text x="1050" y="596" font-family="Segoe UI,Arial" font-size="30" font-weight="700" fill="white">3</text>
+</svg>

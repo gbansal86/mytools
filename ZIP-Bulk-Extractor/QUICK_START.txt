@@ -1,0 +1,44 @@
+ZIP BULK EXTRACTOR - QUICK START
+================================
+
+NO INSTALLATION IS REQUIRED.
+
+1. Download this ZIP-Bulk-Extractor folder from GitHub.
+2. Put RUN_ME.bat, Extract_ZIPs_Here.bat and
+   Extract_ZIPs_Separate_Folders.bat in the folder containing your ZIP files.
+3. Double-click RUN_ME.bat.
+4. Choose:
+      1 = each ZIP gets its own folder (recommended)
+      2 = all ZIP contents go directly into the current folder
+5. Wait for "Finished successfully."
+6. Press any key to close/return.
+
+EXAMPLE
+-------
+Before:
+  D:\Downloads\Courses\
+      RUN_ME.bat
+      Course-A.zip
+      Course-B.zip
+
+Option 1 result:
+  D:\Downloads\Courses\
+      Course-A.zip
+      Course-A\
+      Course-B.zip
+      Course-B\
+
+Option 2 result:
+  Contents from Course-A.zip and Course-B.zip are extracted directly
+  into D:\Downloads\Courses\.
+
+IMPORTANT
+---------
+* Original ZIP files are kept.
+* Existing same-name extracted files can be overwritten.
+* This simple tool processes ZIP files in ONE folder only.
+* It does not recursively unpack ZIPs found inside other ZIPs.
+* Password-protected/encrypted ZIPs are not supported by Windows
+  PowerShell Expand-Archive.
+* For nested/multiple archive formats, use the repository's
+  Nested-Archive-Extractor tool instead.
