@@ -6,6 +6,8 @@ It is meant for collections where the same book may exist as a PDF, EPUB, CHM, D
 
 > **Safety:** the tool does **not** delete, move, rename, or overwrite your books. It only scans, caches fingerprints, and creates reports for you to review.
 
+![Book Duplicate Finder complete workflow](./docs/images/05-complete-workflow.svg)
+
 ## What problem does it solve?
 
 Normal duplicate finders are excellent when two files are byte-for-byte identical. They are much less useful when the files contain the same book but are technically different files.
@@ -82,6 +84,10 @@ These generated folders are intentionally excluded from Git.
 
 ## Quick start for non-technical users
 
+The pictures below are **illustrated guides**, not literal Windows screenshots. Windows versions/themes may look different, but the filenames and steps are the same.
+
+![Annotated Book Duplicate Finder folder overview](./docs/images/01-folder-overview.svg)
+
 ### Step 1 - Download the tool
 
 Download or clone this repository, then open the `Book-Duplicate-Finder` folder.
@@ -99,6 +105,8 @@ F:\PDF Collection
 ```
 
 Quotes are optional. Blank lines and lines beginning with `#` are ignored.
+
+![How to configure search_paths.txt](./docs/images/02-configure-search-paths.svg)
 
 ### Step 3 - Optionally exclude folders
 
@@ -120,6 +128,8 @@ RUN.bat
 ```
 
 The launcher checks for Python 3 and then runs `bootstrap.py`.
+
+![What happens after you run RUN.bat](./docs/images/03-run-first-scan.svg)
 
 ### Step 5 - First-run installation
 
@@ -143,6 +153,8 @@ duplicate_report_YYYYMMDD_HHMMSS.html
 duplicate_pairs_YYYYMMDD_HHMMSS.csv
 scan_errors_YYYYMMDD_HHMMSS.csv
 ```
+
+![How to review the duplicate report](./docs/images/04-review-results.svg)
 
 ## How to read the result
 
@@ -241,6 +253,10 @@ The bootstrap can download/use:
 - Python packages listed in `requirements-local.txt`, each under its own upstream license.
 
 Those third-party projects are not bundled in this Git repository; the bootstrap downloads them locally when needed.
+
+## Visual guide files
+
+The annotated images used in this README are stored in [`docs/images`](./docs/images/). They are SVG files, so GitHub can display them sharply at different screen sizes and the labels remain readable when zoomed.
 
 ## Version
 
