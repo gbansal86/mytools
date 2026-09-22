@@ -1770,4 +1770,301 @@ video{width:100%;height:100%;background:#000}
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand"><span>▶</span> My Course Library</div>
-    <div class="search"><input id="searchBox" placeholder="Search courses, sections, lessons or resources..."></di
+    <div class="search"><input id="searchBox" placeholder="Search courses, sections, lessons or resources..."></div>
+    <div class="toolbar">
+      <button class="btn" id="homeBtn">Library</button>
+      <button class="btn" id="viewBtn">▦ Cards</button>
+      <button class="btn" id="themeBtn">◐ Theme</button>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+  <section id="homeView"></section>
+  <section id="courseView" class="hidden"></section>
+</main>
+
+<script>
+const LIBRARY = __LIBRARY_JSON__;
+const CONFIG = {
+  defaultView: "__DEFAULT_VIEW__",
+  theme: "__THEME__",
+  defaultSpeed: __DEFAULT_SPEED__
+};
+
+const state = {
+  course: null,
+  view: localStorage.getItem("clm:view") || CONFIG.defaultView || "cards",
+  filter: "all",
+  search: "",
+  currentVideoId: null
+};
+
+const el = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+const progressKey = id => "clm:progress:" + id;
+const getProgress = id => {
+  try { return JSON.parse(localStorage.getItem(progressKey(id)) || "{}"); }
+  catch { return {}; }
+};
+const setProgress = (id, value) => localStorage.setItem(progressKey(id), JSON.stringify(value));
+const pct = (a,b) => b > 0 ? Math.max(0,Math.min(100,Math.round(a*100/b))) : 0;
+
+function initTheme(){
+  const saved = localStorage.getItem("clm:theme");
+  const useLight = saved ? saved === "light" : String(CONFIG.theme).toLowerCase() === "light";
+  document.body.classList.toggle("light", useLight);
+}
+function toggleTheme(){
+  document.body.classList.toggle("light");
+  localStorage.setItem("clm:theme", document.body.classList.contains("light") ? "light" : "dark");
+}
+function totalWatched(course){
+  let done=0;
+  for(const v of course.videos){
+    const p=getProgress(v.id);
+    if(p.watched || (p.duration && p.time/p.duration >= .9)) done++;
+  }
+  return done;
+}
+function coursePercent(course){
+  return course.videoCount ? Math.round(totalWatched(course)*100/course.videoCount) : 0;
+}
+function matchingCourse(course,q){
+  if(!q) return true;
+  q=q.toLowerCase();
+  if(course.name.toLowerCase().includes(q)) return true;
+  return course.videos.some(v => (v.title+" "+v.section).toLowerCase().includes(q)) ||
+         course.resources.some(r => (r.title+" "+r.section+" "+r.kind).toLowerCase().includes(q));
+}
+function coverHtml(course, cls="course-cover"){
+  if(course.cover) return `<div class="${cls}"><img src="${course.cover}" alt="" loading="lazy"></div>`;
+  return `<div class="${cls}"><div class="cover-fallback">${esc((course.name||"?").slice(0,2).toUpperCase())}</div></div>`;
+}
+function renderHome(){
+  state.course=null;
+  state.currentVideoId=null;
+  el("courseView").classList.add("hidden");
+  el("homeView").classList.remove("hidden");
+  document.title="My Course Library";
+  history.replaceState(null,"","#");
+
+  const q=state.search.trim().toLowerCase();
+  const courses=LIBRARY.filter(c=>matchingCourse(c,q));
+  const totalVideos=LIBRARY.reduce((a,c)=>a+c.videoCount,0);
+  const totalResources=LIBRARY.reduce((a,c)=>a+c.resourceCount,0);
+
+  el("homeView").innerHTML=`
+    <div class="stats">
+      <span class="chip"><b>${LIBRARY.length}</b> courses</span>
+      <span class="chip"><b>${totalVideos}</b> videos</span>
+      <span class="chip"><b>${totalResources}</b> resources</span>
+      <span class="chip">All content runs from your local drive</span>
+    </div>
+    ${courses.length ? `<div class="grid">${courses.map(c=>{
+      const cp=coursePercent(c);
+      const action=cp>0 && cp<100 ? "Continue" : cp>=100 ? "Review" : "Start";
+      return `
+      <article class="course-card">
+        ${coverHtml(c)}
+        <div class="card-body">
+          <div class="card-title">${esc(c.name)}</div>
+          <div class="meta">${c.videoCount} videos · ${c.sectionCount} sections · ${c.resourceCount} resources${c.totalDurationText?` · ${c.totalDurationText}`:""}</div>
+          <div class="progress"><i style="width:${cp}%"></i></div>
+          <div class="card-actions">
+            <span class="small">${cp}% complete</span>
+            <button class="btn primary" onclick="openCourse('${c.id}')">${action} ▶</button>
+          </div>
+        </div>
+      </article>`}).join("")}</div>` : `<div class="empty">No courses match your search.</div>`}
+  `;
+}
+function openCourse(id){
+  const course=LIBRARY.find(c=>c.id===id);
+  if(!course)return;
+  state.course=course;
+  state.currentVideoId=null;
+  el("homeView").classList.add("hidden");
+  el("courseView").classList.remove("hidden");
+  location.hash="course="+encodeURIComponent(id);
+  document.title=course.name+" - My Course Library";
+  renderCourse();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function courseSearchMatch(v){
+  const q=state.search.trim().toLowerCase();
+  return !q || (v.title+" "+v.section+" "+v.extension).toLowerCase().includes(q);
+}
+function groupedVideos(course){
+  const map=new Map();
+  for(const v of course.videos.filter(courseSearchMatch)){
+    if(!map.has(v.section))map.set(v.section,[]);
+    map.get(v.section).push(v);
+  }
+  return [...map.entries()];
+}
+function videoStatus(v){
+  const p=getProgress(v.id);
+  const percent=p.duration?pct(p.time||0,p.duration):0;
+  if(p.watched||percent>=90)return {text:"Watched ✓",percent:100};
+  if(percent>0)return {text:`${percent}%`,percent};
+  return {text:"New",percent:0};
+}
+function videoThumb(v,course){
+  const img=v.thumbnail||course.cover;
+  return `<div class="video-thumb">${img?`<img src="${img}" alt="" loading="lazy">`:`<div class="cover-fallback">▶</div>`}
+    <button class="play" title="Play" onclick="playVideo('${v.id}')">▶</button>
+    ${v.durationText?`<span class="dur">${esc(v.durationText)}</span>`:""}
+  </div>`;
+}
+function cardsFor(videos,course){
+  return `<div class="cards">${videos.map(v=>{
+    const st=videoStatus(v);
+    return `<article class="video-card">
+      ${videoThumb(v,course)}
+      <div class="video-info">
+        <div class="video-title">${esc(v.title)}</div>
+        <div class="progress"><i style="width:${st.percent}%"></i></div>
+        <div class="video-sub"><span>${esc(v.extension)}</span><span>${esc(st.text)}</span></div>
+      </div>
+    </article>`;
+  }).join("")}</div>`;
+}
+function tableFor(videos){
+  return `<div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Lesson</th><th>Duration</th><th>Subtitle</th><th>Progress</th><th></th></tr></thead>
+    <tbody>${videos.map(v=>{
+      const st=videoStatus(v);
+      return `<tr>
+        <td>${v.order}</td>
+        <td><b>${esc(v.title)}</b><div class="small">${esc(v.extension)}</div></td>
+        <td>${esc(v.durationText||"")}</td>
+        <td>${v.subtitle?"CC":"—"}</td>
+        <td>${esc(st.text)}</td>
+        <td><button class="btn" onclick="playVideo('${v.id}')">${st.percent>0&&st.percent<100?"Resume":"Play"} ▶</button></td>
+      </tr>`;
+    }).join("")}</tbody>
+  </table></div>`;
+}
+function resourceHtml(course){
+  let items=course.resources;
+  const q=state.search.trim().toLowerCase();
+  if(q)items=items.filter(r=>(r.title+" "+r.section+" "+r.kind+" "+r.extension).toLowerCase().includes(q));
+  if(!items.length)return `<div class="empty">No resources match this filter/search.</div>`;
+  return `<div class="resource-list">${items.map(r=>`
+    <a class="resource" href="${r.path}" target="_blank">
+      <span class="badge">${esc(r.kind)}</span>
+      <span><b>${esc(r.title)}</b><br><span class="small">${esc(r.section)} · ${esc(r.extension)}</span></span>
+    </a>`).join("")}</div>`;
+}
+function renderCourse(){
+  const c=state.course;
+  if(!c)return;
+  const cp=coursePercent(c);
+  const groups=groupedVideos(c);
+
+  let body="";
+  if(state.filter==="resources"){
+    body=resourceHtml(c);
+  } else {
+    body=groups.length ? groups.map(([section,videos],idx)=>`
+      <div class="section">
+        <div class="section-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+          <span>${esc(section)}</span><span class="small">${videos.length} lesson${videos.length===1?"":"s"}</span>
+        </div>
+        <div class="section-content">${state.view==="table"?tableFor(videos):cardsFor(videos,c)}</div>
+      </div>`).join("") : `<div class="empty">No lessons match your search.</div>`;
+  }
+
+  el("courseView").innerHTML=`
+    ${state.currentVideoId?playerShellHtml():""}
+    <div class="course-head">
+      ${coverHtml(c,"course-head-cover")}
+      <div>
+        <button class="btn" onclick="renderHome()">← Back to Library</button>
+        <h1 class="course-title">${esc(c.name)}</h1>
+        <div class="big-meta">${c.videoCount} videos · ${c.sectionCount} sections · ${c.resourceCount} resources${c.totalDurationText?` · ${c.totalDurationText}`:""}</div>
+        <div class="progress"><i style="width:${cp}%"></i></div>
+        <div class="small">${cp}% complete</div>
+        <div class="head-actions">
+          <button class="btn primary" onclick="continueCourse()">▶ ${cp>0?"Continue Course":"Start Course"}</button>
+          <a class="btn linkbtn" href="${c.folder}" target="_blank">📂 Open Folder</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab ${state.filter==="all"?"active":""}" onclick="setFilter('all')">Videos</button>
+      <button class="tab ${state.filter==="resources"?"active":""}" onclick="setFilter('resources')">Resources (${c.resourceCount})</button>
+    </div>
+    ${body}
+  `;
+
+  updateViewButton();
+  if(state.currentVideoId) attachPlayer();
+}
+function setFilter(f){state.filter=f;renderCourse()}
+function updateViewButton(){
+  el("viewBtn").textContent=state.view==="table"?"☰ Table":"▦ Cards";
+}
+function toggleView(){
+  state.view=state.view==="table"?"cards":"table";
+  localStorage.setItem("clm:view",state.view);
+  updateViewButton();
+  if(state.course)renderCourse();else renderHome();
+}
+function findVideo(id){
+  if(!state.course)return null;
+  return state.course.videos.find(v=>v.id===id);
+}
+function playerShellHtml(){
+  const v=findVideo(state.currentVideoId);
+  if(!v)return "";
+  const idx=state.course.videos.findIndex(x=>x.id===v.id);
+  const poster=v.thumbnail||state.course.cover||"";
+  return `<div class="player-shell" id="playerShell">
+    <div class="video-wrap">
+      <video id="player" controls preload="metadata" ${poster?`poster="${poster}"`:""}>
+        <source src="${v.path}">
+        ${v.subtitle?`<track kind="subtitles" src="${v.subtitle}" srclang="en" label="English" default>`:""}
+        Your browser could not play this video format. Use Open File below.
+      </video>
+    </div>
+    <div class="player-title">${esc(v.title)}</div>
+    <div class="player-controls">
+      <button class="btn" onclick="seekBy(-10)">↶ 10s</button>
+      <button class="btn" onclick="seekBy(10)">10s ↷</button>
+      <label>Speed
+        <select id="speedSel" onchange="setSpeed(this.value)">
+          ${[0.5,0.75,1,1.25,1.5,1.75,2,2.5,3].map(s=>`<option value="${s}">${s}×</option>`).join("")}
+        </select>
+      </label>
+      <button class="btn good" onclick="markWatched()">✓ Mark Watched</button>
+      <a class="btn linkbtn" href="${v.path}" target="_blank">Open File</a>
+      <span class="player-progress" id="playerProgress"></span>
+      <button class="btn" ${idx<=0?"disabled":""} onclick="playAdjacent(-1)">← Previous</button>
+      <button class="btn" ${idx>=state.course.videos.length-1?"disabled":""} onclick="playAdjacent(1)">Next →</button>
+    </div>
+  </div>`;
+}
+function playVideo(id){
+  state.currentVideoId=id;
+  renderCourse();
+  requestAnimationFrame(()=>document.getElementById("playerShell")?.scrollIntoView({behavior:"smooth",block:"start"}));
+}
+function attachPlayer(){
+  const p=el("player");
+  const v=findVideo(state.currentVideoId);
+  if(!p||!v)return;
+  const saved=getProgress(v.id);
+  const speed=Number(localStorage.getItem("clm:speed")||CONFIG.defaultSpeed||1);
+  p.playbackRate=speed;
+  if(el("speedSel"))el("speedSel").value=String(speed);
+
+  p.addEventListener("loadedmetadata",()=>{
+    if(saved.time && saved.time < p.duration-5)p.currentTime=saved.time;
+    updatePlayerProgress();
+  },{once:true});
+
+  let lastSave=0;
+  p.addEve
