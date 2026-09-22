@@ -1,0 +1,9 @@
+# Copy this file to channels.txt, then add ONE channel per line.
+# Supported forms:
+#   @public_username
+#   https://t.me/public_username
+#   exact channel title for a channel your account has already joined
+#   known numeric channel ID (-100...)
+#
+# Never commit your real channels.txt if it contains private memberships.
+@your_channel_username

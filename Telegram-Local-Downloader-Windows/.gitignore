@@ -1,0 +1,31 @@
+# Telegram credentials and authenticated session data
+telegram_settings.json
+telegram_session*
+*.session
+*.session-journal
+.env
+.env.*
+!.env.example
+
+# User-specific input
+channels.txt
+
+# Generated/private output
+downloads/
+channel_exports/
+download_report*.csv
+*.log
+
+# Local Python environment/cache
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editor/OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

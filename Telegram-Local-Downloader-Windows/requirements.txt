@@ -1,0 +1,3 @@
+telethon>=1.36,<2
+# Optional performance dependency installed by START_DOWNLOAD.bat when a wheel is available:
+# cryptg
