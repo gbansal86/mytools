@@ -34,6 +34,57 @@ The exact emulator number can be different. The important word is **device**.
 
 ---
 
+
+## Visual step-by-step guide
+
+### Step 1 — Enable ADB local connection
+
+Open **LDPlayer → Settings → Others → ADB debugging** and choose **Enable local connection**.
+
+![Step 1 - Enable ADB local connection](./images/01-enable-adb-local-connection.svg)
+
+### Step 2 — Confirm ADB can see LDPlayer
+
+Open **Command Prompt** while LDPlayer is running and execute:
+
+```cmd
+"C:\LDPlayer\LDPlayer9\adb.exe" devices
+```
+
+You want to see a line ending in **device**, for example:
+
+```text
+emulator-5554    device
+```
+
+![Step 2 - Confirm ADB device](./images/02-confirm-adb-device.svg)
+
+### Step 3 — Run the repair
+
+Double-click:
+
+```text
+Run_LDPlayer_Firebase_303_Repair.cmd
+```
+
+Accept the Windows Administrator/UAC prompt and follow the questions shown by the script.
+
+![Step 3 - Run the repair tool](./images/03-run-repair-tool.svg)
+
+### Step 4 — Let LDPlayer reboot and test
+
+After the repair finishes:
+
+1. Wait 1–2 minutes for LDPlayer to boot.
+2. Open Chrome in LDPlayer and test a website.
+3. Open Google Play Store and sign in again if requested.
+4. Test the app that previously showed **App configuration failed #303**.
+5. Keep the generated `LDPlayer_Repair_YYYYMMDD_HHMMSS.log` if the problem remains.
+
+### Full workflow at a glance
+
+![LDPlayer Firebase #303 repair workflow](./images/04-repair-workflow.svg)
+
 ## What the repair does
 
 The PowerShell script is heavily commented so a non-programmer can see what each step is doing.
