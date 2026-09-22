@@ -41,7 +41,7 @@ The exact emulator number can be different. The important word is **device**.
 
 Open **LDPlayer → Settings → Others → ADB debugging** and choose **Enable local connection**.
 
-![Step 1 - Enable ADB local connection](./images/01-enable-adb-local-connection.svg)
+![Step 1 - Enable ADB local connection](./images/step-1-enable-adb-local-connection.svg)
 
 ### Step 2 — Confirm ADB can see LDPlayer
 
@@ -57,7 +57,7 @@ You want to see a line ending in **device**, for example:
 emulator-5554    device
 ```
 
-![Step 2 - Confirm ADB device](./images/02-confirm-adb-device.svg)
+![Step 2 - Confirm ADB device](./images/step-2-verify-adb-device.svg)
 
 ### Step 3 — Run the repair
 
@@ -69,7 +69,7 @@ Run_LDPlayer_Firebase_303_Repair.cmd
 
 Accept the Windows Administrator/UAC prompt and follow the questions shown by the script.
 
-![Step 3 - Run the repair tool](./images/03-run-repair-tool.svg)
+![Step 3 - Run the repair tool](./images/step-3-run-repair-tool.svg)
 
 ### Step 4 — Let LDPlayer reboot and test
 
@@ -81,9 +81,7 @@ After the repair finishes:
 4. Test the app that previously showed **App configuration failed #303**.
 5. Keep the generated `LDPlayer_Repair_YYYYMMDD_HHMMSS.log` if the problem remains.
 
-### Full workflow at a glance
-
-![LDPlayer Firebase #303 repair workflow](./images/04-repair-workflow.svg)
+![Step 4 - After reboot checklist](./images/step-4-after-reboot-checklist.svg)
 
 ## What the repair does
 
@@ -235,6 +233,7 @@ To restore Android's normal opportunistic mode:
 | `TROUBLESHOOTING.md` | Symptom-by-symptom diagnostics |
 | `TECHNICAL_NOTES.md` | Exact commands, design choices, and safety notes |
 | `CHANGELOG.md` | Version history |
+| `images/` | Annotated step-by-step visual guides used in this README |
 
 ---
 
