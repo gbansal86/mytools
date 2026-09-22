@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+<rect width="1200" height="680" fill="#0d1117"/><text x="55" y="52" font-family="Segoe UI,Arial" font-size="31" font-weight="700" fill="#f0f6fc">Menu Guide — What Should I Choose?</text>
+<g font-family="Consolas,monospace" font-size="20" fill="#c9d1d9">
+<rect x="55" y="90" width="650" height="525" rx="14" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+<text x="85" y="135" fill="#58a6ff">WINDOWS PERFORMANCE + HARDWARE HEALTH TOOLKIT</text>
+<text x="85" y="180"> 1. Pre-repair phases A + B + C</text><text x="85" y="215"> 2. Baseline only</text><text x="85" y="250"> 3. Full diagnostics</text><text x="85" y="285"> 4. Analyze evidence</text><text x="85" y="320" fill="#f2cc60"> 5. Repair DRY RUN</text><text x="85" y="355" fill="#f85149"> 6. APPLY repair plan</text><text x="85" y="390"> 7. Post-repair retest + comparison</text><text x="85" y="425"> 8. Hardware history</text><text x="85" y="460"> 9. Export latest run</text><text x="85" y="495">10. Open latest run</text><text x="85" y="530" fill="#3fb950">11. Self-test</text><text x="85" y="565"> 0. Exit</text>
+</g>
+<g font-family="Segoe UI,Arial">
+<rect x="755" y="105" width="385" height="90" rx="12" fill="#0f2d1d" stroke="#3fb950" stroke-width="2"/><text x="780" y="140" font-size="22" font-weight="700" fill="#3fb950">Start with 11</text><text x="780" y="172" font-size="17" fill="#e6edf3">Checks commands, admin rights and script syntax.</text>
+<rect x="755" y="220" width="385" height="90" rx="12" fill="#102b46" stroke="#58a6ff" stroke-width="2"/><text x="780" y="255" font-size="22" font-weight="700" fill="#58a6ff">Then use 1</text><text x="780" y="287" font-size="17" fill="#e6edf3">Recommended complete pre-repair evidence run.</text>
+<rect x="755" y="335" width="385" height="90" rx="12" fill="#3a2e0e" stroke="#f2cc60" stroke-width="2"/><text x="780" y="370" font-size="22" font-weight="700" fill="#f2cc60">Before repair: 5</text><text x="780" y="402" font-size="17" fill="#e6edf3">Dry-run shows the planned actions without changing Windows.</text>
+<rect x="755" y="450" width="385" height="125" rx="12" fill="#3b1618" stroke="#f85149" stroke-width="2"/><text x="780" y="485" font-size="22" font-weight="700" fill="#f85149">Option 6 changes Windows</text><text x="780" y="517" font-size="17" fill="#e6edf3">Use only after reviewing Phase C + dry run.</text><text x="780" y="547" font-size="17" fill="#e6edf3">A failing physical component still needs hardware action.</text>
+</g></svg>

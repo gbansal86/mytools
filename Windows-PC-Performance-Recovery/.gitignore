@@ -1,0 +1,12 @@
+# Runtime output created on the user's PC
+Runs/*
+!Runs/README.txt
+History/*.csv
+History/Hardware_Trend_Report.txt
+SELF_TEST_REPORT.txt
+
+# Windows noise
+Thumbs.db
+Desktop.ini
+*.tmp
+*.log

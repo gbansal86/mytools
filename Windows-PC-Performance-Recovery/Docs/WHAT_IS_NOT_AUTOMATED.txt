@@ -1,0 +1,17 @@
+The toolkit intentionally does NOT automatically perform these actions:
+- BIOS/UEFI or device firmware flashing
+- Driver download/installation from the Internet
+- Offline CHKDSK /F or /R
+- Disk stress tests / destructive SMART tests
+- Startup item disabling
+- Windows service disabling
+- Antivirus/Defender/Firewall/UAC/SmartScreen weakening
+- Pagefile disabling or memory registry hacks
+- HPET/BCDEdit timer tweaks
+- Registry cleaners
+- Application uninstall
+- Browser profile/cache/history/password/cookie deletion
+- Personal-file deletion
+- Network stack reset or Windows Update reset without separate review
+
+These can be valid in specific cases, but not safely as a generic automatic "speed-up" action.

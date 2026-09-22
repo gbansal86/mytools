@@ -1,0 +1,29 @@
+PHASE A - BASELINE
+Repeated CPU/RAM/disk/process measurements before changes.
+
+PHASE B - DIAGNOSTIC + HARDWARE HEALTH
+System inventory, SSD/NVMe/HDD health/reliability, SMART provider data, disk latency,
+WHEA, RAM diagnostics, GPU/display events, drivers, devices, services, startup, tasks,
+Windows integrity, storage/file system, event logs, battery/power, network, security,
+boot/reliability, virtualization, browser impact and temp-space estimates.
+
+PHASE C - ANALYSIS
+Conservative local rules correlate evidence, write FINDINGS.csv, HARDWARE_HEALTH_REPORT.txt,
+ANALYSIS_REPORT.txt and REPAIR_PLAN.json.
+
+PHASE D - SAFE REPAIR
+Dry-run supported. Attempts restore point. Executes only enabled low-risk actions such as
+old-temp cleanup and Windows component repair when Phase C found evidence. Dangerous or
+hardware-specific repairs remain manual.
+
+PHASE E - POST-REPAIR RETEST
+Repeats baseline and full diagnostics.
+
+PHASE F - BEFORE/AFTER
+Creates comparable metric table and remaining-issues report.
+
+PHASE G - HARDWARE TREND
+Combines drive-health and hardware/error snapshots across runs so changes can be seen over time.
+
+EXPORT
+Compresses the latest run for deeper analysis.

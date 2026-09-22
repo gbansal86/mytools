@@ -1,0 +1,24 @@
+Launcher correction - v2.0
+
+Why the launcher was changed
+----------------------------
+The original startup flow could appear to do nothing when UAC/elevation was cancelled or failed because the initial BAT process did not wait for the elevated process and could close immediately.
+
+Improvements
+------------
+- Visible startup message.
+- Native Windows PowerShell selection.
+- Required-file check before launch.
+- PowerShell parser check before elevation.
+- Administrator/UAC launch waits for completion.
+- UAC cancellation/failure is reported.
+- Startup transcript saved under %TEMP% as PC_Recovery_Startup_*.log.
+- Paths with spaces and apostrophes are handled using an encoded elevation command.
+- Errors remain visible and BAT pauses on failure.
+- Invalid/blank menu input is rejected.
+- All BAT wrappers route through the same launcher.
+- Failed post-repair retest prevents an invalid comparison.
+
+Validation scope
+----------------
+The scripts include a Windows-side self-test. Windows-only hardware/CIM/Event Log/DISM/SFC behavior varies by Windows edition, permissions and hardware vendor, so the toolkit also reports unavailable telemetry rather than assuming it is healthy.

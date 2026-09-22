@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <rect width="1200" height="520" fill="#f6f8fa"/>
+  <text x="60" y="55" font-family="Segoe UI,Arial" font-size="32" font-weight="700" fill="#1f2328">Start Here — Safe First Run</text>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#57606a"/></marker></defs>
+  <g font-family="Segoe UI,Arial">
+    <g><rect x="60" y="105" rx="14" width="210" height="120" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><circle cx="90" cy="135" r="20" fill="#2563eb"/><text x="84" y="143" font-size="20" fill="white">1</text><text x="120" y="137" font-size="22" font-weight="700" fill="#111827">Extract ZIP</text><text x="80" y="175" font-size="16" fill="#374151">Extract all files to a</text><text x="80" y="199" font-size="16" fill="#374151">normal writable folder.</text></g>
+    <g><rect x="350" y="105" rx="14" width="210" height="120" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><circle cx="380" cy="135" r="20" fill="#16a34a"/><text x="374" y="143" font-size="20" fill="white">2</text><text x="410" y="137" font-size="22" font-weight="700" fill="#111827">Run BAT</text><text x="370" y="175" font-size="16" fill="#374151">Double-click</text><text x="370" y="199" font-size="16" font-weight="700" fill="#111827">00_START_HERE.bat</text></g>
+    <g><rect x="640" y="105" rx="14" width="210" height="120" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><circle cx="670" cy="135" r="20" fill="#d97706"/><text x="664" y="143" font-size="20" fill="white">3</text><text x="700" y="137" font-size="22" font-weight="700" fill="#111827">Approve UAC</text><text x="660" y="175" font-size="16" fill="#374151">Choose Yes so Windows</text><text x="660" y="199" font-size="16" fill="#374151">can collect full evidence.</text></g>
+    <g><rect x="930" y="105" rx="14" width="210" height="120" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/><circle cx="960" cy="135" r="20" fill="#7c3aed"/><text x="954" y="143" font-size="20" fill="white">4</text><text x="990" y="137" font-size="22" font-weight="700" fill="#111827">Self-test</text><text x="950" y="175" font-size="16" fill="#374151">Choose menu option 11.</text><text x="950" y="199" font-size="16" fill="#374151">Fix FAIL items first.</text></g>
+    <line x1="270" y1="165" x2="340" y2="165" stroke="#57606a" stroke-width="3" marker-end="url(#a)"/><line x1="560" y1="165" x2="630" y2="165" stroke="#57606a" stroke-width="3" marker-end="url(#a)"/><line x1="850" y1="165" x2="920" y2="165" stroke="#57606a" stroke-width="3" marker-end="url(#a)"/>
+    <rect x="60" y="285" rx="14" width="1080" height="155" fill="white" stroke="#d0d7de" stroke-width="2"/>
+    <text x="85" y="325" font-size="21" font-weight="700" fill="#cf222e">Do not run from inside the ZIP viewer.</text>
+    <text x="85" y="360" font-size="18" fill="#24292f">Recommended first diagnostic: menu option 1 (Phases A + B + C).</text>
+    <text x="85" y="392" font-size="18" fill="#24292f">Before any repair: menu option 5 (DRY RUN). Apply repairs only after reviewing the plan.</text>
+    <text x="85" y="424" font-size="18" fill="#57606a">Startup errors are logged under %TEMP%\PC_Recovery_Startup_*.log</text>
+  </g>
+</svg>

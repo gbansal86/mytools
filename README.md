@@ -45,3 +45,9 @@ See: [USB-Port-Explorer-Pro](./USB-Port-Explorer-Pro/)
 Beginner-friendly Windows wrapper around ICIJ/Nuditag with multi-drive search paths, excluded-directory pruning, videos-only scoring, resumable CSV reports, and an optional dry-run-first mover that organizes reviewed flagged videos into `NSFW` subfolders.
 
 See: [Nuditag-NSFW-Video-Scanner](./Nuditag-NSFW-Video-Scanner/)
+
+### Windows PC Performance & Hardware Health Recovery
+
+Beginner-friendly Windows BAT/PowerShell toolkit for diagnosing why a PC is slow, checking SSD/NVMe/HDD and other hardware-health signals, correlating WHEA/device/Windows evidence, creating a conservative repair plan, previewing repairs in dry-run mode, and comparing performance before vs. after.
+
+See: [Windows-PC-Performance-Recovery](./Windows-PC-Performance-Recovery/)
