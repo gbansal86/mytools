@@ -1,0 +1,33 @@
+THREE-PC LLM CLUSTER - EXAMPLE IP PLAN
+
+Network: 192.168.50.0/24
+
+PC 1
+Role: Main / controller / LLM UI
+IP:   192.168.50.11
+
+PC 2
+Role: Worker
+IP:   192.168.50.12
+
+PC 3
+Role: Worker
+IP:   192.168.50.13
+
+TEST FROM PC 1
+ping 192.168.50.12
+ping 192.168.50.13
+
+TEST FROM PC 2
+ping 192.168.50.11
+ping 192.168.50.13
+
+TEST FROM PC 3
+ping 192.168.50.11
+ping 192.168.50.12
+
+NOTES
+- Do not copy these addresses if they conflict with your existing LAN.
+- Prefer a private wired LAN.
+- Keep llama.cpp RPC inaccessible from the public Internet.
+- Use DHCP reservations or static IP configuration so addresses do not change.
