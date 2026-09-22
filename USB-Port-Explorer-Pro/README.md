@@ -31,12 +31,15 @@ Use it when you want to answer questions such as:
 
 ### Run it
 
-1. Download this folder.
-2. Keep these three runtime files together:
+1. Download the **whole `USB-Port-Explorer-Pro` folder**.
+2. Keep the folder structure intact. The required runtime items are:
    - `USB_Port_Explorer.ps1`
    - `USB_Hub_Probe.cs`
    - `Run_USB_Port_Explorer.bat`
+   - the complete `src/` folder
 3. Double-click `Run_USB_Port_Explorer.bat`.
+
+Do not run the individual files under `src/` directly. `USB_Port_Explorer.ps1` is the small wrapper that loads those source modules in the correct order.
 4. Select a controller, hub, logical port, or device in the tree.
 5. Read **Easy Summary** first.
 6. Open **Technical Details** when you need raw Windows information.
@@ -173,12 +176,19 @@ Not every Windows driver exposes every property, so blank or unavailable fields 
 
 | File | Purpose |
 |---|---|
-| `USB_Port_Explorer.ps1` | Main GUI, PnP inventory, storage mapping, Easy Summary, search, labels, and CSV export |
-| `USB_Hub_Probe.cs` | Read-only native Windows USB hub / port queries used for protocol and link-speed clues |
-| `Run_USB_Port_Explorer.bat` | Double-click launcher |
+| `USB_Port_Explorer.ps1` | Small main wrapper. It validates and loads the annotated PowerShell source modules from `src/` in the required order. |
+| `src/USB_Port_Explorer_Part*.ps1` | Main PowerShell implementation: PnP inventory, topology, storage mapping, Easy Summary, GUI, search, physical labels, CSV export, and event handling. Split into readable modules so the code is easier to review and maintain. |
+| `USB_Hub_Probe.cs` | Read-only native Windows USB hub / port queries used for protocol and link-speed clues. |
+| `Run_USB_Port_Explorer.bat` | Beginner-friendly double-click launcher. |
 | `TECHNICAL_NOTES.md` | Architecture, Windows APIs, terminology, and implementation details |
 | `TROUBLESHOOTING.md` | Common problems and what to try |
 | `CHANGELOG.md` | Version history |
+
+### Why the PowerShell source is split
+
+The original application grew large enough that a single PowerShell file became difficult to review. The public repository keeps the implementation in sequential, clearly named files under `src/`.
+
+This is only a source-code organization change. The user still launches `Run_USB_Port_Explorer.bat` (or `USB_Port_Explorer.ps1`); the wrapper loads every module automatically. Keeping the modules separate also makes it easier for a beginner to see which section handles discovery, interpretation, exports, and the GUI.
 
 ## Reports and saved labels
 
