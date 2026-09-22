@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-22 — Documentation visuals
+
+- Added five annotated SVG guides for non-technical users.
+- Added folder overview, search-path setup, first-run, report-review, and end-to-end workflow images.
+- Embedded the guides directly in the README.
+- Visuals are illustrative and do not imply that every Windows version will look identical.
+
+
 ## v1.1
 
 - Added validation for DjVuLibre downloads before extraction.
