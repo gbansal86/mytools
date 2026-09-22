@@ -424,3 +424,134 @@ Save-Csv 'EventLogs\Storage_Related_7d.csv' {
       Select-Object TimeCreated,Id,LevelDisplayName,ProviderName,Message
 }
 Save-Csv 'EventLogs\Kernel_Power_7d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='System';ProviderName='Microsoft-Windows-Kernel-Power';StartTime=$since7} -ErrorAction Stop |
+      Select-Object TimeCreated,Id,LevelDisplayName,Message
+}
+Save-Csv 'EventLogs\Display_GPU_7d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='System';StartTime=$since7;Level=1,2,3} -ErrorAction Stop |
+      Where-Object { $_.ProviderName -match 'Display|nvlddmkm|amdkmdag|amdwddmg|igfx|dxgkrnl' } |
+      Select-Object TimeCreated,Id,LevelDisplayName,ProviderName,Message
+}
+Save-Csv 'BootReliability\Reliability_Records_30d.csv' {
+    Get-CimInstance Win32_ReliabilityRecords -ErrorAction Stop |
+      Where-Object { $_.TimeGenerated -ge (Get-Date).AddDays(-30) } |
+      Select-Object TimeGenerated,SourceName,ProductName,EventIdentifier,Message,RecordNumber
+}
+Save-Csv 'BootReliability\Boot_Performance_Events_7d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Diagnostics-Performance/Operational';StartTime=$since7} -ErrorAction Stop |
+      Where-Object { $_.Id -ge 100 -and $_.Id -lt 200 } |
+      Select-Object TimeCreated,Id,LevelDisplayName,Message
+}
+Save-Csv 'EventLogs\WindowsUpdate_7d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-WindowsUpdateClient/Operational';StartTime=$since7} -ErrorAction Stop |
+      Select-Object TimeCreated,Id,LevelDisplayName,Message
+}
+
+# ---------------------------------------------------------------------------
+# Additional health evidence used by later phases
+# ---------------------------------------------------------------------------
+Save-Text 'WindowsHealth\DISM_AnalyzeComponentStore.txt' { DISM.exe /Online /Cleanup-Image /AnalyzeComponentStore }
+Save-Text 'Storage\CHKDSK_OnlineScan_SystemDrive.txt' { chkdsk.exe $env:SystemDrive /scan }
+Save-Text 'Storage\Optimize_Analyze_SystemDrive.txt' { defrag.exe $env:SystemDrive /A /V }
+Save-Csv 'Performance\LogicalDisk_Performance_Snapshot.csv' {
+    Get-CimInstance Win32_PerfFormattedData_PerfDisk_LogicalDisk -ErrorAction Stop |
+      Where-Object { $_.Name -ne '_Total' } |
+      Select-Object Name,PercentDiskTime,AvgDisksecPerRead,AvgDisksecPerWrite,AvgDisksecPerTransfer,CurrentDiskQueueLength,DiskReadsPersec,DiskWritesPersec,DiskReadBytesPersec,DiskWriteBytesPersec
+}
+Save-Csv 'EventLogs\MemoryDiagnostic_30d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='System';ProviderName='Microsoft-Windows-MemoryDiagnostics-Results';StartTime=(Get-Date).AddDays(-30)} -ErrorAction Stop |
+      Select-Object TimeCreated,Id,LevelDisplayName,Message
+}
+Save-Csv 'EventLogs\PCIe_WHEA_30d.csv' {
+    Get-WinEvent -FilterHashtable @{LogName='System';ProviderName='Microsoft-Windows-WHEA-Logger';StartTime=(Get-Date).AddDays(-30)} -ErrorAction Stop |
+      Where-Object { $_.Message -match 'PCI|Express|Bus|Interconnect' } |
+      Select-Object TimeCreated,Id,LevelDisplayName,Message
+}
+Save-Text 'Applications\Temporary_Data_Estimate.txt' {
+    $u=Get-DirectorySizeBytes $env:TEMP
+    $w=Get-DirectorySizeBytes (Join-Path $env:windir 'Temp')
+    "UserTempBytes=$u";"UserTemp=$(Format-Bytes $u)";"WindowsTempBytes=$w";"WindowsTemp=$(Format-Bytes $w)";"TotalTempBytes=$($u+$w)";"TotalTemp=$(Format-Bytes ($u+$w))"
+}
+
+# ---------------------------------------------------------------------------
+# GPU / thermal / battery-supporting telemetry (capture only; interpret cautiously)
+# ---------------------------------------------------------------------------
+Save-Csv 'Performance\GPU_Engine_Snapshot.csv' {
+    Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUEngine -ErrorAction Stop |
+      Select-Object Name,UtilizationPercentage,RunningTime
+}
+Save-Csv 'PowerThermal\ThermalZone_Raw.csv' {
+    Get-CimInstance -Namespace root\wmi -ClassName MSAcpi_ThermalZoneTemperature -ErrorAction Stop |
+      Select-Object InstanceName,CurrentTemperature,CriticalTripPoint,PassiveTripPoint
+}
+Save-Text 'PowerThermal\ThermalZone_WARNING.txt' {
+    'ACPI thermal-zone data is raw firmware telemetry and may not map to CPU/GPU core temperature.'
+    'Do not diagnose overheating solely from this file.'
+}
+Save-Csv 'Hardware\Battery_WMI.csv' {
+    Get-CimInstance Win32_Battery -ErrorAction Stop | Select-Object Name,Status,BatteryStatus,EstimatedChargeRemaining,EstimatedRunTime,DesignVoltage
+}
+
+# ---------------------------------------------------------------------------
+# Quick evidence summary (conservative; final diagnosis should be done later)
+# ---------------------------------------------------------------------------
+try {
+    $vols = Get-Volume | Where-Object DriveLetter
+    foreach ($v in $vols) {
+        if ($v.Size -gt 0) {
+            $freePct = 100 * $v.SizeRemaining / $v.Size
+            if ($freePct -lt 10) { $script:QuickFindings.Add(("LOW FREE SPACE: {0}: has {1:N1}% free" -f $v.DriveLetter,$freePct)) }
+        }
+    }
+} catch {}
+try {
+    foreach ($pd in Get-PhysicalDisk) {
+        if ($pd.HealthStatus -ne 'Healthy') { $script:QuickFindings.Add("STORAGE WARNING: $($pd.FriendlyName) HealthStatus=$($pd.HealthStatus) Operational=$($pd.OperationalStatus -join ',')") }
+    }
+} catch {}
+try {
+    $wheaCount = (Get-WinEvent -FilterHashtable @{LogName='System';ProviderName='Microsoft-Windows-WHEA-Logger';StartTime=$since7} -ErrorAction Stop | Measure-Object).Count
+    if ($wheaCount -gt 0) { $script:QuickFindings.Add("WHEA: $wheaCount hardware-error events in last 7 days; requires analysis.") }
+} catch {}
+try {
+    $problems = @(Get-CimInstance Win32_PnPEntity | Where-Object {$_.ConfigManagerErrorCode -ne 0})
+    if ($problems.Count -gt 0) { $script:QuickFindings.Add("DEVICE MANAGER: $($problems.Count) devices report non-zero ConfigManagerErrorCode.") }
+} catch {}
+
+# Master report
+$master = Join-Path $script:Out 'MASTER_DIAGNOSTIC_REPORT.txt'
+@(
+    'WINDOWS PERFORMANCE & HARDWARE HEALTH DIAGNOSTIC REPORT',
+    '=======================================================',
+    "Started: $script:Started",
+    "Finished: $(Get-Date)",
+    "Computer: $env:COMPUTERNAME",
+    "Administrator: $IsAdmin",
+    "Output: $script:Out",
+    '',
+    'QUICK FINDINGS (conservative; not a final diagnosis)',
+    '-----------------------------------------------------'
+) | Out-File $master -Encoding UTF8
+if ($script:QuickFindings.Count -eq 0) { 'No immediate red flags were generated by the conservative quick checks.' | Add-Content $master }
+else { $script:QuickFindings | Add-Content $master }
+@(
+    '',
+    'IMPORTANT',
+    '---------',
+    'This report intentionally does not make aggressive repair decisions.',
+    'The detailed files in the subfolders should be analyzed together before creating a repair script.',
+    '',
+    'COLLECTION WARNINGS / UNAVAILABLE ITEMS',
+    '----------------------------------------'
+) | Add-Content $master
+if ($script:Warnings.Count -eq 0) { 'None recorded by wrapper functions.' | Add-Content $master }
+else { $script:Warnings | Add-Content $master }
+
+# Duplicate hardware trend snapshot into Summary for easy sharing
+try { Copy-Item (Join-Path $script:Out 'Storage\Hardware_Trend_Snapshot.csv') (Join-Path $script:Out 'Summary\Hardware_Trend_Snapshot.csv') -Force -ErrorAction SilentlyContinue } catch {}
+try { Copy-Item $master (Join-Path $script:Out 'Summary\MASTER_DIAGNOSTIC_REPORT.txt') -Force } catch {}
+
+Write-Log 'Diagnostic collection complete.'
+Write-Host ''
+Write-Host '============================================================' -ForegroundColor Green
+Write-Host 'DIAGNOSTIC COMPLETE' -ForegroundColor Green
