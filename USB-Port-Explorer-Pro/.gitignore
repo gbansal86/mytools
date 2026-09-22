@@ -1,0 +1,8 @@
+# Generated local reports and saved physical-port labels
+USB_Port_Explorer_Reports/
+
+# Windows/editor leftovers
+Thumbs.db
+Desktop.ini
+*.tmp
+*.bak
