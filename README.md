@@ -4,6 +4,12 @@ Small utilities and helper tools.
 
 ## Available tools
 
+### ZIP Bulk Extractor
+
+Beginner-friendly Windows batch utility for extracting every `.zip` in a folder. Includes a safe one-folder-per-ZIP mode, a direct same-folder mode, a simple menu, visual instructions, and no third-party dependencies.
+
+See: [ZIP-Bulk-Extractor](./ZIP-Bulk-Extractor/)
+
 ### Nested Archive Extractor
 
 Windows PowerShell GUI that recursively extracts archives inside archives, including extensionless inner archives and Zstandard (`.zst`) wrappers.
