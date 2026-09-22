@@ -160,3 +160,133 @@ Save-Csv 'Performance\Baseline_Samples.csv' {
     $samples = New-Object System.Collections.Generic.List[object]
     for ($i=1; $i -le 12; $i++) {
         $os = Get-CimInstance Win32_OperatingSystem
+        $cpu = Get-CimInstance Win32_Processor | Measure-Object -Property LoadPercentage -Average
+        $disk = $null
+        try {
+            $disk = Get-CimInstance Win32_PerfFormattedData_PerfDisk_PhysicalDisk -ErrorAction Stop |
+                Where-Object { $_.Name -eq '_Total' } | Select-Object -First 1
+        } catch {}
+        $samples.Add([pscustomobject]@{
+            Timestamp=(Get-Date -Format o)
+            CpuLoadPct=[math]::Round([double]$cpu.Average,1)
+            FreePhysicalMB=[math]::Round([double]$os.FreePhysicalMemory/1024,1)
+            TotalVisibleMB=[math]::Round([double]$os.TotalVisibleMemorySize/1024,1)
+            DiskReadBytesSec=if($disk){$disk.DiskReadBytesPersec}else{$null}
+            DiskWriteBytesSec=if($disk){$disk.DiskWriteBytesPersec}else{$null}
+            AvgDiskSecTransfer=if($disk){$disk.AvgDisksecPerTransfer}else{$null}
+            CurrentDiskQueue=if($disk){$disk.CurrentDiskQueueLength}else{$null}
+            ProcessCount=(Get-Process).Count
+        })
+        Start-Sleep -Seconds 2
+    }
+    $samples
+}
+
+Save-Text 'Performance\Performance_Counters.txt' {
+    try {
+        Get-Counter -Counter '\Processor(_Total)\% Processor Time','\Memory\Available MBytes','\Memory\Committed Bytes','\Memory\Pages/sec','\PhysicalDisk(_Total)\Avg. Disk sec/Transfer','\PhysicalDisk(_Total)\Current Disk Queue Length' -SampleInterval 1 -MaxSamples 5 |
+            Select-Object -ExpandProperty CounterSamples |
+            Select-Object Timestamp,Path,CookedValue | Format-Table -AutoSize
+    } catch {
+        "Get-Counter unavailable/localized/failed: $($_.Exception.Message)"
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Storage health / reliability / SMART provider data
+# ---------------------------------------------------------------------------
+Save-Csv 'Storage\Physical_Disks.csv' {
+    Get-PhysicalDisk -ErrorAction Stop | Select-Object FriendlyName,@{n='DeviceHash';e={Get-ShortHash $_.UniqueId}},MediaType,BusType,HealthStatus,OperationalStatus,Size,AllocatedSize,Usage
+}
+Save-Csv 'Storage\Disks.csv' {
+    Get-Disk | Select-Object Number,FriendlyName,@{n='DeviceHash';e={Get-ShortHash $_.UniqueId}},BusType,PartitionStyle,HealthStatus,OperationalStatus,Size,IsBoot,IsSystem,IsReadOnly,IsOffline
+}
+Save-Csv 'Storage\Volumes.csv' {
+    Get-Volume | Select-Object DriveLetter,FileSystemLabel,FileSystem,HealthStatus,OperationalStatus,Size,SizeRemaining,Path
+}
+Save-Csv 'Storage\Win32_DiskDrive.csv' {
+    Get-CimInstance Win32_DiskDrive | Select-Object Index,Model,@{n='DeviceHash';e={Get-ShortHash $_.PNPDeviceID}},FirmwareRevision,InterfaceType,MediaType,Size,Status
+}
+Save-Csv 'Storage\Storage_Reliability_Counters.csv' {
+    $rows = @()
+    foreach ($pd in (Get-PhysicalDisk -ErrorAction Stop)) {
+        try {
+            $r = Get-StorageReliabilityCounter -PhysicalDisk $pd -ErrorAction Stop
+            $rows += [pscustomobject]@{
+                FriendlyName=$pd.FriendlyName;DeviceHash=(Get-ShortHash $pd.UniqueId);Temperature=$r.Temperature;TemperatureMax=$r.TemperatureMax;
+                Wear=$r.Wear;PowerOnHours=$r.PowerOnHours;ReadErrorsTotal=$r.ReadErrorsTotal;ReadErrorsUncorrected=$r.ReadErrorsUncorrected;
+                WriteErrorsTotal=$r.WriteErrorsTotal;WriteErrorsUncorrected=$r.WriteErrorsUncorrected;ReadLatencyMax=$r.ReadLatencyMax;
+                WriteLatencyMax=$r.WriteLatencyMax;FlushLatencyMax=$r.FlushLatencyMax;LoadUnloadCycleCount=$r.LoadUnloadCycleCount;
+                StartStopCycleCount=$r.StartStopCycleCount;PowerCycleCount=$r.PowerCycleCount
+            }
+        } catch {
+            $rows += [pscustomobject]@{FriendlyName=$pd.FriendlyName;DeviceHash=(Get-ShortHash $pd.UniqueId);Error="NOT EXPOSED / $($_.Exception.Message)"}
+        }
+    }
+    $rows
+}
+Save-Csv 'Storage\SMART_FailurePredictStatus.csv' {
+    Get-CimInstance -Namespace root\wmi -ClassName MSStorageDriver_FailurePredictStatus -ErrorAction Stop |
+        Select-Object InstanceName,PredictFailure,Reason
+}
+Save-Csv 'Storage\SMART_FailurePredictData.csv' {
+    Get-CimInstance -Namespace root\wmi -ClassName MSStorageDriver_FailurePredictData -ErrorAction Stop |
+        Select-Object InstanceName,@{n='VendorSpecificHex';e={($_.VendorSpecific | ForEach-Object { $_.ToString('X2') }) -join ''}}
+}
+Save-Csv 'Storage\SMART_FailurePredictThresholds.csv' {
+    Get-CimInstance -Namespace root\wmi -ClassName MSStorageDriver_FailurePredictThresholds -ErrorAction Stop |
+        Select-Object InstanceName,@{n='VendorSpecificHex';e={($_.VendorSpecific | ForEach-Object { $_.ToString('X2') }) -join ''}}
+}
+Save-Text 'Storage\TRIM_Status.txt' { fsutil behavior query DisableDeleteNotify }
+Save-Text 'Storage\Dirty_Volume_Status.txt' {
+    Get-Volume | Where-Object DriveLetter | ForEach-Object {
+        "### $($_.DriveLetter):"
+        fsutil dirty query "$($_.DriveLetter):" 2>&1
+    }
+}
+
+# Hardware trend snapshot for future runs
+Save-Csv 'Storage\Hardware_Trend_Snapshot.csv' {
+    $rows = New-Object System.Collections.Generic.List[object]
+    try {
+        foreach ($pd in Get-PhysicalDisk) {
+            $r = $null; try { $r = Get-StorageReliabilityCounter -PhysicalDisk $pd -ErrorAction Stop } catch {}
+            $rows.Add([pscustomobject]@{
+                Timestamp=(Get-Date -Format o);ComponentType='Storage';Name=$pd.FriendlyName;DeviceHash=(Get-ShortHash $pd.UniqueId);
+                Health=$pd.HealthStatus;Operational=($pd.OperationalStatus -join ',');MediaType=$pd.MediaType;BusType=$pd.BusType;
+                Wear=if($r){$r.Wear}else{$null};Temperature=if($r){$r.Temperature}else{$null};PowerOnHours=if($r){$r.PowerOnHours}else{$null};
+                ReadErrorsUncorrected=if($r){$r.ReadErrorsUncorrected}else{$null};WriteErrorsUncorrected=if($r){$r.WriteErrorsUncorrected}else{$null}
+            })
+        }
+    } catch {}
+    $rows
+}
+
+# ---------------------------------------------------------------------------
+# Startup, services, tasks, installed software
+# ---------------------------------------------------------------------------
+Save-Csv 'Startup\Startup_Commands.csv' {
+    Get-CimInstance Win32_StartupCommand | Select-Object Name,Command,Location,User
+}
+Save-Text 'Startup\Registry_Run_Entries.txt' {
+    $paths = @(
+      'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run',
+      'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce',
+      'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run',
+      'HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce',
+      'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run'
+    )
+    foreach ($p in $paths) {
+        "### $p"
+        try { Get-ItemProperty $p -ErrorAction Stop | Format-List } catch { "NOT AVAILABLE: $($_.Exception.Message)" }
+    }
+}
+Save-Csv 'Services\Services.csv' {
+    Get-CimInstance Win32_Service | Select-Object Name,DisplayName,State,StartMode,StartName,PathName,ExitCode,ProcessId
+}
+Save-Csv 'ScheduledTasks\Scheduled_Tasks.csv' {
+    $out = foreach ($t in Get-ScheduledTask -ErrorAction Stop) {
+        $info = $null; try { $info = Get-ScheduledTaskInfo -TaskName $t.TaskName -TaskPath $t.TaskPath -ErrorAction Stop } catch {}
+        [pscustomobject]@{
+            TaskPath=$t.TaskPath;TaskName=$t.TaskName;State=$t.State;Author=$t.Author;
+            LastRunTime=if($info){$info.LastRunTime}else{$null};NextRunTime=if($info){$info.NextRunTime}else{$null};
