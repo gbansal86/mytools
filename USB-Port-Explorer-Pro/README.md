@@ -46,6 +46,32 @@ Do not run the individual files under `src/` directly. `USB_Port_Explorer.ps1` i
 
 The program creates a `USB_Port_Explorer_Reports` folder beside the script when you export a CSV or save physical-port labels.
 
+## Visual step-by-step guide
+
+### Step 1 — Understand the main screen
+
+![Annotated USB Port Explorer screen](./docs/images/01-ui-overview.svg)
+
+1. **Refresh devices** after plugging in or unplugging a USB device.
+2. Select the relevant controller, hub, logical port, or connected device in the **USB topology tree**.
+3. Read **Easy Summary** first. It explains the selected item in plain English.
+4. Use **Technical Details** only when you need PnP IDs, drivers, location paths, protocol flags, or other diagnostic fields.
+5. Give verified connection paths a human-friendly name such as `Rear top blue`, `Front right`, or `USB-C left`.
+
+### Step 2 — Map a physical USB socket
+
+![How to map a physical USB port](./docs/images/02-map-physical-port.svg)
+
+The safest workflow is to connect a known USB 3.x device with a known-good cable, refresh the tree, select the changed device/port, read the reported information, and then save a physical label. Repeat this for each socket you want to identify.
+
+### Step 3 — Interpret speed and physical clues correctly
+
+![How to understand USB speed and physical clues](./docs/images/03-understand-usb-speed.svg)
+
+Remember that **current link speed**, **logical-port capability**, and the **maximum capability of the visible physical socket** are different things. Blue/teal plastic and an `SS`/SuperSpeed mark are useful visual clues, but neither should be treated as proof by itself.
+
+> **Screenshot note:** Windows themes, display scaling, and future versions can make the exact GUI look slightly different. The numbered workflow remains the same.
+
 ## Understanding the screen
 
 | Area | What it means |
