@@ -1,0 +1,30 @@
+# ============================================================================
+# NUDITAG EXCLUDE PATHS
+# ============================================================================
+#
+# Put ONE folder on each line.
+# The folder AND EVERYTHING BELOW IT will be skipped.
+#
+# Exclusions always win over SearchPaths.txt.
+#
+# E:\Nuditag is also excluded automatically by the Python helper, even if this
+# line is accidentally removed.
+E:\Nuditag
+
+# Common Windows/system locations that usually do not contain personal videos.
+# Delete or comment out any line if you intentionally want it scanned.
+C:\Windows
+C:\Program Files
+C:\Program Files (x86)
+C:\ProgramData
+C:\System Volume Information
+C:\$Recycle.Bin
+D:\System Volume Information
+D:\$Recycle.Bin
+E:\System Volume Information
+E:\$Recycle.Bin
+
+# Examples of PERSONAL folders you may choose to exclude:
+# D:\Backup
+# E:\Family Videos
+# E:\Work

@@ -27,3 +27,9 @@ See: [LDPlayer-Firebase-303-Repair](./LDPlayer-Firebase-303-Repair/)
 Beginner-friendly Windows USB topology viewer with a plain-English Easy Summary, physical-port labeling, driver/PnP details, read-only Windows USB hub protocol queries, and current link-speed clues.
 
 See: [USB-Port-Explorer-Pro](./USB-Port-Explorer-Pro/)
+
+### Nuditag NSFW Video Scanner
+
+Beginner-friendly Windows wrapper around ICIJ/Nuditag with multi-drive search paths, excluded-directory pruning, videos-only scoring, resumable CSV reports, and an optional dry-run-first mover that organizes reviewed flagged videos into `NSFW` subfolders.
+
+See: [Nuditag-NSFW-Video-Scanner](./Nuditag-NSFW-Video-Scanner/)

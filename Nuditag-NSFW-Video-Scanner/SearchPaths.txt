@@ -1,0 +1,19 @@
+# ============================================================================
+# NUDITAG SEARCH PATHS
+# ============================================================================
+#
+# Put ONE drive or folder on each line.
+# The order here is also the order in which roots are processed.
+#
+# Blank lines are ignored.
+# Lines beginning with # or ; are comments.
+#
+# Examples:
+# E:\
+# D:\Videos
+# C:\Users\YourName\Downloads
+#
+# Default requested scan order:
+E:\
+C:\
+D:\
