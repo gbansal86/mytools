@@ -943,4 +943,304 @@ function Invoke-DownloadWithProgress {
 
                 if ($totalBytes -gt 0) {
                     $pct = [Math]::Min(100, [int][Math]::Floor(($downloaded * 100.0) / $totalBytes))
-                  
+                    $remaining = [Math]::Max(0, $totalBytes - $downloaded)
+                    $eta = if ($speed -gt 0) { $remaining / $speed } else { [double]::PositiveInfinity }
+
+                    $status = "{0}: {1}%  |  {2} / {3}  |  {4}/s  |  ETA {5}" -f `
+                        $DisplayName,
+                        $pct,
+                        (Format-ByteSize $downloaded),
+                        (Format-ByteSize $totalBytes),
+                        (Format-ByteSize $speed),
+                        (Format-Eta $eta)
+
+                    Set-UiStatus $status $pct
+
+                    if ($pct -ge ($lastLoggedPct + 10)) {
+                        $lastLoggedPct = [int]([Math]::Floor($pct / 10) * 10)
+                        Write-UiLog $status "INFO"
+                    }
+                }
+                else {
+                    if ($Script:ProgressBar -and -not $Script:ProgressBar.IsDisposed) {
+                        $Script:ProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Marquee
+                        $Script:ProgressBar.MarqueeAnimationSpeed = 25
+                    }
+                    $status = "{0}: {1} downloaded  |  {2}/s" -f `
+                        $DisplayName,
+                        (Format-ByteSize $downloaded),
+                        (Format-ByteSize $speed)
+                    if ($Script:StatusLabel -and -not $Script:StatusLabel.IsDisposed) {
+                        $Script:StatusLabel.Text = $status
+                    }
+                    [System.Windows.Forms.Application]::DoEvents()
+                }
+            }
+        }
+
+        $output.Flush()
+        $output.Close()
+        $output = $null
+        $sw.Stop()
+
+        if ($downloaded -le 0) {
+            throw "The server returned no file data."
+        }
+
+        if ($totalBytes -gt 0 -and $downloaded -lt $totalBytes) {
+            throw ("Download ended early. Expected {0}, received {1}." -f `
+                (Format-ByteSize $totalBytes),(Format-ByteSize $downloaded))
+        }
+
+        Move-Item -LiteralPath $partPath -Destination $Destination -Force
+
+        if ($Script:ProgressBar -and -not $Script:ProgressBar.IsDisposed) {
+            $Script:ProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Continuous
+            $Script:ProgressBar.MarqueeAnimationSpeed = 0
+        }
+
+        $elapsedFinal = [Math]::Max(0.1,$sw.Elapsed.TotalSeconds)
+        $avgSpeed = $downloaded / $elapsedFinal
+        Set-UiStatus ("{0}: 100%  |  {1} downloaded" -f $DisplayName,(Format-ByteSize $downloaded)) 100
+        Write-UiLog ("Download complete: {0} in {1:N1}s (avg {2}/s)" -f `
+            (Format-ByteSize $downloaded),$elapsedFinal,(Format-ByteSize $avgSpeed)) "OK"
+        return $true
+    }
+    catch {
+        Remove-Item -LiteralPath $partPath -Force -ErrorAction SilentlyContinue
+        if ($Script:ProgressBar -and -not $Script:ProgressBar.IsDisposed) {
+            $Script:ProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Continuous
+            $Script:ProgressBar.MarqueeAnimationSpeed = 0
+        }
+        throw
+    }
+    finally {
+        if ($output) { try { $output.Dispose() } catch {} }
+        if ($input)  { try { $input.Dispose() } catch {} }
+        if ($response) { try { $response.Close() } catch {} }
+    }
+}
+
+function Install-PortableFFmpeg {
+    <#
+      Installs a portable FFmpeg build inside this application's folder.
+      No Administrator rights are required.
+
+      The downloader shows:
+        - percentage
+        - downloaded MB / total MB
+        - transfer speed
+        - ETA
+
+      It also has connection/read timeouts and retries another source if
+      the first download endpoint fails.
+    #>
+    $toolsRoot = Join-Path $Script:ScriptDir "tools"
+    $installRoot = Join-Path $toolsRoot "ffmpeg"
+    $binRoot = Join-Path $installRoot "bin"
+    $tempRoot = Join-Path $toolsRoot "_ffmpeg_install_temp"
+    $zipPath = Join-Path $toolsRoot "ffmpeg-portable.zip"
+
+    # Primary is the smaller Windows essentials build. GitHub/BtbN is a fallback.
+    $sources = @(
+        "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip",
+        "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip"
+    )
+
+    try {
+        New-Item -ItemType Directory -Path $toolsRoot -Force | Out-Null
+        New-Item -ItemType Directory -Path $binRoot -Force | Out-Null
+
+        Write-UiLog "FFmpeg/ffprobe are missing. Installing portable FFmpeg locally..." "WARN"
+
+        # TLS 1.2 for older Windows PowerShell defaults.
+        try {
+            [Net.ServicePointManager]::SecurityProtocol =
+                [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+        } catch {}
+
+        $downloaded = $false
+        $attempt = 0
+
+        foreach ($downloadUrl in $sources) {
+            $attempt++
+            try {
+                Remove-Item -LiteralPath $zipPath -Force -ErrorAction SilentlyContinue
+                Write-UiLog ("FFmpeg download attempt {0}/{1}" -f $attempt,@($sources).Count) "INFO"
+
+                [void](Invoke-DownloadWithProgress `
+                    -Uri $downloadUrl `
+                    -Destination $zipPath `
+                    -DisplayName ("Downloading FFmpeg ({0}/{1})" -f $attempt,@($sources).Count) `
+                    -ConnectTimeoutSeconds 35 `
+                    -ReadTimeoutSeconds 45)
+
+                if (Test-Path -LiteralPath $zipPath) {
+                    $downloaded = $true
+                    break
+                }
+            }
+            catch {
+                Write-UiLog ("Download source failed: " + $_.Exception.Message) "WARN"
+                Remove-Item -LiteralPath $zipPath -Force -ErrorAction SilentlyContinue
+            }
+        }
+
+        if (-not $downloaded) {
+            throw "All FFmpeg download sources failed or timed out."
+        }
+
+        if (Test-Path -LiteralPath $tempRoot) {
+            Remove-Item -LiteralPath $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
+        }
+
+        Set-UiStatus "FFmpeg download complete. Extracting files..." 0
+        Write-UiLog "Extracting FFmpeg package..." "INFO"
+        Expand-Archive -LiteralPath $zipPath -DestinationPath $tempRoot -Force
+
+        Set-UiStatus "Finding ffmpeg.exe and ffprobe.exe..." 40
+        $ffmpegSource = @(Get-ChildItem -LiteralPath $tempRoot -Filter "ffmpeg.exe" -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1)
+        $ffprobeSource = @(Get-ChildItem -LiteralPath $tempRoot -Filter "ffprobe.exe" -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1)
+
+        if (@($ffmpegSource).Count -eq 0 -or @($ffprobeSource).Count -eq 0) {
+            throw "The downloaded package did not contain ffmpeg.exe and ffprobe.exe."
+        }
+
+        Set-UiStatus "Installing ffmpeg.exe..." 60
+        Copy-Item -LiteralPath $ffmpegSource[0].FullName -Destination (Join-Path $binRoot "ffmpeg.exe") -Force
+
+        Set-UiStatus "Installing ffprobe.exe..." 78
+        Copy-Item -LiteralPath $ffprobeSource[0].FullName -Destination (Join-Path $binRoot "ffprobe.exe") -Force
+
+        # ffplay is optional.
+        $ffplaySource = @(Get-ChildItem -LiteralPath $tempRoot -Filter "ffplay.exe" -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1)
+        if (@($ffplaySource).Count -gt 0) {
+            Set-UiStatus "Installing optional ffplay.exe..." 88
+            Copy-Item -LiteralPath $ffplaySource[0].FullName -Destination (Join-Path $binRoot "ffplay.exe") -Force
+        }
+
+        # Verify executables before reporting success.
+        Set-UiStatus "Verifying FFmpeg installation..." 95
+        $installedFfmpeg = Join-Path $binRoot "ffmpeg.exe"
+        $installedFfprobe = Join-Path $binRoot "ffprobe.exe"
+
+        if (-not (Test-Path -LiteralPath $installedFfmpeg) -or -not (Test-Path -LiteralPath $installedFfprobe)) {
+            throw "FFmpeg files could not be copied into the local tools folder."
+        }
+
+        try {
+            & $installedFfmpeg -version 2>$null | Select-Object -First 1 | ForEach-Object {
+                Write-UiLog ("Verified: " + $_) "OK"
+            }
+            & $installedFfprobe -version 2>$null | Select-Object -First 1 | ForEach-Object {
+                Write-UiLog ("Verified: " + $_) "OK"
+            }
+        } catch {
+            Write-UiLog "Executables were installed, but version verification returned an error." "WARN"
+        }
+
+        Set-UiStatus "Portable FFmpeg installed successfully" 100
+        Write-UiLog "Portable FFmpeg installed successfully: $binRoot" "OK"
+        return $true
+    }
+    catch {
+        Write-UiLog ("Portable FFmpeg installation failed: " + $_.Exception.Message) "ERROR"
+        Write-UiLog "Catalog generation can continue without generated thumbnails/durations." "WARN"
+        return $false
+    }
+    finally {
+        Remove-Item -LiteralPath $zipPath -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath ($zipPath + ".part") -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Ensure-MediaComponents {
+    param([switch]$Interactive)
+
+    $state = Test-MediaComponents
+    if ($state.Ready) {
+        Write-UiLog "Media components ready. ffmpeg: $($state.FFmpeg)" "OK"
+        Write-UiLog "Media components ready. ffprobe: $($state.FFprobe)" "OK"
+        return $state
+    }
+
+    $needsMediaTools = [bool]$Script:Settings.GenerateVideoThumbnails -or [bool]$Script:Settings.GenerateDurations
+    if (-not $needsMediaTools -and -not $Interactive) {
+        return $state
+    }
+
+    $install = $true
+    if ($Interactive) {
+        $install = Confirm-Action (
+            "FFmpeg and/or ffprobe are missing.`r`n`r`n" +
+            "They are used for video thumbnails and duration detection.`r`n" +
+            "Install a portable copy inside this application folder now?`r`n`r`n" +
+            "No Administrator rights are required."
+        ) "Install Missing Components"
+    }
+
+    if ($install) {
+        [void](Install-PortableFFmpeg)
+        Refresh-ProcessPath
+        $state = Test-MediaComponents
+    }
+
+    return $state
+}
+
+function Invoke-CheckInstallComponents {
+    try {
+        Set-UiStatus "Checking components..." 3
+        $state = Ensure-MediaComponents -Interactive
+        if ($state.Ready) {
+            Set-UiStatus "Components ready" 100
+            Show-Info (
+                "Required media components are ready.`r`n`r`n" +
+                "ffmpeg:`r`n$($state.FFmpeg)`r`n`r`n" +
+                "ffprobe:`r`n$($state.FFprobe)"
+            ) "Components Ready"
+        } else {
+            Set-UiStatus "Components incomplete" 0
+            Show-Warning (
+                "FFmpeg/ffprobe are still unavailable.`r`n`r`n" +
+                "The HTML catalog can still be built, but automatic video thumbnails " +
+                "and duration detection may be unavailable."
+            ) "Components Not Ready"
+        }
+    } catch {
+        Write-UiLog ("Component check failed: " + $_.Exception.Message) "ERROR"
+        Set-UiStatus "Component check failed" 0
+        Show-Warning $_.Exception.Message
+    }
+}
+
+function Get-VideoDurationSeconds {
+    param(
+        [string]$VideoPath,
+        [string]$FfprobePath
+    )
+
+    if (-not $FfprobePath) { return $null }
+
+    try {
+        $args = @(
+            "-v","error",
+            "-show_entries","format=duration",
+            "-of","default=noprint_wrappers=1:nokey=1",
+            $VideoPath
+        )
+        $output = & $FfprobePath @args 2>$null
+        if ($LASTEXITCODE -eq 0 -and $output) {
+            $value = 0.0
+            if ([double]::TryParse(
+                ([string]$output).Trim(),
+                [Globalization.NumberStyles]::Float,
+                [Globalization.CultureInfo]::InvariantCulture,
+                [ref]$value
+            )) {
+                return [Math]::Round($value,2)
+            }
+        }
+    } catch {}
+    return $n
