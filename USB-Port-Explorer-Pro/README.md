@@ -207,8 +207,10 @@ Not every Windows driver exposes every property, so blank or unavailable fields 
 | `USB_Hub_Probe.cs` | Read-only native Windows USB hub / port queries used for protocol and link-speed clues. |
 | `Run_USB_Port_Explorer.bat` | Beginner-friendly double-click launcher. |
 | `TECHNICAL_NOTES.md` | Architecture, Windows APIs, terminology, and implementation details |
+| `SOURCE_MAP.md` | Layman-friendly map showing which source module handles each part of the application. |
 | `TROUBLESHOOTING.md` | Common problems and what to try |
 | `CHANGELOG.md` | Version history |
+| `.gitignore` | Keeps generated machine-specific reports and saved port labels out of Git commits |
 
 ### Why the PowerShell source is split
 
