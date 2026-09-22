@@ -1,6 +1,8 @@
 # MyTools
 
 [![Repository validation](https://github.com/gbansal86/mytools/actions/workflows/validate.yml/badge.svg)](https://github.com/gbansal86/mytools/actions/workflows/validate.yml)
+[![CodeQL](https://github.com/gbansal86/mytools/actions/workflows/codeql.yml/badge.svg)](https://github.com/gbansal86/mytools/actions/workflows/codeql.yml)
+[![Dependency Security](https://github.com/gbansal86/mytools/actions/workflows/dependency-security.yml/badge.svg)](https://github.com/gbansal86/mytools/actions/workflows/dependency-security.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 **MyTools** is an open-source collection of practical Windows utilities for diagnostics, local data management, media/file maintenance, automation, and technical workflows that are often difficult for non-specialist users to perform safely.
@@ -35,6 +37,8 @@ MyTools is built around five principles:
 
 Each tool folder is intended to be understandable on its own and contains its own README and MIT license.
 
+For a visual tour with annotated diagrams from all 11 utilities, see the [MyTools Visual Gallery](./TOOL_GALLERY.md).
+
 ## Safety model
 
 The utilities operate on real local files and Windows configuration, so safety is treated as a feature rather than an afterthought.
@@ -46,7 +50,7 @@ The utilities operate on real local files and Windows configuration, so safety i
 - External dependencies and third-party components should be identified and used under their own licenses.
 - Users should read the tool-specific README before running scripts with administrator privileges.
 
-See [SECURITY.md](./SECURITY.md) and the safety notes in each tool's documentation.
+See [SECURITY.md](./SECURITY.md), the repository-wide [Threat Model](./THREAT_MODEL.md), and the safety notes in each tool's documentation.
 
 ## Validation and testing
 
@@ -56,6 +60,9 @@ Repository validation runs through GitHub Actions on pushes and pull requests. T
 - PowerShell scripts parse without syntax errors.
 - Required root community/maintenance files exist.
 - Every top-level tool directory contains both a README and LICENSE.
+- Local Markdown/image links are checked so documentation does not silently rot.
+- CodeQL analyzes supported Python source on pushes, pull requests, and a weekly schedule.
+- Python dependency manifests are audited with `pip-audit`; JSON audit evidence and CycloneDX SBOMs are retained as workflow artifacts.
 
 These checks are intentionally dependency-light so contributors can get quick feedback. Tool-specific functional tests and manual validation remain important where scripts depend on Windows hardware, ADB, Telegram, FFmpeg, or other external programs.
 

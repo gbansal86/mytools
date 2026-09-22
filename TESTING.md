@@ -10,8 +10,12 @@ The GitHub Actions workflow at `.github/workflows/validate.yml` runs on pushes a
 2. PowerShell `.ps1` and `.psm1` files are parsed using the PowerShell language parser.
 3. Required root governance/maintenance files are checked.
 4. Each top-level tool directory is checked for `README.md` and `LICENSE`.
+5. Local Markdown/image links are checked across the repository.
+6. The root README catalog is checked against the actual top-level tool folders.
 
-These checks catch common packaging and syntax mistakes without running tools against a contributor's real files or machine configuration.
+The repository also runs CodeQL for supported Python source and a scheduled dependency-security workflow. The dependency workflow audits the maintained Python requirement manifests with `pip-audit`, uploads JSON audit evidence, and produces CycloneDX JSON SBOMs.
+
+These checks catch common packaging, syntax, documentation, static-analysis, and dependency problems without running tools against a contributor's real files or machine configuration.
 
 ## Tool-level testing
 

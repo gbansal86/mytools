@@ -30,6 +30,12 @@ If a secret has already been committed, deleting the file in a later commit is n
 
 Third-party tools and libraries are maintained by their respective projects. Contributors should avoid unnecessary dependencies, constrain dependencies when appropriate, and document externally downloaded binaries or tools.
 
+The repository uses Dependabot for supported dependency manifests and GitHub Actions, CodeQL for supported Python source analysis, and `pip-audit` plus CycloneDX SBOM generation for the maintained Python requirement files. Automated checks complement rather than replace human review.
+
+## Threat model
+
+Repository-wide assets, trust boundaries, attack surfaces, and review questions are documented in [THREAT_MODEL.md](./THREAT_MODEL.md).
+
 ## Safe operation
 
 Before running a tool that changes files or system settings, read its README, use dry-run/preview mode when available, keep backups of important data, review generated actions before applying them, and understand whether administrator privileges are needed.

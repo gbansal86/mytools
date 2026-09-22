@@ -32,17 +32,23 @@ The repository is maintainer-led, with public issues and pull requests available
 
 External contributions are welcome under [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Testing model
+## Testing and maintenance evidence
 
-Repository CI starts with fast static validation: Python compilation, PowerShell parsing, and repository-structure checks. Tool-specific testing is documented in [TESTING.md](./TESTING.md). Hardware, emulator, Telegram, and Windows repair workflows also require controlled manual testing.
+Repository CI performs Python compilation, PowerShell parsing, repository-structure validation, and documentation-link integrity checks. CodeQL analyzes supported Python source. A separate dependency-security workflow audits the maintained Python requirement manifests and produces JSON evidence plus CycloneDX SBOMs.
+
+The repository also uses Dependabot, CODEOWNERS, issue/PR templates, maintainer/governance documentation, public pull requests, and per-tool annotated guides. Tool-specific testing is documented in [TESTING.md](./TESTING.md). Hardware, emulator, Telegram, and Windows repair workflows also require controlled manual testing.
 
 ## Security and privacy model
 
-Session files, credentials, tokens, personal reports, caches, and private content should remain outside version control. Sensitive vulnerability handling is documented in [SECURITY.md](./SECURITY.md).
+Session files, credentials, tokens, personal reports, caches, and private content should remain outside version control. Sensitive vulnerability handling is documented in [SECURITY.md](./SECURITY.md), with repository-wide trust boundaries documented in [THREAT_MODEL.md](./THREAT_MODEL.md).
 
 ## Release policy
 
 The project will use real, versioned releases as tools stabilize. Releases should be tied to tested code and honest release notes; the project avoids backdated or empty releases intended only to create an appearance of maturity.
+
+## Current project scope
+
+The repository currently contains 11 independently usable Windows-focused utilities across file/media maintenance, diagnostics/repair, local data workflows, and local LLM infrastructure. The tools include extensive beginner-oriented documentation and dozens of annotated diagrams and workflow images. See [TOOL_GALLERY.md](./TOOL_GALLERY.md).
 
 ## Adoption and ecosystem evidence
 

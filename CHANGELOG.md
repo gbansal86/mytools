@@ -16,6 +16,11 @@ This file records repository-level changes. Individual tools may also maintain t
 - Added root ignore rules for common secrets, runtime state, caches, and generated local artifacts.
 - Added explicit maintainer and governance documentation.
 - Added weekly Dependabot checks for the two Python dependency manifests and GitHub Actions.
+- Added CodeQL analysis for supported Python source.
+- Added scheduled Python dependency audits with JSON evidence and CycloneDX SBOM artifacts.
+- Added repository-wide threat-model documentation and documentation-integrity validation.
+- Added a visual gallery linking annotated guides across all current utilities.
+- Updated GitHub Actions checkout/setup-python usage to the current maintained major versions.
 
 ### Course Library Manager
 
