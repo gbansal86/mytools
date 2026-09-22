@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#ffffff"/>
+  <text x="600" y="55" text-anchor="middle" font-family="Arial" font-size="30" font-weight="bold">Three-PC LLM Cluster</text>
+  <text x="600" y="90" text-anchor="middle" font-family="Arial" font-size="17">Private wired LAN — 10 GbE recommended for distributed inference</text>
+  <rect x="430" y="135" width="340" height="100" rx="18" fill="#eef3f8" stroke="#334155" stroke-width="3"/>
+  <text x="600" y="175" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold">Ethernet Switch</text>
+  <text x="600" y="208" text-anchor="middle" font-family="Arial" font-size="18">1 / 2.5 / 10 / 25+ GbE</text>
+  <line x1="500" y1="235" x2="245" y2="340" stroke="#334155" stroke-width="5"/>
+  <line x1="600" y1="235" x2="600" y2="340" stroke="#334155" stroke-width="5"/>
+  <line x1="700" y1="235" x2="955" y2="340" stroke="#334155" stroke-width="5"/>
+  <rect x="80" y="340" width="330" height="210" rx="18" fill="#f8fafc" stroke="#334155" stroke-width="3"/>
+  <text x="245" y="385" text-anchor="middle" font-family="Arial" font-size="25" font-weight="bold">PC 1 — MAIN</text>
+  <text x="245" y="425" text-anchor="middle" font-family="Arial" font-size="18">192.168.50.11</text>
+  <text x="245" y="465" text-anchor="middle" font-family="Arial" font-size="18">LLM UI / API / llama-server</text>
+  <text x="245" y="500" text-anchor="middle" font-family="Arial" font-size="18">Local GPU + VRAM</text>
+  <rect x="435" y="340" width="330" height="210" rx="18" fill="#f8fafc" stroke="#334155" stroke-width="3"/>
+  <text x="600" y="385" text-anchor="middle" font-family="Arial" font-size="25" font-weight="bold">PC 2 — WORKER</text>
+  <text x="600" y="425" text-anchor="middle" font-family="Arial" font-size="18">192.168.50.12</text>
+  <text x="600" y="465" text-anchor="middle" font-family="Arial" font-size="18">llama.cpp RPC server</text>
+  <text x="600" y="500" text-anchor="middle" font-family="Arial" font-size="18">Remote GPU + VRAM</text>
+  <rect x="790" y="340" width="330" height="210" rx="18" fill="#f8fafc" stroke="#334155" stroke-width="3"/>
+  <text x="955" y="385" text-anchor="middle" font-family="Arial" font-size="25" font-weight="bold">PC 3 — WORKER</text>
+  <text x="955" y="425" text-anchor="middle" font-family="Arial" font-size="18">192.168.50.13</text>
+  <text x="955" y="465" text-anchor="middle" font-family="Arial" font-size="18">llama.cpp RPC server</text>
+  <text x="955" y="500" text-anchor="middle" font-family="Arial" font-size="18">Remote GPU + VRAM</text>
+  <rect x="250" y="600" width="700" height="60" rx="12" fill="#fff7ed" stroke="#9a3412" stroke-width="2"/>
+  <text x="600" y="638" text-anchor="middle" font-family="Arial" font-size="19" font-weight="bold">Keep RPC on a trusted private LAN. Never expose the experimental RPC service directly to the Internet.</text>
+</svg>
