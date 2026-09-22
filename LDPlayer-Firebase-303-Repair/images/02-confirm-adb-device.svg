@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650">
+  <rect width="1200" height="650" fill="#f5f7fb"/>
+  <rect x="30" y="25" width="1140" height="600" rx="24" fill="white" stroke="#c7cfdb" stroke-width="2"/>
+  <text x="70" y="85" font-family="Segoe UI,Arial" font-size="34" font-weight="700" fill="#172033">Step 2 — Confirm ADB can see LDPlayer</text>
+  <text x="70" y="125" font-family="Segoe UI,Arial" font-size="22" fill="#475569">Open Command Prompt while LDPlayer is running.</text>
+
+  <rect x="70" y="165" width="1060" height="350" rx="16" fill="#101318"/>
+  <rect x="70" y="165" width="1060" height="45" rx="16" fill="#252a33"/>
+  <text x="95" y="195" font-family="Consolas,monospace" font-size="18" fill="#d1d5db">Command Prompt</text>
+  <text x="95" y="260" font-family="Consolas,monospace" font-size="22" fill="#f3f4f6">"C:\LDPlayer\LDPlayer9\adb.exe" devices</text>
+  <text x="95" y="330" font-family="Consolas,monospace" font-size="22" fill="#f3f4f6">List of devices attached</text>
+  <rect x="85" y="355" width="500" height="65" rx="8" fill="#19321f" stroke="#4ade80" stroke-width="3"/>
+  <text x="105" y="397" font-family="Consolas,monospace" font-size="25" font-weight="700" fill="#86efac">emulator-5554    device</text>
+
+  <path d="M650 390 L790 390" stroke="#e11d48" stroke-width="6"/>
+  <polygon points="790,390 768,377 768,403" fill="#e11d48"/>
+  <text x="815" y="380" font-family="Segoe UI,Arial" font-size="24" font-weight="700" fill="#e11d48">Success</text>
+  <text x="815" y="415" font-family="Segoe UI,Arial" font-size="19" fill="#f8fafc">The important word is “device”.</text>
+
+  <text x="70" y="565" font-family="Segoe UI,Arial" font-size="20" fill="#475569">The number may be different (for example emulator-5556). That is OK.</text>
+</svg>
