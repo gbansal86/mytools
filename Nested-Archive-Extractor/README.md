@@ -76,6 +76,41 @@ Run_Nested_Archive_Extractor.cmd
 
 No Python installation is required.
 
+## Visual step-by-step guide
+
+### Step 1 — Start the tool
+
+Open the extracted `Nested-Archive-Extractor` folder and double-click `Run_Nested_Archive_Extractor_v3.cmd`.
+
+![Step 1 - Launch Nested Archive Extractor](docs/images/01-launch-tool.svg)
+
+### Step 2 — Select files, output folder, and settings
+
+1. Add one or more archive files, add a folder, or paste full paths.
+2. Choose the destination where final extracted files should be saved.
+3. Confirm the 7-Zip executable. The tool normally finds `7z.exe` automatically.
+4. Keep **Include subfolders** enabled when scanning folders if required.
+5. Leave **Maximum archive nesting** at 8 unless you know your archives are nested more deeply.
+6. Click **START EXTRACTION**.
+
+![Step 2 - Annotated GUI](docs/images/02-gui-setup.svg)
+
+### Step 3 — Watch progress and check the result
+
+The lower results pane shows each extraction stage. The same messages are written to a TXT report in the selected output folder.
+
+- `OUTER` = an input archive is being processed.
+- `UNWRAP` = a single-file compression wrapper such as ZST was opened and another archive was detected inside.
+- `NESTED` = another archive was found inside the current archive.
+- `FILE` = a final non-archive file was produced.
+- `OK` = that archive chain completed successfully.
+- `PARTIAL` or `FAILED` = check the report for the failed layer.
+- `RECOVER` = temporary working files were kept so they can be inspected.
+
+![Step 3 - Results and report](docs/images/03-results-guide.svg)
+
+> **Tip:** For archives with very long names, choose a short output path such as `E:\Extracted` to reduce Windows path-length problems.
+
 ## How to use
 
 1. Click **Add files...** to select one or more archive files.
