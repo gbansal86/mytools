@@ -16,3 +16,8 @@ Beginner-friendly Windows/LDPlayer repair toolkit for ADB, emulator networking, 
 
 See: [LDPlayer-Firebase-303-Repair](./LDPlayer-Firebase-303-Repair/)
 
+### USB Port Explorer Pro
+
+Beginner-friendly Windows USB topology viewer with a plain-English Easy Summary, physical-port labeling, driver/PnP details, read-only Windows USB hub protocol queries, and current link-speed clues.
+
+See: [USB-Port-Explorer-Pro](./USB-Port-Explorer-Pro/)
