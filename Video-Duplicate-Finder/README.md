@@ -1,5 +1,7 @@
 # Video Duplicate Finder
 
+> **New here?** Start with the short, non-technical [START_HERE.md](START_HERE.md) guide. It gives the exact order to click/run things and uses the annotated images below.
+
 A beginner-friendly Windows tool for finding videos that contain the **same or almost the same visual content** even when their file size, resolution, bitrate, filename, codec, or container is different.
 
 It also includes a local browser review page so you can play duplicate candidates side by side, mark unwanted copies, and move the selected files to the **Windows Recycle Bin**.
