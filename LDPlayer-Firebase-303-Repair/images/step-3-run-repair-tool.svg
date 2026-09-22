@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800">
+
+<style>
+  .bg{fill:#f7f9fc}.panel{fill:#fff;stroke:#d8e0ec;stroke-width:2}
+  .top{fill:#17213a}.title{font:700 38px Arial,sans-serif;fill:#fff}
+  .sub{font:20px Arial,sans-serif;fill:#dbe5ff}
+  .h{font:700 24px Arial,sans-serif;fill:#14213d}.t{font:18px Arial,sans-serif;fill:#334155}
+  .small{font:16px Arial,sans-serif;fill:#475569}.mono{font:18px Consolas,monospace;fill:#e2e8f0}
+  .num{fill:#2563eb}.numt{font:700 24px Arial,sans-serif;fill:#fff;text-anchor:middle}
+  .hi{fill:#fff4bf;stroke:#f2b705;stroke-width:3}.ok{fill:#eaf8ef;stroke:#22a35a;stroke-width:2}
+  .warn{fill:#fff5e8;stroke:#f59e0b;stroke-width:2}.code{fill:#111827;stroke:#334155;stroke-width:2}
+  .blue{fill:#2563eb}.green{fill:#159447}.red{fill:#dc3545}.muted{fill:#64748b}
+  .arrow{stroke:#f2b705;stroke-width:7;fill:none;marker-end:url(#arrow)}
+</style>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f2b705"/></marker></defs>
+<rect class="bg" width="1400" height="800"/><rect class="top" width="1400" height="120"/>
+<text class="title" x="42" y="55">Step 3 — Run the one-click repair tool</text>
+<text class="sub" x="42" y="91">The included launcher performs the Windows + Android/Firebase repair automatically.</text>
+<rect class="panel" x="40" y="150" width="1320" height="585" rx="18"/>
+<circle class="num" cx="95" cy="225" r="31"/><text class="numt" x="95" y="234">1</text>
+<text class="h" x="145" y="220">Open the downloaded folder</text>
+<text class="t" x="145" y="252">LDPlayer-Firebase-303-Repair</text>
+<circle class="num" cx="95" cy="335" r="31"/><text class="numt" x="95" y="344">2</text>
+<text class="h" x="145" y="328">Double-click:</text>
+<rect class="hi" x="325" y="292" width="580" height="60" rx="8"/>
+<text x="350" y="330" style="font:700 21px Consolas;fill:#14213d">Run_LDPlayer_Firebase_303_Repair.cmd</text>
+<circle class="num" cx="95" cy="445" r="31"/><text class="numt" x="95" y="454">3</text>
+<text class="h" x="145" y="438">Accept the Administrator / UAC prompt</text>
+<text class="t" x="145" y="470">Required for the basic Windows repair steps.</text>
+<circle class="num" cx="95" cy="565" r="31"/><text class="numt" x="95" y="574">4</text>
+<text class="h" x="145" y="550">Answer the on-screen questions</text>
+<text class="t" x="145" y="584">Google-service cleanup is optional and explained before it runs.</text>
+<text class="t" x="145" y="616">You can leave the affected app package blank if you do not know it.</text>
+<rect class="code" x="955" y="185" width="355" height="305" rx="12"/>
+<text x="980" y="225" style="font:700 22px Arial;fill:#fff">What the script fixes</text>
+<text class="small" x="980" y="270" style="fill:#dbe5ff">✓ Windows proxy / DNS cache</text>
+<text class="small" x="980" y="310" style="fill:#dbe5ff">✓ Windows time sync</text>
+<text class="small" x="980" y="350" style="fill:#dbe5ff">✓ ADB connectivity</text>
+<text class="small" x="980" y="390" style="fill:#dbe5ff">✓ Android proxy / Private DNS</text>
+<text class="small" x="980" y="430" style="fill:#dbe5ff">✓ Android automatic time</text>
+<text class="small" x="980" y="470" style="fill:#dbe5ff">✓ Google/Firebase local state</text>
+<rect class="warn" x="955" y="520" width="355" height="145" rx="12"/>
+<text class="h" x="980" y="557">Possible sign-in prompt</text>
+<text class="small" x="980" y="592">If Google service data is cleared,</text>
+<text class="small" x="980" y="622">Google Play may ask you to sign in again.</text>
+<rect class="ok" x="145" y="660" width="760" height="52" rx="10"/>
+<text x="172" y="693" style="font:700 20px Arial;fill:#137a42">Do not close LDPlayer while the script is repairing Android.</text>
+</svg>
