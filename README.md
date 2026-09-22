@@ -51,3 +51,10 @@ See: [Nuditag-NSFW-Video-Scanner](./Nuditag-NSFW-Video-Scanner/)
 Beginner-friendly Windows BAT/PowerShell toolkit for diagnosing why a PC is slow, checking SSD/NVMe/HDD and other hardware-health signals, correlating WHEA/device/Windows evidence, creating a conservative repair plan, previewing repairs in dry-run mode, and comparing performance before vs. after.
 
 See: [Windows-PC-Performance-Recovery](./Windows-PC-Performance-Recovery/)
+
+
+### Telegram Local Downloader for Windows
+
+Beginner-friendly Windows/Python utility for downloading document/video media from Telegram channels that the signed-in account can already access. It creates organized local folders, a CSV report, and an optional searchable offline HTML archive. The public source package includes credential/session protections, a pre-publication privacy checker, annotated setup diagrams, and an MIT license.
+
+See: [Telegram-Local-Downloader-Windows](./Telegram-Local-Downloader-Windows/)

@@ -9,7 +9,7 @@ A beginner-friendly Windows utility for downloading **videos and document files 
 ## What this tool does
 
 - Reads a simple `channels.txt` list.
-- Resolves public channel usernames/links, numeric IDs, or exact titles of channels your account can already access.
+- Resolves public channel usernames/links or exact titles of channels your account can already access.
 - Scans the accessible message history.
 - Downloads Telegram **documents** and **videos** to organized local folders.
 - Skips files that are already present with the expected size.
@@ -75,7 +75,6 @@ Put **one channel per line**. Supported examples:
 @public_channel_username
 https://t.me/public_channel_username
 Exact title of a channel already joined
--1001234567890
 ```
 
 Do not upload your real `channels.txt` to a public repository when it reveals private memberships.
@@ -106,7 +105,9 @@ On the first run the BAT file will:
 
 When prompted, enter your Telegram API ID and API hash. Telethon may then ask for your Telegram login information, verification code, and two-step-verification password if your account uses one.
 
-You can choose whether to save API credentials locally in `telegram_settings.json`. That file is ignored by Git and **must remain private**.
+The public build does **not automatically save your API hash**. If you do not configure credentials privately, it prompts for the API ID/hash when the program starts.
+
+Advanced users may either set the `TG_API_ID` and `TG_API_HASH` environment variables or manually copy `telegram_settings.example.json` to `telegram_settings.json` and fill in their own values. The real settings file is Git-ignored and must remain private.
 
 The authenticated Telegram session is stored locally as `telegram_session.session`. Treat this session file like a credential.
 
@@ -274,7 +275,7 @@ Try one of these forms:
 1. `@public_username`
 2. `https://t.me/public_username`
 3. Exact title as shown in your Telegram dialog list
-4. Known numeric channel ID
+4. Exact title as shown in your Telegram dialog list
 
 Invite links are intentionally not used for automatic joining.
 
@@ -311,6 +312,9 @@ Telegram-Local-Downloader-Windows/
 ├─ START_DOWNLOAD.bat
 ├─ PREPUBLISH_CHECK.bat
 ├─ telegram_download.py
+├─ telegram_config.py
+├─ telegram_media.py
+├─ telegram_progress.py
 ├─ channel_html_export.py
 ├─ prepublish_check.py
 ├─ download_options.json

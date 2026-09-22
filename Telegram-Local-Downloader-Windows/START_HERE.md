@@ -47,9 +47,9 @@ The first run creates a local `.venv` and installs Telethon inside it. This keep
 
 ## 6. Sign in to Telegram
 
-Enter the requested API ID/hash. Telethon may request your Telegram verification code and, when enabled on your account, your two-step-verification password.
+Enter the requested API ID/hash. The public build does not automatically write your API hash to disk. Telethon may request your Telegram verification code and, when enabled on your account, your two-step-verification password.
 
-After a successful login, `telegram_session.session` is created. Keep it private.
+After a successful login, `telegram_session.session` is created. Keep it private. Advanced users can supply API credentials through `TG_API_ID` / `TG_API_HASH`, or create a private Git-ignored `telegram_settings.json` from the example file.
 
 ## 7. Wait for scan/download activity
 

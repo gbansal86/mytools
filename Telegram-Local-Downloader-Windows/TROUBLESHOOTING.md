@@ -35,7 +35,7 @@ Try, in this order:
 1. Public `@username`.
 2. Public `https://t.me/...` link.
 3. Exact channel title shown in your Telegram dialog list.
-4. Known numeric channel ID.
+4. Exact channel title shown in your Telegram dialog list.
 
 The tool does not use invite links to auto-join channels.
 
