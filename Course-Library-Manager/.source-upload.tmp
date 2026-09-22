@@ -610,4 +610,337 @@ function Invoke-RenameApply {
             return
         }
 
-        $blocked = @($plan | Where-Object {$_.Status -like "SKIP_*"
+        $blocked = @($plan | Where-Object {$_.Status -like "SKIP_*"}).Count
+        $msg = "Rename $(@($toRename).Count) folder(s)?`r`n`r`nFiles will NOT be renamed.`r`nAn undo log will be created.`r`nBlocked/colliding folders: $blocked"
+        if (-not (Confirm-Action $msg "Apply Folder Renames")) {
+            Write-UiLog "Rename cancelled by user." "WARN"
+            return
+        }
+
+        $stamp = Get-Timestamp
+        $undoPath = Join-Path $root.FullName ($Script:UndoPrefix + $stamp + ".json")
+        $applyPath = Join-Path $root.FullName ($Script:ApplyPrefix + $stamp + ".csv")
+        $done = [System.Collections.Generic.List[object]]::new()
+        $results = [System.Collections.Generic.List[object]]::new()
+
+        $i = 0
+        foreach ($r in $plan) {
+            if ($r.Status -ne "RENAME") { continue }
+            $i++
+            Set-UiStatus ("Renaming {0}/{1}: {2}" -f $i,@($toRename).Count,$r.OldName) ([int](100*$i/[Math]::Max(1,@($toRename).Count)))
+
+            $status = "NOT_RUN"
+            $reason = ""
+            try {
+                if (-not (Test-Path -LiteralPath $r.Source)) {
+                    $status = "SKIPPED"
+                    $reason = "Source no longer exists."
+                }
+                elseif ((Test-Path -LiteralPath $r.Destination) -and ($r.Source.ToLowerInvariant() -ne $r.Destination.ToLowerInvariant())) {
+                    $status = "SKIPPED"
+                    $reason = "Destination exists at apply time."
+                }
+                else {
+                    Rename-DirectoryCaseSafe -Source $r.Source -Destination $r.Destination
+                    $status = "RENAMED"
+                    $done.Add([pscustomobject]@{ Source=$r.Source; Destination=$r.Destination })
+                    Write-UiLog "$($r.OldName) -> $($r.NewName)" "OK"
+                }
+            } catch {
+                $status = "ERROR"
+                $reason = $_.Exception.Message
+                Write-UiLog "Could not rename '$($r.Source)': $reason" "ERROR"
+            }
+
+            $results.Add([pscustomobject]@{
+                Status=$status
+                Depth=$r.Depth
+                OldName=$r.OldName
+                NewName=$r.NewName
+                Source=$r.Source
+                Destination=$r.Destination
+                Reason=$reason
+            })
+
+            [pscustomobject]@{
+                Root       = $root.FullName
+                Created    = (Get-Date).ToString("s")
+                Operations = $done.ToArray()
+            } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $undoPath -Encoding UTF8
+        }
+
+        $results | Export-Csv -LiteralPath $applyPath -NoTypeInformation -Encoding UTF8
+        Set-UiStatus "Folder rename completed" 100
+        Write-UiLog "Rename finished. $($done.Count) folder(s) renamed." "OK"
+        Write-UiLog "Undo log: $undoPath"
+        Show-Info ("Finished.`r`n`r`nRenamed: {0}`r`nUndo log:`r`n{1}`r`n`r`nApply report:`r`n{2}" -f $done.Count,$undoPath,$applyPath)
+    } catch {
+        Write-UiLog $_.Exception.Message "ERROR"
+        Set-UiStatus "Rename failed" 0
+        Show-Warning $_.Exception.Message
+    }
+}
+
+function Invoke-RenameUndo {
+    try {
+        $root = Get-SelectedRoot
+        $latest = Get-ChildItem -LiteralPath $root.FullName -File -Filter ($Script:UndoPrefix + "*.json") |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+
+        if (-not $latest) {
+            Show-Info "No rename undo log was found in the selected root."
+            return
+        }
+
+        $data = Get-Content -LiteralPath $latest.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
+        $ops = @($data.Operations)
+        if (@($ops).Count -eq 0) {
+            Show-Info "The latest undo log contains no completed rename operations."
+            return
+        }
+
+        if (-not (Confirm-Action ("Undo {0} folder rename(s)?`r`n`r`nLog:`r`n{1}" -f @($ops).Count,$latest.FullName) "Undo Folder Renames")) {
+            return
+        }
+
+        $undone = 0
+        $rev = @($ops)
+        [array]::Reverse($rev)
+
+        foreach ($op in $rev) {
+            $original = [string]$op.Source
+            $renamed = [string]$op.Destination
+
+            try {
+                if (-not (Test-Path -LiteralPath $renamed)) {
+                    Write-UiLog "Undo skip - current path is missing: $renamed" "WARN"
+                    continue
+                }
+
+                if ((Test-Path -LiteralPath $original) -and ($original.ToLowerInvariant() -ne $renamed.ToLowerInvariant())) {
+                    Write-UiLog "Undo skip - original path already exists: $original" "WARN"
+                    continue
+                }
+
+                Rename-DirectoryCaseSafe -Source $renamed -Destination $original
+                $undone++
+                Write-UiLog "UNDO: $(Split-Path -Leaf $renamed) -> $(Split-Path -Leaf $original)" "OK"
+            } catch {
+                Write-UiLog "Undo error for '$renamed': $($_.Exception.Message)" "ERROR"
+            }
+        }
+
+        Set-UiStatus "Undo completed" 100
+        Show-Info "Undo completed. Restored $undone folder name(s)."
+    } catch {
+        Write-UiLog $_.Exception.Message "ERROR"
+        Set-UiStatus "Undo failed" 0
+        Show-Warning $_.Exception.Message
+    }
+}
+
+# ----------------------------- CATALOG HELPERS -----------------------------
+
+function Get-WebPath {
+    param([string]$RelativeWindowsPath)
+
+    $segments = $RelativeWindowsPath -split "[\\/]"
+    $encoded = foreach ($seg in $segments) {
+        if ($seg -eq "..") { ".." }
+        elseif ($seg -eq ".") { "." }
+        else { [Uri]::EscapeDataString($seg) }
+    }
+    return ($encoded -join "/")
+}
+
+function Get-RelativePathCompat {
+    param(
+        [string]$BaseDirectory,
+        [string]$TargetPath
+    )
+
+    $base = [System.IO.Path]::GetFullPath($BaseDirectory).TrimEnd('\') + "\"
+    $target = [System.IO.Path]::GetFullPath($TargetPath)
+
+    $baseUri = New-Object System.Uri($base)
+    $targetUri = New-Object System.Uri($target)
+    $relUri = $baseUri.MakeRelativeUri($targetUri)
+    return [Uri]::UnescapeDataString($relUri.ToString()).Replace("/", "\")
+}
+
+function Convert-SrtToVtt {
+    param(
+        [string]$SrtPath,
+        [string]$VttPath
+    )
+
+    try {
+        $content = Get-Content -LiteralPath $SrtPath -Raw -Encoding UTF8
+    } catch {
+        # Some old subtitle files may use ANSI/default encoding.
+        $content = Get-Content -LiteralPath $SrtPath -Raw
+    }
+
+    $content = $content -replace "^\uFEFF", ""
+    $content = $content -replace "(\d{1,2}:\d{2}:\d{2}),(\d{3})", '$1.$2'
+    $content = $content -replace "(\d{1,2}:\d{2}),(\d{3})", '$1.$2'
+
+    $vtt = "WEBVTT`r`n`r`n" + $content.Trim() + "`r`n"
+    $parent = Split-Path -Parent $VttPath
+    if (-not (Test-Path -LiteralPath $parent)) {
+        New-Item -ItemType Directory -Path $parent -Force | Out-Null
+    }
+    Set-Content -LiteralPath $VttPath -Value $vtt -Encoding UTF8
+}
+
+function Get-StableId {
+    param([string]$Text)
+    $sha = [System.Security.Cryptography.SHA1]::Create()
+    try {
+        $bytes = [Text.Encoding]::UTF8.GetBytes($Text.ToLowerInvariant())
+        $hash = $sha.ComputeHash($bytes)
+        return ([BitConverter]::ToString($hash).Replace("-","").Substring(0,16).ToLowerInvariant())
+    } finally {
+        $sha.Dispose()
+    }
+}
+
+function Get-ExternalTool {
+    param([string]$Name)
+
+    $cmd = Get-Command $Name -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+
+    $localCandidates = @(
+        (Join-Path $Script:ScriptDir ($Name + ".exe")),
+        (Join-Path $Script:ScriptDir ("tools\" + $Name + ".exe")),
+        (Join-Path $Script:ScriptDir ("tools\ffmpeg\bin\" + $Name + ".exe")),
+        (Join-Path $Script:ScriptDir ("ffmpeg\bin\" + $Name + ".exe"))
+    )
+    foreach ($c in $localCandidates) {
+        if (Test-Path -LiteralPath $c) { return $c }
+    }
+    return $null
+}
+
+
+function Refresh-ProcessPath {
+    try {
+        $machine = [Environment]::GetEnvironmentVariable("Path","Machine")
+        $user = [Environment]::GetEnvironmentVariable("Path","User")
+        $env:Path = (($machine,$user) -join ";").Trim(";")
+    } catch {}
+}
+
+function Test-MediaComponents {
+    $ffmpeg = Get-ExternalTool "ffmpeg"
+    $ffprobe = Get-ExternalTool "ffprobe"
+    return [pscustomobject]@{
+        FFmpeg = $ffmpeg
+        FFprobe = $ffprobe
+        Ready = [bool]($ffmpeg -and $ffprobe)
+    }
+}
+
+
+function Format-ByteSize {
+    param([double]$Bytes)
+    if ($Bytes -ge 1GB) { return ("{0:N2} GB" -f ($Bytes / 1GB)) }
+    if ($Bytes -ge 1MB) { return ("{0:N1} MB" -f ($Bytes / 1MB)) }
+    if ($Bytes -ge 1KB) { return ("{0:N1} KB" -f ($Bytes / 1KB)) }
+    return ("{0:N0} B" -f $Bytes)
+}
+
+function Format-Eta {
+    param([double]$Seconds)
+    # Double.IsFinite is not available on every .NET Framework used by
+    # Windows PowerShell 5.1. Use the older compatible checks instead.
+    if ([double]::IsNaN($Seconds) -or [double]::IsInfinity($Seconds) -or $Seconds -lt 0) { return "--" }
+    $ts = [TimeSpan]::FromSeconds([Math]::Round($Seconds))
+    if ($ts.TotalHours -ge 1) {
+        return ("{0}h {1}m" -f [int]$ts.TotalHours,$ts.Minutes)
+    }
+    if ($ts.TotalMinutes -ge 1) {
+        return ("{0}m {1}s" -f $ts.Minutes,$ts.Seconds)
+    }
+    return ("{0}s" -f [Math]::Max(0,$ts.Seconds))
+}
+
+function Invoke-DownloadWithProgress {
+    param(
+        [Parameter(Mandatory=$true)][string]$Uri,
+        [Parameter(Mandatory=$true)][string]$Destination,
+        [string]$DisplayName = "Download",
+        [int]$ConnectTimeoutSeconds = 35,
+        [int]$ReadTimeoutSeconds = 45
+    )
+
+    $partPath = $Destination + ".part"
+    Remove-Item -LiteralPath $partPath -Force -ErrorAction SilentlyContinue
+
+    $request = $null
+    $response = $null
+    $input = $null
+    $output = $null
+
+    try {
+        Write-UiLog ("Connecting to: " + $Uri)
+        Set-UiStatus ("Connecting for " + $DisplayName + "...") 0
+
+        # HttpWebRequest works on Windows PowerShell 5.1 and lets us stream
+        # the response so the GUI can show real download progress.
+        $request = [System.Net.HttpWebRequest]::Create($Uri)
+        $request.Method = "GET"
+        $request.AllowAutoRedirect = $true
+        $request.Timeout = $ConnectTimeoutSeconds * 1000
+        $request.ReadWriteTimeout = $ReadTimeoutSeconds * 1000
+        $request.UserAgent = "Mozilla/5.0 CourseLibraryManager/$($Script:AppVersion)"
+        $request.KeepAlive = $false
+
+        $response = $request.GetResponse()
+        $totalBytes = [double]$response.ContentLength
+        $input = $response.GetResponseStream()
+
+        try {
+            if ($input.CanTimeout) {
+                $input.ReadTimeout = $ReadTimeoutSeconds * 1000
+            }
+        } catch {}
+
+        $output = New-Object System.IO.FileStream(
+            $partPath,
+            [System.IO.FileMode]::Create,
+            [System.IO.FileAccess]::Write,
+            [System.IO.FileShare]::None
+        )
+
+        $buffer = New-Object byte[] (1024 * 1024)
+        [double]$downloaded = 0
+        $sw = [System.Diagnostics.Stopwatch]::StartNew()
+        $lastUi = [DateTime]::MinValue
+        $lastLoggedPct = -10
+        $lastDataAt = [DateTime]::UtcNow
+
+        while ($true) {
+            try {
+                $read = $input.Read($buffer, 0, $buffer.Length)
+            } catch {
+                throw "Download stalled or timed out while reading data: $($_.Exception.Message)"
+            }
+
+            if ($read -le 0) { break }
+
+            $lastDataAt = [DateTime]::UtcNow
+            $output.Write($buffer, 0, $read)
+            $downloaded += $read
+
+            # Refresh the UI at most ~5 times/sec.
+            if (((Get-Date) - $lastUi).TotalMilliseconds -ge 180) {
+                $lastUi = Get-Date
+                $elapsed = [Math]::Max(0.1, $sw.Elapsed.TotalSeconds)
+                $speed = $downloaded / $elapsed
+
+                if ($totalBytes -gt 0) {
+                    $pct = [Math]::Min(100, [int][Math]::Floor(($downloaded * 100.0) / $totalBytes))
+                  
