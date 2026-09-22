@@ -1,60 +1,89 @@
-# mytools
+# MyTools
 
-Small utilities and helper tools.
+[![Repository validation](https://github.com/gbansal86/mytools/actions/workflows/validate.yml/badge.svg)](https://github.com/gbansal86/mytools/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-## Available tools
+**MyTools** is an open-source collection of practical Windows utilities for diagnostics, local data management, media/file maintenance, automation, and technical workflows that are often difficult for non-specialist users to perform safely.
 
-### Book Duplicate Finder
+The repository intentionally keeps related small utilities together so they can share documentation standards, safety practices, contribution rules, validation, and maintenance processes while remaining independently usable from their own folders.
 
-Windows/Python content-aware duplicate finder for PDF, EPUB, CHM, DJVU, MOBI/AZW, DOCX, text, and comic-book archives. It can detect exact duplicates and near-duplicates even when filenames, sizes, formats, compression, or page counts differ. It creates HTML/CSV review reports and never deletes source books automatically.
+## Project goals
 
-See: [Book-Duplicate-Finder](./Book-Duplicate-Finder/)
+MyTools is built around five principles:
 
-### Video Duplicate Finder
+1. **Useful before clever** — solve concrete desktop and local-data problems with understandable tools.
+2. **Beginner-friendly operation** — provide quick starts, annotated guides, examples, and plain-English explanations.
+3. **Safety by default** — prefer read-only inspection, dry runs, explicit confirmation, Recycle Bin workflows, or clearly documented destructive steps.
+4. **Local-first where practical** — keep processing on the user's computer unless a tool explicitly requires an external service.
+5. **Maintainable open source** — keep source, licensing, validation, security guidance, release practices, and contribution paths visible.
 
-Beginner-friendly Windows/Python tool for finding re-encoded or near-duplicate videos with different file sizes, resolutions, bitrates, codecs, containers, or small timing shifts. It uses perceptual frame hashing, creates CSV/text reports, and includes a local browser review grid that can move selected copies to the Windows Recycle Bin.
+## Included tools
 
-See: [Video-Duplicate-Finder](./Video-Duplicate-Finder/)
+| Tool | What it does | Main technologies |
+|---|---|---|
+| [Book Duplicate Finder](./Book-Duplicate-Finder/) | Finds exact and near-duplicate books/documents across multiple formats and produces review reports. | Python, Windows |
+| [Video Duplicate Finder](./Video-Duplicate-Finder/) | Detects re-encoded or near-duplicate videos using perceptual sampling and provides a browser review workflow. | Python, FFmpeg, Windows |
+| [Windows PC Performance Recovery](./Windows-PC-Performance-Recovery/) | Collects diagnostics, analyzes performance/hardware-health signals, supports dry-run repairs, and compares before/after results. | PowerShell, BAT, Windows |
+| [USB Port Explorer Pro](./USB-Port-Explorer-Pro/) | Explains USB topology, devices, drivers, ports, protocol clues, and practical speed/port guidance. | PowerShell, Windows |
+| [Telegram Local Downloader](./Telegram-Local-Downloader-Windows/) | Downloads media the signed-in Telegram account can already access and creates organized local reports/archives. | Python, Telegram API, Windows |
+| [Nuditag NSFW Video Scanner](./Nuditag-NSFW-Video-Scanner/) | Wraps Nuditag for configurable local video scanning with resumable reports and a dry-run-first organizer. | Python, Nuditag, Windows |
+| [Nested Archive Extractor](./Nested-Archive-Extractor/) | Recursively extracts archives inside archives, including extensionless inner archives and Zstandard wrappers. | PowerShell, Windows |
+| [ZIP Bulk Extractor](./ZIP-Bulk-Extractor/) | Extracts many ZIP files with beginner-oriented safe modes and no third-party dependency. | BAT, Windows |
+| [3-PC LLM Cluster](./3-PC-LLM-Cluster/) | Documents and checks a small multi-PC setup for distributed/local LLM experimentation. | PowerShell, llama.cpp-oriented examples |
+| [LDPlayer Firebase #303 / Internet Repair](./LDPlayer-Firebase-303-Repair/) | Diagnoses common LDPlayer ADB/network/Google-services issues related to connectivity and Firebase token failures. | BAT, ADB, Windows |
 
-### ZIP Bulk Extractor
+Each tool folder is intended to be understandable on its own and contains its own README and MIT license.
 
-Beginner-friendly Windows batch utility for extracting every `.zip` in a folder. Includes a safe one-folder-per-ZIP mode, a direct same-folder mode, a simple menu, visual instructions, and no third-party dependencies.
+## Safety model
 
-See: [ZIP-Bulk-Extractor](./ZIP-Bulk-Extractor/)
+The utilities operate on real local files and Windows configuration, so safety is treated as a feature rather than an afterthought.
 
-### Nested Archive Extractor
+- Scanners should not silently delete source data.
+- Destructive or repair operations should be separated from discovery/review when practical.
+- Dry-run or preview modes are preferred where a change can be risky.
+- Credentials, Telegram sessions, generated reports, caches, and machine-specific artifacts should not be committed.
+- External dependencies and third-party components should be identified and used under their own licenses.
+- Users should read the tool-specific README before running scripts with administrator privileges.
 
-Windows PowerShell GUI that recursively extracts archives inside archives, including extensionless inner archives and Zstandard (`.zst`) wrappers.
+See [SECURITY.md](./SECURITY.md) and the safety notes in each tool's documentation.
 
-See: [Nested-Archive-Extractor](./Nested-Archive-Extractor/)
+## Validation and testing
 
-### LDPlayer Firebase #303 / Internet Repair
+Repository validation runs through GitHub Actions on pushes and pull requests. The current baseline checks:
 
-Beginner-friendly Windows/LDPlayer repair toolkit for ADB, emulator networking, Google Play Services, and Firebase Installations token failures.
+- Python source files compile successfully.
+- PowerShell scripts parse without syntax errors.
+- Required root community/maintenance files exist.
+- Every top-level tool directory contains both a README and LICENSE.
 
-See: [LDPlayer-Firebase-303-Repair](./LDPlayer-Firebase-303-Repair/)
+These checks are intentionally dependency-light so contributors can get quick feedback. Tool-specific functional tests and manual validation remain important where scripts depend on Windows hardware, ADB, Telegram, FFmpeg, or other external programs.
 
-### USB Port Explorer Pro
+See [TESTING.md](./TESTING.md).
 
-Beginner-friendly Windows USB topology viewer with a plain-English Easy Summary, physical-port labeling, driver/PnP details, read-only Windows USB hub protocol queries, and current link-speed clues.
+## Contributing
 
-See: [USB-Port-Explorer-Pro](./USB-Port-Explorer-Pro/)
+Issues, documentation improvements, bug fixes, portability improvements, tests, and carefully scoped new utilities are welcome.
 
-### Nuditag NSFW Video Scanner
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting a pull request. For support questions, see [SUPPORT.md](./SUPPORT.md). Security-sensitive reports should follow [SECURITY.md](./SECURITY.md).
 
-Beginner-friendly Windows wrapper around ICIJ/Nuditag with multi-drive search paths, excluded-directory pruning, videos-only scoring, resumable CSV reports, and an optional dry-run-first mover that organizes reviewed flagged videos into `NSFW` subfolders.
+## Maintenance and releases
 
-See: [Nuditag-NSFW-Video-Scanner](./Nuditag-NSFW-Video-Scanner/)
+The repository uses a shared maintenance model while allowing each tool to evolve independently.
 
-### Windows PC Performance & Hardware Health Recovery
+- Changes should be reviewable and scoped.
+- User-visible changes should be documented.
+- Release tags should use semantic-style versions where practical.
+- Release notes should state the affected tool(s), major changes, testing performed, dependencies, and known limitations.
+- Significant behavior changes should include migration or rollback notes when relevant.
 
-Beginner-friendly Windows BAT/PowerShell toolkit for diagnosing why a PC is slow, checking SSD/NVMe/HDD and other hardware-health signals, correlating WHEA/device/Windows evidence, creating a conservative repair plan, previewing repairs in dry-run mode, and comparing performance before vs. after.
+See [RELEASING.md](./RELEASING.md), [CHANGELOG.md](./CHANGELOG.md), and [ROADMAP.md](./ROADMAP.md).
 
-See: [Windows-PC-Performance-Recovery](./Windows-PC-Performance-Recovery/)
+## Open-source project overview
 
+For a concise explanation of the repository's scope, maintenance model, quality practices, safety approach, and ecosystem goals, see [OSS_PROJECT_OVERVIEW.md](./OSS_PROJECT_OVERVIEW.md).
 
-### Telegram Local Downloader for Windows
+## License
 
-Beginner-friendly Windows/Python utility for downloading document/video media from Telegram channels that the signed-in account can already access. It creates organized local folders, a CSV report, and an optional searchable offline HTML archive. The public source package includes credential/session protections, a pre-publication privacy checker, annotated setup diagrams, and an MIT license.
+The repository is licensed under the [MIT License](./LICENSE). Individual tool folders also include MIT license files for clarity when a tool is downloaded or copied independently.
 
-See: [Telegram-Local-Downloader-Windows](./Telegram-Local-Downloader-Windows/)
+Third-party software, libraries, models, binaries, and services referenced by a tool remain subject to their own licenses and terms.

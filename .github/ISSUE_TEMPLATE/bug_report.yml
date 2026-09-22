@@ -1,0 +1,68 @@
+name: Bug report
+description: Report reproducible incorrect behavior in a MyTools utility.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Tool
+      description: Which tool is affected?
+      options:
+        - 3-PC-LLM-Cluster
+        - Book-Duplicate-Finder
+        - LDPlayer-Firebase-303-Repair
+        - Nested-Archive-Extractor
+        - Nuditag-NSFW-Video-Scanner
+        - Telegram-Local-Downloader-Windows
+        - USB-Port-Explorer-Pro
+        - Video-Duplicate-Finder
+        - Windows-PC-Performance-Recovery
+        - ZIP-Bulk-Extractor
+        - Repository / documentation / CI
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: "Example: Windows 11 24H2"
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Use non-sensitive sample data. Do not paste credentials, tokens, Telegram sessions, or private files.
+      placeholder: |
+        1. Run ...
+        2. Choose ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Relevant dependency versions
+      description: Python, PowerShell, FFmpeg, ADB, LDPlayer, Nuditag, or other versions as applicable.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error/log excerpt
+      description: Remove usernames, private paths, tokens, session data, and other secrets.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checks
+      options:
+        - label: I removed credentials, private data, and personal file paths from this report.
+          required: true
+        - label: I checked the affected tool's README/troubleshooting guidance first.
+          required: true

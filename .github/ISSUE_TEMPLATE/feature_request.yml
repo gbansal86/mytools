@@ -1,0 +1,47 @@
+name: Feature request
+description: Propose an improvement or a carefully scoped new capability.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Area
+      options:
+        - 3-PC-LLM-Cluster
+        - Book-Duplicate-Finder
+        - LDPlayer-Firebase-303-Repair
+        - Nested-Archive-Extractor
+        - Nuditag-NSFW-Video-Scanner
+        - Telegram-Local-Downloader-Windows
+        - USB-Port-Explorer-Pro
+        - Video-Duplicate-Finder
+        - Windows-PC-Performance-Recovery
+        - ZIP-Bulk-Extractor
+        - Repository-wide
+        - New tool proposal
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: Describe the user problem rather than only the desired implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety, privacy, compatibility, and dependencies
+      description: Explain file-changing behavior, elevation, credentials, external services, new dependencies, or compatibility concerns.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

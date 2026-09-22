@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+credentials.json
+secrets.json
+
+# Telegram runtime/session data
+*.session
+*.session-journal
+
+# Local databases/caches
+*.sqlite
+*.sqlite3
+*.db
+*.cache
+
+# Common generated reports/logs
+*.log
+Thumbs.db
+.DS_Store
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+~$*
