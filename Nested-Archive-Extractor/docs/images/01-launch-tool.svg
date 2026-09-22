@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+<style>
+text{font-family:'Segoe UI',Arial,sans-serif;fill:#172033}.title{font-size:42px;font-weight:700;fill:white}.sub{font-size:23px;fill:#eaf4ff}.h{font-size:30px;font-weight:700}.t{font-size:23px}.small{font-size:19px}.num{font-size:26px;font-weight:700;fill:white}.call{font-size:22px;font-weight:600}.mono{font-family:Consolas,monospace;font-size:20px}
+</style>
+<rect width="1400" height="760" fill="#f5f9fd"/>
+<rect x="0" y="0" width="1400" height="120" fill="#145da0"/>
+<text x="45" y="58" class="title">Nested Archive Extractor — Step 1: Start the Tool</text>
+<text x="45" y="94" class="sub">Open the downloaded folder and launch the CMD file. No command typing is required.</text>
+
+<rect x="55" y="165" width="840" height="500" rx="14" fill="white" stroke="#b8c9d9" stroke-width="2"/>
+<rect x="55" y="165" width="840" height="58" rx="14" fill="#eaf2f8"/>
+<text x="82" y="203" class="h">Nested-Archive-Extractor</text>
+
+<text x="95" y="280" class="mono">📄  CHANGELOG.md</text>
+<text x="95" y="335" class="mono">📄  Nested_Archive_Extractor_GUI_v3.ps1</text>
+<text x="95" y="390" class="mono">📄  README.md</text>
+<rect x="78" y="420" width="745" height="66" rx="8" fill="#fff2f2" stroke="#e53935" stroke-width="4"/>
+<text x="95" y="462" class="mono">▶  Run_Nested_Archive_Extractor_v3.cmd</text>
+<text x="95" y="535" class="mono">📄  TECHNICAL_NOTES.md</text>
+
+<circle cx="965" cy="270" r="31" fill="#e53935"/><text x="956" y="279" class="num">1</text>
+<text x="1020" y="260" class="call">Double-click:</text>
+<text x="1020" y="296" class="mono">Run_Nested_Archive_Extractor_v3.cmd</text>
+<path d="M1030 325 C970 385, 900 430, 824 450" fill="none" stroke="#e53935" stroke-width="5"/>
+<polygon points="824,450 845,438 842,462" fill="#e53935"/>
+
+<circle cx="965" cy="470" r="31" fill="#145da0"/><text x="956" y="479" class="num">2</text>
+<text x="1020" y="460" class="call">The PowerShell GUI opens.</text>
+<text x="1020" y="497" class="t">You do not need to open or edit</text>
+<text x="1020" y="530" class="t">the .ps1 file manually.</text>
+
+<rect x="940" y="575" width="390" height="105" rx="12" fill="#e9f7ef" stroke="#52a66b" stroke-width="2"/>
+<text x="970" y="615" class="call">Requirement</text>
+<text x="970" y="650" class="small">7-Zip must be installed or selected.</text>
+</svg>
