@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <rect width="1200" height="520" fill="#f6f8fa"/>
+  <text x="60" y="55" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#24292f">Search paths vs excluded paths</text>
+  <text x="60" y="88" font-family="Arial, sans-serif" font-size="17" fill="#57606a">Green = searched. Red = pruned before Nuditag scores files.</text>
+  <rect x="55" y="125" rx="12" width="360" height="320" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+  <text x="85" y="165" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#1a7f37">SearchPaths.txt</text>
+  <text x="85" y="210" font-family="Consolas, monospace" font-size="22" fill="#24292f">E:\</text>
+  <text x="85" y="250" font-family="Consolas, monospace" font-size="22" fill="#24292f">C:\</text>
+  <text x="85" y="290" font-family="Consolas, monospace" font-size="22" fill="#24292f">D:\</text>
+  <text x="85" y="350" font-family="Arial, sans-serif" font-size="16" fill="#57606a">One root per line.</text>
+  <text x="85" y="380" font-family="Arial, sans-serif" font-size="16" fill="#57606a">Order is preserved.</text>
+  <rect x="455" y="125" rx="12" width="430" height="320" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+  <text x="485" y="165" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#cf222e">ExcludePaths.txt</text>
+  <text x="485" y="210" font-family="Consolas, monospace" font-size="20" fill="#24292f">E:\Nuditag</text>
+  <text x="485" y="250" font-family="Consolas, monospace" font-size="20" fill="#24292f">C:\Windows</text>
+  <text x="485" y="290" font-family="Consolas, monospace" font-size="20" fill="#24292f">D:\Backup</text>
+  <text x="485" y="330" font-family="Consolas, monospace" font-size="20" fill="#24292f">E:\Family Videos</text>
+  <text x="485" y="385" font-family="Arial, sans-serif" font-size="16" fill="#57606a">Each entry removes its whole subtree.</text>
+  <text x="920" y="205" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#24292f">Result</text>
+  <text x="920" y="250" font-family="Arial, sans-serif" font-size="18" fill="#1a7f37">✓ Other E:\ videos</text>
+  <text x="920" y="285" font-family="Arial, sans-serif" font-size="18" fill="#1a7f37">✓ Other C:\ videos</text>
+  <text x="920" y="320" font-family="Arial, sans-serif" font-size="18" fill="#1a7f37">✓ Other D:\ videos</text>
+  <text x="920" y="370" font-family="Arial, sans-serif" font-size="18" fill="#cf222e">✗ excluded trees</text>
+  <text x="920" y="400" font-family="Arial, sans-serif" font-size="18" fill="#cf222e">never reach scorer</text>
+</svg>
