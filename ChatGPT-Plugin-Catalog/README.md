@@ -55,21 +55,18 @@ At the time of the scan:
 
 ## Tool list
 
-See [PLUGIN_INDEX.md](./PLUGIN_INDEX.md) for the complete alphabetical list of all 92 apps.
+See [PLUGIN_INDEX.md](./PLUGIN_INDEX.md) for the alphabetical index. The full purpose/free-limit catalog is split into four readable pages:
 
-## Spreadsheet
+- [Catalog page 1 — Adobe through Exa](./catalog/catalog-1.md)
+- [Catalog page 2 — Expedia through Miro](./catalog/catalog-2.md)
+- [Catalog page 3 — Mixpanel through Shopify](./catalog/catalog-3.md)
+- [Catalog page 4 — Skyscanner through ZoomInfo](./catalog/catalog-4.md)
 
-The primary spreadsheet is named:
+## Excel companion
 
-`ChatGPT_Plugins_Catalog_2026-09-23.xlsx`
+This research snapshot was also prepared as a filterable Excel workbook named `ChatGPT_Plugins_Catalog_2026-09-23.xlsx`, with Plugin Catalog, Summary and Notes sheets.
 
-It contains:
-
-- **Plugin Catalog** — filterable master table with the research fields and visual badges
-- **Summary** — high-level counts
-- **Notes** — methodology and caveats
-
-The workbook should be regenerated/rechecked whenever a new snapshot is published because pricing and directory availability change frequently.
+The GitHub connector used for this publication can write repository text assets but does not directly transfer binary workbook bytes from the chat environment. The GitHub copy therefore publishes the complete catalog as Markdown pages plus the visual galleries. The workbook and the GitHub pages are based on the same 2026-09-23 research snapshot.
 
 ## Image note
 
