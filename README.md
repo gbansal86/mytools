@@ -34,10 +34,11 @@ MyTools is built around five principles:
 | [ZIP Bulk Extractor](./ZIP-Bulk-Extractor/) | Extracts many ZIP files with beginner-oriented safe modes and no third-party dependency. | BAT, Windows |
 | [3-PC LLM Cluster](./3-PC-LLM-Cluster/) | Documents and checks a small multi-PC setup for distributed/local LLM experimentation. | PowerShell, llama.cpp-oriented examples |
 | [LDPlayer Firebase #303 / Internet Repair](./LDPlayer-Firebase-303-Repair/) | Diagnoses common LDPlayer ADB/network/Google-services issues related to connectivity and Firebase token failures. | BAT, ADB, Windows |
+| [ChatGPT Plugin Catalog](./ChatGPT-Plugin-Catalog/) | Point-in-time research catalog of discoverable ChatGPT apps/connectors, their purpose, free-plan limits, connector eligibility, and visual tool galleries. | Excel research, Markdown, SVG |
 
 Each tool folder is intended to be understandable on its own and contains its own README and MIT license.
 
-For a visual tour with annotated diagrams from all 11 utilities, see the [MyTools Visual Gallery](./TOOL_GALLERY.md).
+For a visual tour of the utility collection, see the [MyTools Visual Gallery](./TOOL_GALLERY.md). The [ChatGPT Plugin Catalog](./ChatGPT-Plugin-Catalog/) includes its own four-part gallery covering all 92 apps in the 2026-09-23 snapshot.
 
 ## Safety model
 
