@@ -54,3 +54,20 @@ Test whether the lesson can be restated after one viewing with sound off and the
 
 ## One-line request to paste into a future conversation
 "Follow the Digital Video Master Prompt in mytools/Digital Videos/AI Video Creation. First review as a short-form educational creator and then as a new viewer. Match the attached approved infographic and 3D mind map in the ACTUAL rendered video; build moving explanatory paths, spatial branch animation and word-timed callouts with natural narration. Do not substitute a simple diagram prototype or claim final success until I can inspect an actual passing MP4. Save stages to a reviewable GitHub PR with verified files."
+
+## Narration lock — high-technical-knowledge, confident human delivery (2026-09-24)
+- Intended persona: an experienced technical educator who understands the subject deeply and explains it in ordinary language. Clear, confident, assured and precise; **not** a hype/trailer voice, not a robotic newsreader, and not an impression of a named living creator.
+- Write technically defensible statements; define jargon immediately; no unjustified certainty, invented performance numbers or false simplifications. Confident delivery must coexist with accurate qualifications (for example, predictions are not guarantees).
+- Preferred performance: natural conversational rhythm, varied sentence length, credible emphasis on the actual teaching point, deliberate short pauses after the hook and before the takeaway, clear pronunciation of technical terms, no rushed endings or random dramatic intonation.
+- Produce a 15–20 second **voice sample** and verify it by listening before recording the full script. If a human-grade voice provider or a human recording cannot be accessed, flag the voice as **unavailable**. Never present an unreviewed local text-to-speech placeholder as approved or publish the video as final.
+- Once the voice passes, use the measured audio to cue every scene, animation, label and caption. Listen to the final mixed MP4 end-to-end on headphones and a phone speaker, not only to the standalone narration.
+
+## Mandatory repeated end-to-end review — not a literal unverified “100 passes”
+Do not send the user another video immediately after rendering. A separate **pre-delivery QA record must exist** with:
+1. Shot-by-shot visual match to approved infographic and 3D mind-map references, at native phone size, including first/middle/last frame and transitions.
+2. Scrub the actual output MP4 at regular intervals plus every scene boundary; verify moving *objects and flow paths* rather than a still-image zoom, consistent subject/visual metaphor, no cut-off images, sharp readable labels, and correct vertical framing.
+3. Listen to all dialogue and final mixed audio in full; assess expert confidence, human cadence, pronunciation, intelligibility, volume balance and true word-level timing.
+4. Check technical facts against appropriate evidence, caption accuracy, on-screen annotation logic, pacing and whether a first-time viewer can repeat the one intended takeaway.
+5. Automated checks: ffprobe duration, dimensions, fps, audio/video streams, black/frozen frames, decode errors and peak loudness; manually confirm that generated art does not contain garbled text.
+6. Document each actual check, issue found, correction, retest and final approval in the production log. Only say “reviewed 100 times” if 100 separate passes really happened and are recorded; otherwise report the real number and coverage.
+7. **Do not deliver as final if any critical check fails.** Share a clearly labeled draft only when explicitly useful and describe its defects before linking, not afterwards.
