@@ -1,8 +1,10 @@
 # AI 60-Second Educational Video Studio
 
+> **Current milestone (2026-09-24):** The 60-second silent motion prototype has been rendered and decoded, with exact [renderer source](render_animatic.py), a [99-word narration draft](voice_script_v03.txt), and [stage-specific status](06_PROTOTYPE_STATUS.md). **The polished 3D, human-sounding narration, synchronized captions, and final video are not yet done.**
+
 Reusable, stage-gated production kit for a **60-second, 9:16 educational Short** combining **animated infographic diagrams and an animated 3D-style mind map**. Pilot topic: *How AI works in 60 seconds*.
 
-**Status:** Preproduction blueprint. The actual narrated, animated MP4 has **not** been rendered or published. Generated reference illustrations are not a layered animation project. No voice model, licensing rights, AI-video subscription or generated outputs are presumed available.
+**Status:** Draft workflow + completed **silent animated prototype** in the conversation; final narrated 1080×1920 MP4 has **not** been produced or released. Generated reference illustrations are not a layered animation project. No voice model, licensing rights, AI-video subscription or generated outputs are presumed available.
 
 ## Start here
 1. Read [00_PLAN.md](00_PLAN.md), including the review and acceptance gates.
