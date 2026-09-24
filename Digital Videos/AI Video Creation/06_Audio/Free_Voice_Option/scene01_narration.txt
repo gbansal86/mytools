@@ -1,0 +1,1 @@
+AI answers in seconds because training happened earlier. The model learned patterns from examples. Your question uses what it has already learned.
