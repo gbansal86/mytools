@@ -1,59 +1,42 @@
-# AI 60-Second Educational Video Studio
+# Digital Videos / AI Video Creation
 
-> **Current milestone (2026-09-24):** The 60-second silent motion prototype has been rendered and decoded, with exact [renderer source](render_animatic.py), a [99-word narration draft](voice_script_v03.txt), and [stage-specific status](06_PROTOTYPE_STATUS.md). **The polished 3D, human-sounding narration, synchronized captions, and final video are not yet done.**
-
-Reusable, stage-gated production kit for a **60-second, 9:16 educational Short** combining **animated infographic diagrams and an animated 3D-style mind map**. Pilot topic: *How AI works in 60 seconds*.
-
-**Status:** Draft workflow + completed **silent animated prototype** in the conversation; final narrated 1080×1920 MP4 has **not** been produced or released. Generated reference illustrations are not a layered animation project. No voice model, licensing rights, AI-video subscription or generated outputs are presumed available.
+**This is the canonical parent folder for the AI educational Short production.** The previous root `AI_60_Second_Educational_Video/` folder is being relocated here. The existing PR is a **draft**; this content is not on `main` until the PR is merged.
 
 ## Start here
-1. Read [00_PLAN.md](00_PLAN.md), including the review and acceptance gates.
-2. Read [01_SCRIPT_AND_SHOTS.md](01_SCRIPT_AND_SHOTS.md); record a scratch narration and check spoken timing before locking images.
-3. Use [02_ASSET_AND_ANIMATION_SPEC.md](02_ASSET_AND_ANIMATION_SPEC.md) to redraw individual visual objects as layers, then animate them to narration.
-4. Track the actual status and provenance in [03_PRODUCTION_LOG_TEMPLATE.md](03_PRODUCTION_LOG_TEMPLATE.md) *for every attempt*, not just successes.
-5. Run [04_QA_AND_RELEASE.md](04_QA_AND_RELEASE.md) before releasing to YouTube.
+1. [DIGITAL_VIDEO_MASTER_PROMPT.md](00_Project_Brief/DIGITAL_VIDEO_MASTER_PROMPT.md) — permanent instruction, visual quality contract, role review and hard STOP rules. Use this prompt in future conversations.
+2. [00_PLAN.md](00_Project_Brief/00_PLAN.md) — stages, release gates and resume logic.
+3. [Narration draft and timed shots](02_Scripts/01_SCRIPT_AND_SHOTS.md), [99-word voice draft](02_Scripts/voice_script_v03.txt).
+4. [Approved-visual and motion specifications](04_Assets/02_ASSET_AND_ANIMATION_SPEC.md); actual generated concept reference images are available in the conversation package but **have not yet been committed** to this PR.
+5. [Silent animatic source](05_Animation/render_animatic.py) and [dependencies](05_Animation/requirements.txt) — runnable *prototype* only, NOT the promised polished 3D/narrated Short.
+6. [Creator/viewer second pass](07_QA/05_CREATOR_VIEWER_REVIEW.md), [prototype status](07_QA/06_PROTOTYPE_STATUS.md), [QA/release gate](07_QA/04_QA_AND_RELEASE.md).
+7. [Resume log template](00_Project_Brief/03_PRODUCTION_LOG_TEMPLATE.md).
 
-## Repeatable pipeline
-```mermaid
-flowchart TD
-  A[Learning objective and factual review] --> B[Script and read-through]
-  B --> C{Voice fits 55-60 seconds?}
-  C -- No --> B
-  C -- Yes --> D[Lock voice and timed transcript]
-  D --> E[Illustration and independent layered assets]
-  E --> F[Animated infographic + 3D-style mind map]
-  F --> G[Word-timed callouts, captions and SFX]
-  G --> H[Render 1080x1920 MP4]
-  H --> I{QA: accuracy, timing, legibility, rights?}
-  I -- Fix --> E
-  I -- Pass --> J[Publish versioned release assets]
+## Current honest status
+A simple, silent 60-second animated **prototype** was created for checking motion and scene timing. It does **not** use the approved cinematic infographic or moving spatial 3D mind-map design, contains no verified natural voice and is NOT the final video. It must be rebuilt with the approved art. The final 1080x1920 MP4 has not been rendered or uploaded.
+
+## Reference folder layout
+```text
+Digital Videos/
+  AI Video Creation/
+    00_Project_Brief/      reusable prompt and plan
+    01_References/         approved reference art [not yet uploaded]
+    02_Scripts/            draft narration and shots
+    03_Storyboards/        scene review images [not yet uploaded]
+    04_Assets/             editable asset and motion specifications
+    05_Animation/          prototype renderer
+    06_Audio/              voice/music/SFX [not yet produced]
+    07_QA/                 checks and review log
+    08_Exports/            final/prototype videos [not uploaded]
 ```
 
-## Recommended layout
+Git does not track empty directories. GitHub stores the existing documentation/code now; image references, Word binary, the local prototype MP4 and final video must be separately uploaded once rights and final render gates are satisfied. The editable Markdown master prompt **is already version-controlled in GitHub**; a downloadable editable Word template is also available in the conversation.
+
+## Re-run prototype on Windows
+Install Python and FFmpeg; open PowerShell in `05_Animation`:
+
+```powershell
+py -m pip install -r requirements.txt
+py render_animatic.py --output motion_preview.mp4
 ```
-AI_60_Second_Educational_Video/
-  README.md
-  00_PLAN.md
-  01_SCRIPT_AND_SHOTS.md
-  02_ASSET_AND_ANIMATION_SPEC.md
-  03_PRODUCTION_LOG_TEMPLATE.md
-  04_QA_AND_RELEASE.md
-  projects/ai-explained-001/
-    script/          # approved script, timed narration transcript
-    audio/           # voice, music and SFX licenses
-    references/      # reference images with provenance
-    assets/          # separately editable elements
-    scenes/          # scene source/project files
-    renders/         # per-scene previews, never only final MP4
-    qa/              # actual test outputs and human review
-    release/         # final MP4, SRT, thumbnail, description
-```
-Create project subfolders locally when production starts. Empty folders are not committed.
 
-## Revisions without repeating the whole process
-A changed sentence invalidates voice timings and the linked animation cues, but **not** unrelated asset layers. A changed diagram invalidates only that scene's rendered preview and QA. Keep a manifest with asset SHA-256, source prompt, model/tool/version, rights/license, scene number and approval status. Record open issues and the exact stage to resume in the production log. Never commit secrets, browser cookies, login tokens, private source video, or unlicensed third-party footage.
-
-## Tools are interchangeable
-Script: text editor; diagrams: SVG/Inkscape or equivalent; animation: Blender, DaVinci Resolve/Fusion, After Effects, or programmatic SVG/compositing; voice: properly licensed human narration or reviewed TTS; final encode: FFmpeg. Favor editable vector text and arrows over AI-rendered tiny text. A flat illustrated *3D-style* mind map is not the same as a real Blender 3D scene: choose and document the actual technique.
-
-No claim that the specific tools above were used by the source YouTube creator. See [04_QA_AND_RELEASE.md](04_QA_AND_RELEASE.md) for release criteria.
+**Do not claim this prototype matches approved visuals.** Replace every primitive stand-in with approved layered art / scene geometry, actually animate flows and branches, record and time natural narration, then evaluate a phone-sized video before release.
