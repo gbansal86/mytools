@@ -1,24 +1,27 @@
-# 01 — Pilot script v0.2: TRAINING vs USING AI
+# 01 — Eight-scene pilot: TRAINING vs USING AI (v0.3)
 
-**Working title:** “How AI Answers Fast (It Learned Before You Asked)”  
-**Viewer’s one-sentence takeaway:** Training learns patterns first; using a trained model produces an output later; check important results.  
-**Format:** 60-second vertical Short; no characters; animated infographic for each explanation plus an animated 3D-style mind-map recap.
+**Title:** “How AI Answers Fast (It Learned Before You Asked)”  
+**One thing to remember:** Training learns patterns first. Using the trained model (inference) produces a new output later. Humans check important results.  
+**Status:** Provisional spoken script, not recorded; current 60-second **silent** animatic is a preproduction prototype.
 
-> These are *provisional* scene times, not a measured voice recording. Target ~129 words before a human/natural-voice timed read; shorten or retime scenes after the actual recording. The current silent motion prototype is 720 × 1280, 24 fps, and **not the final release**.
+The editable script is in [voice_script_v03.txt](voice_script_v03.txt) (99 words). Approximate scene times are placeholders until a licensed natural voice read-through is recorded and measured.
 
-| Approximate time | Natural narration | Moving visual + synchronized annotation |
+| Approx. time | Narration | Motion design & word-cued annotations |
 |---|---|---|
-| 00–05 | “AI can answer in seconds. But it usually learned long before you asked.” | Question card appears quickly; training timeline grows backward into view. Text: “It learned earlier.” |
-| 05–12 | “Here's the difference: first comes training. Using a trained model comes later.” | Examples flow into TRAINING, then draw a connecting path to USE MODEL. Label: “TWO STAGES.” |
-| 12–22 | “Imagine thousands of emails labeled spam or genuine. During training, a model studies examples like these to learn useful patterns.” | Red and green email examples repeatedly travel along actual moving paths into a model. Annotation: “Examples → training.” |
-| 22–30 | “It adjusts internal numbers, called parameters, to improve its predictions. This takes practice and computing power.” | Animated node connections and changing parameter slider; icon is a metaphor, not a literal brain. |
-| 30–39 | “Now a new email arrives. The trained model predicts whether it looks like spam. It isn't retraining from scratch on every message.” | A new email travels through the ALREADY TRAINED model; “LIKELY spam” appears. Annotation: “Prediction ≠ certainty.” |
-| 39–48 | “Generative AI also learns patterns during training. Later, when you type a prompt, it can generate new text, pictures, or code.” | Prompt moves into the trained model; distinct text/image/code icons emerge. Distinguish generating an output from retraining. |
-| 48–55 | “But a convincing answer can still be wrong. Check important claims against reliable sources.” | Claim and source enter an explicit comparison; mark unverified claims with a question mark. |
-| 55–60 | “Remember: train first, use the model next, and check important results.” | The complete mind map unfolds: EXAMPLES → TRAIN → USE → CHECK, with a camera pullback and readable hold. |
+| 00–05 | AI can answer in seconds. How did it learn? | Question card appears immediately; earlier training timeline extends. Callout “Learned before you asked”. |
+| 05–12 | Two stages: training first. Using the trained model comes later. | Example moves to TRAINING; connection then draws to USE MODEL (not examples directly into use). Callout “TWO STAGES”. |
+| 12–22 | Imagine emails marked spam or genuine. During training, a model sees many examples and learns patterns. | Multiple labeled emails physically move down converging paths; track red and green separately. Callout “LABELED EXAMPLES”. |
+| 22–30 | It adjusts internal settings called parameters to improve predictions. | Node links pulse, meter changes. Callout “PARAMETERS”; network icon is only an explanatory metaphor. |
+| 30–39 | Now a new email arrives. The trained model predicts if it's spam. That's inference, not training from scratch. | A NEW input moves through an ALREADY TRAINED model to output “LIKELY SPAM”. Callout “INFERENCE ≠ TRAINING”. |
+| 39–48 | Generative AI follows the same broad split: learn during training, then create new words or images when prompted. | Prompt travels into trained model, text/image emerges. Callout “GENERATE AT USE TIME”. |
+| 48–55 | Confident answers can still be wrong. Check important claims against reliable sources. | Claim and source visibly compared; uncertainty stays visible. Callout “VERIFY”. |
+| 55–60 | Remember: training learns; inference answers; humans check. | A four-node mind map unfolds: EXAMPLES → TRAIN → USE → CHECK; ensure legible final hold. |
 
-## Performance direction
-Speak to a curious friend, not an audience at a product launch: warm, lightly playful opening; brief pauses around “first comes training” and “later”; matter-of-fact on uncertainty. Avoid imitation of a real presenter’s voice or style. Record a full scratch pass and measure it. A timeline that fits silent video does **not** prove a narration fits.
+## Voice direction
+Warm, curious, conversational. No imitation of a particular real presenter. Pause after the opening question and before the recap. Record, listen on a phone and **measure** duration before retiming animation. Do not pitch-shift or race through lines to force the 60-second constraint.
 
-## Factual checkpoints
-AI systems are diverse; this describes typical trained models, not every software tool. Inference ordinarily uses previously trained parameters; some products may also adapt or retrain through separate processes. Spam classification and route selection are predictions/decisions, not magic certainty. A neural-network graphic is illustrative rather than a literal representation of a biological brain.
+## Factual guardrails
+This describes a common training/inference distinction for trained AI models, not every AI application. Some systems use retrieval, feedback, adaptation or separately scheduled retraining; a new query does not inherently trigger full retraining. Classifications are predictions, not guarantees. A mind-map/brain metaphor is not literal computation.
+
+## Prototype vs final
+[render_animatic.py](render_animatic.py) is the motion/timing proof; it intentionally has no narrator, has temporary labels and does not meet the polished 3D or 1080×1920 final release criteria. See [06_PROTOTYPE_STATUS.md](06_PROTOTYPE_STATUS.md) for the exact next gate.
