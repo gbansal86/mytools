@@ -26,9 +26,8 @@ SCENES=[
  (48,55,'IMPORTANT: CHECK','A confident answer can be wrong','Verify important claims with reliable sources.'),
  (55,60,'REMEMBER THE TWO STAGES','TRAINING  ->  USING  ->  CHECK','Learn patterns. Produce output. Check results.'),
 ]
-FONTREG='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-FONTBOLD='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-FONTALT='/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf'
+FONTREG=next((str(p) for p in [Path('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'), Path('C:/Windows/Fonts/arial.ttf')] if p.exists()), 'DejaVuSans.ttf')
+FONTBOLD=next((str(p) for p in [Path('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'), Path('C:/Windows/Fonts/arialbd.ttf')] if p.exists()), 'DejaVuSans-Bold.ttf')
 
 def f(size,bold=False):
     p=FONTBOLD if bold else FONTREG
@@ -111,7 +110,7 @@ def draw_scene(im,k,t):
         node(im,178,720,'TRAINING',ORANGE,230)
         node(im,536,720,'USE MODEL',GREEN,235)
         arrow(im,(345,470),(180,670),ORANGE,5,min(1,u*2.2))
-        arrow(im,(375,470),(535,670),GREEN,5,max(0,min(1,(u-.45)*2.2)))
+        arrow(im,(300,720),(408,720),GREEN,5,max(0,min(1,(u-.45)*2.2)))
         txt(im,'LEARN PATTERNS',177,837,.66,ORANGE,2,True)
         txt(im,'MAKE OUTPUT',535,837,.66,GREEN,2,True)
         for j in range(3):moving(im,(345,470),(180,670),u*1.5+j/3,ORANGE,7)
