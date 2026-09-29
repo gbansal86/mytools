@@ -1,0 +1,118 @@
+# Example execution plan for the Universal Windows App Test Recorder
+version: 1
+
+app:
+  name: "Duplicate Video Finder"
+  executable: "E:\\MyTools\\DuplicateVideoFinder\\DuplicateVideoFinder.exe"
+  working_directory: "E:\\MyTools\\DuplicateVideoFinder"
+  process_name: "DuplicateVideoFinder.exe"
+  main_window:
+    title_contains: "Duplicate Video Finder"
+  startup_timeout_seconds: 30
+
+environment:
+  test_workspace: "E:\\AppTester\\workspace\\duplicate_video_finder"
+  variables:
+    sample_video_folder: "${test_workspace}\\input\\videos"
+    output_folder: "${test_workspace}\\output"
+
+safety:
+  sandbox_required: true
+  blocked_control_names:
+    - "Delete Permanently"
+    - "Format"
+    - "Uninstall"
+  require_confirmation_for:
+    - "Delete"
+    - "Remove"
+
+recording:
+  enabled: true
+  show_overlay: true
+  show_mouse: true
+  show_click_indicator: true
+  capture_step_screenshots: true
+
+monitoring:
+  process: true
+  cpu: true
+  memory: true
+  crash_detection: true
+
+suite:
+  name: "Full Regression Test"
+  continue_after_failure: true
+
+tests:
+  - id: TEST-001
+    name: "Launch Application"
+    actions:
+      - action: launch_app
+      - action: wait_for_window
+        title_contains: "Duplicate Video Finder"
+        timeout_seconds: 30
+    verify:
+      - type: window_exists
+        title_contains: "Duplicate Video Finder"
+
+  - id: TEST-002
+    name: "Select Video Folder"
+    actions:
+      - action: click
+        target:
+          control_type: "Button"
+          name: "Browse"
+      - action: choose_folder
+        path: "${sample_video_folder}"
+    verify:
+      - type: text_contains
+        target:
+          control_type: "Edit"
+        expected: "${sample_video_folder}"
+
+  - id: TEST-003
+    name: "Scan Videos"
+    actions:
+      - action: click
+        target:
+          control_type: "Button"
+          name: "Scan"
+      - action: wait_for_text
+        text: "Scan Complete"
+        timeout_seconds: 300
+    verify:
+      - type: text_present
+        text: "Scan Complete"
+      - type: process_running
+        process_name: "DuplicateVideoFinder.exe"
+
+  - id: TEST-004
+    name: "Generate HTML Report"
+    actions:
+      - action: click
+        target:
+          control_type: "Button"
+          name: "Generate HTML"
+      - action: wait_for_file
+        pattern: "${output_folder}\\*.html"
+        timeout_seconds: 60
+    verify:
+      - type: file_exists
+        pattern: "${output_folder}\\*.html"
+      - type: file_size_greater_than
+        pattern: "${output_folder}\\*.html"
+        bytes: 100
+
+failure_policy:
+  default:
+    - capture_screenshot
+    - save_ui_tree
+    - save_application_logs
+    - record_video_timestamp
+    - save_process_state
+    - continue_next_test
+
+cleanup:
+  actions:
+    - action: close_app
+      graceful_timeout_seconds: 10
