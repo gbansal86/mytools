@@ -1,0 +1,26 @@
+{
+  "package_name": "AI Video Production System",
+  "purpose": "Reusable raw-video-to-finished-explainer workflow and style kit",
+  "master_prompt": "UNIVERSAL_MASTER_PROMPT.md",
+  "reference_video": "reference_video_preview.mp4",
+  "reference_duration_seconds": 140,
+  "assets": [
+    "thumb.jpg",
+    "reply.jpg",
+    "osama.jpg",
+    "timeline.jpg",
+    "runway.jpg",
+    "peace.jpg",
+    "zero.jpg",
+    "bharat1.jpg",
+    "bharat2.jpg",
+    "logo_box.jpg"
+  ],
+  "subtitle_style": {
+    "normal": "white",
+    "important": "yellow/gold",
+    "strong": "red",
+    "background": "dark semi-transparent"
+  },
+  "workflow_rule": "Final edited audio is always the master timeline; images and subtitles must be synchronized to it."
+}
