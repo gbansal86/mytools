@@ -1,0 +1,29 @@
+{
+  "package_name": "AI Video Production System",
+  "github_folder": "Digital-Videos/AI-Video-Production-System",
+  "reference_project": "2:20 reference explainer edit",
+  "reference_duration_seconds": 140,
+  "resolution": "1920x1080",
+  "fps": 30,
+  "subtitle_style": {
+    "normal": "white",
+    "important": "yellow/gold",
+    "strong": "red",
+    "backing": "dark translucent"
+  },
+  "assets": [
+    "thumb.jpg",
+    "reply.jpg",
+    "osama.jpg",
+    "timeline.jpg",
+    "runway.jpg",
+    "peace.jpg",
+    "zero.jpg",
+    "bharat1.jpg",
+    "bharat2.jpg",
+    "logo_box.png"
+  ],
+  "reference_video": "india_un_FINAL_2m20_SYNCED_v2.mp4",
+  "persistent_media_backup": "ChatGPT Library: /AI-Video-Production-System",
+  "prompt": "UNIVERSAL_MASTER_PROMPT.md"
+}
