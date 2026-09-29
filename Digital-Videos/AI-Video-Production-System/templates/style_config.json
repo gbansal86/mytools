@@ -1,0 +1,43 @@
+{
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "video_codec": "libx264",
+    "pixel_format": "yuv420p",
+    "crf": 16,
+    "preset": "medium",
+    "audio_codec": "aac",
+    "audio_bitrate": "192k",
+    "faststart": true
+  },
+  "subtitles": {
+    "font": "Arial",
+    "font_size": 52,
+    "normal_color": "white",
+    "important_color": "gold",
+    "strong_color": "red",
+    "background": "dark_translucent",
+    "alignment": "bottom_center",
+    "max_words_per_beat": 6,
+    "safe_bottom_margin": 56
+  },
+  "transitions": {
+    "default": "cut",
+    "dissolve_seconds": 0.2,
+    "still_zoom_start": 1.0,
+    "still_zoom_end": 1.04
+  },
+  "quality": {
+    "mild_denoise": true,
+    "mild_sharpen": true,
+    "contrast_multiplier": 1.025,
+    "saturation_multiplier": 1.02
+  },
+  "render": {
+    "fallback_to_segments": true,
+    "segment_seconds": 60,
+    "resume": true,
+    "verify_after_render": true
+  }
+}
