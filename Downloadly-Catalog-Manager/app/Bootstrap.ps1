@@ -232,5 +232,3 @@ try {
 }
 
 # V22 compatibility marker retained for legacy regression tests.
-
-[executed on device: Murali (27a4e370-9282-4fd1-98d2-8172581061df)]
