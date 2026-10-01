@@ -481,7 +481,7 @@ def _group_links(links: list[dict]) -> dict:
         typ=str(l.get('link_type') or ''); label=str(l.get('label') or '').strip()
         disp=f"{label} | {url}" if label and label.lower() not in {'download','link'} else url
         low=host.lower()
-        if 'udemy.com' in low: out['udemy'].append(url)
+        if low == 'udemy.com' or low.endswith('.udemy.com'): out['udemy'].append(url)
         elif host in {'drive.google.com','docs.google.com'} or host.endswith('.drive.google.com'): out['gdrive'].append(disp)
         elif 'rapidgator' in low: out['rapid'].append(disp)
         elif typ=='Direct file/archive' or ('downloadly' in low and legacy.file_ext(url) in legacy.FILE_EXTS): out['direct'].append(disp)
