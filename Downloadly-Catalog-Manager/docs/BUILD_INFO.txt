@@ -1,6 +1,6 @@
 Downloadly Catalog Manager V30
 Build date: 2026-10-01
 Package test result: 121 passed
-ZIP SHA-256: 0ef1296c94f42e66cb963abeb5bbcb16251414deee49e297cadddce74f293ae2
+Baseline validated V30 ZIP SHA-256 (before repository metadata sync): 0ef1296c94f42e66cb963abeb5bbcb16251414deee49e297cadddce74f293ae2
 
 The GitHub folder intentionally excludes runtime environments, collected HTML, images, databases, cookies, logs, and user data.
