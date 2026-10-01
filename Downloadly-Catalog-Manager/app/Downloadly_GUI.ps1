@@ -447,7 +447,10 @@ $ScheduledTimer=New-Object System.Windows.Forms.Timer;$ScheduledTimer.Interval=1
 $Form.Add_FormClosing({param($sender,$e)
     if($script:CloseAfterStop){$e.Cancel=$true;return}
     if(Test-WorkerRunning){
-        $r=[System.Windows.Forms.MessageBox]::Show('A manual worker is still running. The GUI will stop it safely before closing.\n\nOK = Stop worker and close\nCancel = keep GUI open.','Worker is running',[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Warning)
+        $r=[System.Windows.Forms.MessageBox]::Show('A manual worker is still running. The GUI will stop it safely before closing.
+
+OK = Stop worker and close
+Cancel = keep GUI open.','Worker is running',[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Warning)
         if($r -eq [System.Windows.Forms.DialogResult]::Cancel){$e.Cancel=$true;return}
         $e.Cancel=$true;$script:CloseAfterStop=$true;$script:UserStopRequested=$true;$script:StopDeadline=(Get-Date).AddSeconds(4)
         New-Item -ItemType File -Force -Path (Join-Path $DataBox.Text 'state\stop.requested')|Out-Null
