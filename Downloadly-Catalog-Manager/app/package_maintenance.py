@@ -156,5 +156,3 @@ def main(argv=None):
     return 0
 
 if __name__=='__main__': raise SystemExit(main())
-
-[executed on device: Murali (27a4e370-9282-4fd1-98d2-8172581061df)]
