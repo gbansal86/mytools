@@ -294,6 +294,7 @@ $Pause.Add_Click({try{New-Item -ItemType File -Force -Path (Join-Path $DataBox.T
 $Resume.Add_Click({try{
     Remove-Item -LiteralPath (Join-Path $DataBox.Text 'state\pause.requested') -Force -ErrorAction SilentlyContinue
     Remove-Item -LiteralPath (Join-Path $DataBox.Text 'state\stop.requested') -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath (Join-Path $DataBox.Text 'state\cancel.requested') -Force -ErrorAction SilentlyContinue
     if(Test-WorkerRunning){
         $Pause.Enabled=$true;$Resume.Enabled=$false;$StatusLabel.Text='Resume requested; continuing current worker.'
     }else{
