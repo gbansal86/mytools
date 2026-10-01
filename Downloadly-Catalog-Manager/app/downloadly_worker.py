@@ -3106,5 +3106,3 @@ if __name__ == "__main__":
     except BaseException:
         _record_unhandled_crash()
         raise SystemExit(99)
-
-[executed on device: Murali (27a4e370-9282-4fd1-98d2-8172581061df)]
