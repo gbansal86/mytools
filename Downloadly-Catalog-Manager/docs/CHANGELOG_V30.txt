@@ -1,0 +1,13 @@
+V30
+===
+
+- Added automatic headless Selenium fallback when normal HTTP receives a verification/block page.
+- Limited concurrent Selenium recovery browsers to 2 while allowing HTTP worker setting up to 100.
+- Changed blocked-item behavior: after the fallback attempt, still-blocked items are deferred instead of holding the entire queue in repeated back-off loops.
+- Selenium is installed and verified by Bootstrap/Repair and listed in requirements.txt.
+- GUI now attaches to an already-running manual worker for the same package/data folder.
+- Closing the GUI safely stops manual workers instead of allowing an invisible detached worker.
+- Force stop terminates the process tree after the 4-second safe-stop grace period.
+- Start/Resume clear stale cancel.requested in addition to pause/stop markers.
+- Worker selector/backend limit increased from 6 to 100; default remains 3.
+- Background scheduler default block retry count reduced to 1 so individual blocked items do not stall scheduled runs.
