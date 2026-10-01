@@ -450,5 +450,3 @@ $Form.Add_FormClosing({param($sender,$e)
 if(Attach-ExistingWorker){$Monitor.Start()}
 Refresh-Progress
 [void]$Form.ShowDialog()
-
-[executed on device: Murali (27a4e370-9282-4fd1-98d2-8172581061df)]
