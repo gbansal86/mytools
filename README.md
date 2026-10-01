@@ -35,6 +35,7 @@ MyTools is built around five principles:
 | [3-PC LLM Cluster](./3-PC-LLM-Cluster/) | Documents and checks a small multi-PC setup for distributed/local LLM experimentation. | PowerShell, llama.cpp-oriented examples |
 | [LDPlayer Firebase #303 / Internet Repair](./LDPlayer-Firebase-303-Repair/) | Diagnoses common LDPlayer ADB/network/Google-services issues related to connectivity and Firebase token failures. | BAT, ADB, Windows |
 | [ChatGPT Plugin Catalog](./ChatGPT-Plugin-Catalog/) | Point-in-time research catalog of discoverable ChatGPT apps/connectors, their purpose, free-plan limits, connector eligibility, and visual tool galleries. | Excel research, Markdown, SVG |
+| [Downloadly Catalog Manager](./Downloadly-Catalog-Manager/) | Builds a durable local catalog of Downloadly posts with resumable discovery/processing, archived HTML, reports, and bounded browser recovery for ordinary page rendering. | Python, PowerShell, Selenium, SQLite, Windows |
 
 Each tool folder is intended to be understandable on its own and contains its own README and MIT license.
 
