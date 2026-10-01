@@ -962,7 +962,7 @@ def process_queue(db: CatalogDB, data_dir: Path, topics: list[str], *, timeout: 
 
     V28 accepted a ``workers`` option but still processed only ``pending[0]`` in a
     single-thread loop.  It also reloaded the entire pending queue after every item.
-    V29 loads the queue once, fetches up to ``workers`` course pages concurrently,
+    V30 introduced the parallel durable queue; V30 keeps that design and allows up to 100 HTTP workers,
     and writes results back to SQLite on the coordinator thread.  The HTTP helper
     already uses thread-local requests sessions, so cookies/sockets are not shared
     unsafely between fetch workers.
