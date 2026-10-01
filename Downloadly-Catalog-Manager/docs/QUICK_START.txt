@@ -1,0 +1,10 @@
+QUICK START - V30
+
+1. Use Update from ZIP from V23+ to install V30 while preserving the existing data folder.
+2. Launch Launch_Downloadly_GUI.vbs.
+3. Select one or more topics.
+4. Use Start/Resume for normal queue processing.
+5. Processing workers can be set from 1 to 100; default is 3.
+6. Normal HTTP is used first. If a page is blocked, V30 tries headless Selenium automatically.
+7. If Selenium is also blocked, the item is deferred so the remaining queue can continue.
+8. Reopening the GUI can attach to the existing manual worker for the same data folder.
