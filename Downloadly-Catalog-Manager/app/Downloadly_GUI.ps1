@@ -185,14 +185,21 @@ function Attach-ExistingWorker {
     try{
         $pipelineFull=[System.IO.Path]::GetFullPath($PipelineScript)
         $dataFull=[System.IO.Path]::GetFullPath($DataBox.Text)
+        $expectedPython=$null
+        try{$expectedPython=[System.IO.Path]::GetFullPath((Find-Python))}catch{}
+        $fallback=$null
         $candidates=Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction SilentlyContinue
         foreach($c in $candidates){
             $cmd=[string]$c.CommandLine
             if([string]::IsNullOrWhiteSpace($cmd)){ continue }
             if($cmd.IndexOf($pipelineFull,[System.StringComparison]::OrdinalIgnoreCase) -lt 0){ continue }
             if($cmd.IndexOf($dataFull,[System.StringComparison]::OrdinalIgnoreCase) -lt 0){ continue }
+            if(-not $fallback){$fallback=$c}
+            if($expectedPython -and $c.ExecutablePath -and ([System.IO.Path]::GetFullPath([string]$c.ExecutablePath) -ieq $expectedPython)){$fallback=$c;break}
+        }
+        if($fallback){
             try{
-                $p=[System.Diagnostics.Process]::GetProcessById([int]$c.ProcessId)
+                $p=[System.Diagnostics.Process]::GetProcessById([int]$fallback.ProcessId)
                 if(-not $p.HasExited){
                     $script:WorkerProcess=$p
                     $script:UserStopRequested=$false
