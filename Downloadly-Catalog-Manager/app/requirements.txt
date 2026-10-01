@@ -1,0 +1,7 @@
+requests
+beautifulsoup4
+lxml
+openpyxl
+selenium
+# Optional translation engine; install only when requested from the GUI:
+# argostranslate

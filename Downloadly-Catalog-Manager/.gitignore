@@ -1,0 +1,10 @@
+runtime/
+data/
+logs/
+updates/
+support_packages/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+config/urls.txt
