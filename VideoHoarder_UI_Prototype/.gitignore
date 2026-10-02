@@ -1,0 +1,8 @@
+tools/dotnet/
+tools/dotnet-home/
+tools/nuget-cache/
+tools/temp/
+src/**/bin/
+src/**/obj/
+*.user
+*.suo
