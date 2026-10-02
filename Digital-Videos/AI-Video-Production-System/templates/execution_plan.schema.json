@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Video Execution Plan",
+  "type": "object",
+  "required": ["project_id", "target_duration", "audio_segments", "visual_events", "qa_checkpoints"],
+  "properties": {
+    "project_id": {"type": "string"},
+    "target_duration": {"type": "number"},
+    "hook": {"type": "string"},
+    "audio_segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_start", "source_end", "final_start"],
+        "properties": {
+          "source_start": {"type": "number"},
+          "source_end": {"type": "number"},
+          "final_start": {"type": "number"},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "visual_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "start", "end"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"enum": ["source_video", "image", "title", "end_card"]},
+          "start": {"type": "number"},
+          "end": {"type": "number"},
+          "asset": {"type": "string"},
+          "topic_phrase": {"type": "string"},
+          "transition": {"type": "string"},
+          "label": {"type": "string"}
+        }
+      }
+    },
+    "branding": {"type": "object"},
+    "subtitle_policy": {"type": "object"},
+    "qa_checkpoints": {
+      "type": "array",
+      "items": {"type": "number"}
+    }
+  }
+}
