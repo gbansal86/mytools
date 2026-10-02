@@ -1,0 +1,11 @@
+HOW AI ANSWERS FAST — PILOT NARRATION v0.3
+Draft. Timecodes provisional until a natural voice recording is measured.
+
+[00:00–00:05] AI can answer in seconds. How did it learn?
+[00:05–00:12] Two stages: training first. Using the trained model comes later.
+[00:12–00:22] Imagine emails marked spam or genuine. During training, a model sees many examples and learns patterns.
+[00:22–00:30] It adjusts internal settings called parameters to improve predictions.
+[00:30–00:39] Now a new email arrives. The trained model predicts if it's spam. That's inference, not training from scratch.
+[00:39–00:48] Generative AI follows the same broad split: learn during training, then create new words or images when prompted.
+[00:48–00:55] Confident answers can still be wrong. Check important claims against reliable sources.
+[00:55–01:00] Remember: training learns; inference answers; humans check.
